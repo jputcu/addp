@@ -4,7 +4,7 @@ if(${IWYU})
 include(cmake/iwyu.cmake)
 endif()
 
-project(addp)
+project(addp CXX)
 
 include(cmake/dependencies.cmake)
 include(cmake/version.cmake)
