@@ -124,6 +124,7 @@ std::string field::value_str() const
 
         case FT_VERSION:
             os << std::dec << value<uint16_t>();
+            break;
 
         case FT_PORT:
         case FT_SSL_PORT:
