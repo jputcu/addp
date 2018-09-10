@@ -2,8 +2,9 @@
 #define ADDP_PACKET_FIELD_H
 
 #include <stdint.h>
-#include <arpa/inet.h>
 #include <vector>
+
+#include <boost/asio.hpp>
 
 #include <addp/constants.h>
 

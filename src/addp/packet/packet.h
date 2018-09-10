@@ -2,10 +2,11 @@
 #define ADDP_PACKET_PACKET_H
 
 #include <stdint.h>
-#include <arpa/inet.h>
 #include <cstring>
 #include <vector>
 #include <algorithm>
+
+#include <boost/asio.hpp>
 #include <boost/array.hpp>
 
 #include <addp/packet/field.h>
