@@ -1,13 +1,21 @@
 set(LIB addp)
 file(GLOB_RECURSE SRC *.cpp)
 
-add_library(${LIB} SHARED ${SRC})
+find_package(Boost
+  REQUIRED
+  COMPONENTS system program_options filesystem thread)
+
+add_library(${LIB} ${SRC})
 target_link_libraries(${LIB}
-    ${Boost_SYSTEM_LIBRARY}
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_PROGRAM_OPTIONS_LIBRARY}
-    pthread
-    )
+  Boost::system
+  Boost::program_options
+  Boost::filesystem
+  Boost::thread)
+
+if( WIN32 )
+  target_link_libraries(${LIB} Ws2_32)
+endif()
+
 set_target_properties(${LIB} PROPERTIES
     VERSION ${ADDP_VERSION}
     SOVERSION ${ADDP_VERSION}
