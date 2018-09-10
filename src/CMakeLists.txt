@@ -1,5 +1,7 @@
 include_directories(.)
 add_subdirectory(addp)
 add_subdirectory(addpc)
-add_subdirectory(addpd)
+if( NOT WIN32 )
+  add_subdirectory(addpd)
+endif()
 add_subdirectory(unittest)
