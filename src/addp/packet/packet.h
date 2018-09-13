@@ -1,7 +1,7 @@
 #ifndef ADDP_PACKET_PACKET_H
 #define ADDP_PACKET_PACKET_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <cstring>
 #include <vector>
 #include <algorithm>

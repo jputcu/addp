@@ -1,7 +1,7 @@
 #ifndef ADDP_CONSTANTS_H
 #define ADDP_CONSTANTS_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 
 #include <addp/types.h>

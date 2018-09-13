@@ -1,7 +1,7 @@
 #ifndef ADDP_TYPES_H
 #define ADDP_TYPES_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <boost/array.hpp>
 
 namespace addp {

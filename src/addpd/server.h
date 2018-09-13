@@ -1,7 +1,7 @@
 #ifndef ADDPD_SERVER_H
 #define ADDPD_SERVER_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/ip/udp.hpp>

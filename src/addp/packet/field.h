@@ -1,7 +1,7 @@
 #ifndef ADDP_PACKET_FIELD_H
 #define ADDP_PACKET_FIELD_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 #include <boost/asio.hpp>
