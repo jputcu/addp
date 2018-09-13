@@ -14,7 +14,10 @@ include(cmake/testing.cmake)
 message("addp version: " ${ADDP_VERSION})
 
 set(CMAKE_INSTALL_PREFIX /usr)
-set(CMAKE_BUILD_TYPE Release)
+
+if( NOT CMAKE_BUILD_TYPE )
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "" FORCE)
+endif()
 
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG -g -O0)
