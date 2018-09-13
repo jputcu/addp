@@ -1,8 +1,8 @@
 #include "client.h"
 
 #include <iostream>
-#include <boost/lexical_cast.hpp>
 #include <addp/addp.h>
+#include <addp/types.h>
 
 #include "options.h"
 
@@ -55,11 +55,11 @@ bool client::discover()
 
 bool client::static_net_config()
 {
-    addp::mac_address mac_address = boost::lexical_cast<addp::mac_address>(_options.mac());
-    addp::ip_address ip = boost::lexical_cast<addp::ip_address>(_options.ip());
-    addp::ip_address subnet = boost::lexical_cast<addp::ip_address>(_options.subnet());
-    addp::ip_address gateway = boost::lexical_cast<addp::ip_address>(_options.gateway());
-    addp::static_net_config action(mac_address, ip, subnet, gateway);
+    addp::static_net_config action(
+								   addp::parse_mac_str(_options.mac()),
+								   addp::parse_ip_str(_options.ip()),
+								   addp::parse_ip_str(_options.subnet()),
+								   addp::parse_ip_str(_options.gateway()));
     action.set_password(_options.password());
 
     return run_action(action);
@@ -67,8 +67,7 @@ bool client::static_net_config()
 
 bool client::dhcp_net_config()
 {
-    addp::mac_address mac_address = boost::lexical_cast<addp::mac_address>(_options.mac());
-    addp::dhcp_net_config action(mac_address, _options.dhcp());
+    addp::dhcp_net_config action(addp::parse_mac_str(_options.mac()), _options.dhcp());
     action.set_password(_options.password());
 
     return run_action(action);
@@ -76,8 +75,7 @@ bool client::dhcp_net_config()
 
 bool client::reboot()
 {
-    addp::mac_address mac_address = boost::lexical_cast<addp::mac_address>(_options.mac());
-    addp::reboot action(mac_address);
+    addp::reboot action(addp::parse_mac_str(_options.mac()));
     action.set_password(_options.password());
 
     return run_action(action);

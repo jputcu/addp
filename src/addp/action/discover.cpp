@@ -3,7 +3,6 @@
 #include <iostream>
 #include <boost/foreach.hpp>
 #include <boost/format.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <addp/packet/discovery.h>
 #include <addp/types_io.h>
@@ -19,7 +18,7 @@ discover::discover(const mac_address& mac_address) :
 
 void discover::set_mac_address(const std::string& mac)
 {
-    mac_address mac_addr = boost::lexical_cast<mac_address>(mac);
+	mac_address mac_addr = parse_mac_str(mac);
     set_request(discovery_request(mac_addr));
 
     if(mac_addr != MAC_ADDR_BROADCAST)

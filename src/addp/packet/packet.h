@@ -5,6 +5,7 @@
 #include <cstring>
 #include <vector>
 #include <algorithm>
+#include <array>
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
@@ -47,7 +48,7 @@ public:
 
     uint16_t size() const;
     template<class T> void add(const T& data);
-    template<class T, std::size_t N> void add(const boost::array<T, N>& data)
+    template<class T, std::size_t N> void add(const std::array<T, N>& data)
     {
         copy(data.begin(), data.end(), back_inserter(_payload));
         _header.size = htons(_payload.size());

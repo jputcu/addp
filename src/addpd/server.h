@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <array>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <boost/system/system_error.hpp>
@@ -25,7 +26,7 @@ private:
     boost::asio::ip::udp::socket _socket;
     size_t _thread_count;
     boost::asio::ip::udp::endpoint _sender_address;
-    boost::array<uint8_t, 4096> _data;
+	std::array<uint8_t, 4096> _data;
 };
 
 #endif // ADDPD_SERVER_H

@@ -2,10 +2,10 @@
 
 #include <iostream>
 #include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <addp/packet/dhcp_net_config.h>
 #include <addp/packet/packet_io.h>
+#include <addp/types.h>
 #include <addp/types_io.h>
 
 namespace addp {
@@ -22,8 +22,7 @@ dhcp_net_config::dhcp_net_config(const mac_address& mac_address, bool enable,
 
 void dhcp_net_config::set_mac_address(const std::string& mac)
 {
-    _mac_address = boost::lexical_cast<mac_address>(mac);
-    set_request(dhcp_net_config_request(_mac_address, _enable, _password));
+    set_request(dhcp_net_config_request(addp::parse_mac_str(mac), _enable, _password));
 }
 
 void dhcp_net_config::set_enable(bool enable)

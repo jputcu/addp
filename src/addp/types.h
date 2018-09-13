@@ -2,13 +2,17 @@
 #define ADDP_TYPES_H
 
 #include <cstdint>
-#include <boost/array.hpp>
+#include <array>
 
 namespace addp {
 
-typedef boost::array<uint8_t, 4> ip_address;
-typedef boost::array<uint8_t, 6> mac_address;
-typedef boost::array<uint8_t, 16> guid;
+typedef std::array<uint8_t, 4> ip_address;
+typedef std::array<uint8_t, 6> mac_address;
+typedef std::array<uint8_t, 16> guid;
+
+mac_address parse_mac_str(const std::string& mac_str);
+
+ip_address parse_ip_str(const std::string& ip_str);
 
 } // namespace addp
 

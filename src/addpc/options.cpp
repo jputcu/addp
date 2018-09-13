@@ -1,7 +1,7 @@
 #include "options.h"
 
+#include <addp/types.h>
 #include <iostream>
-#include <boost/lexical_cast.hpp>
 
 namespace addpc {
 
@@ -50,7 +50,7 @@ void options::parse(int argc, char* argv[])
     else
     {
         // must have a specific device address for further actions
-        if(boost::lexical_cast<addp::mac_address>(mac()) == addp::MAC_ADDR_BROADCAST)
+        if( addp::parse_mac_str(mac()) == addp::MAC_ADDR_BROADCAST)
         {
             std::cerr << "Please select a device's mac address" << std::endl << std::endl;
             usage();

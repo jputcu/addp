@@ -2,6 +2,7 @@
 #define ADDP_ACTION_ACTION_H
 
 #include <list>
+#include <array>
 #include <boost/asio/io_service.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <boost/asio/deadline_timer.hpp>
@@ -46,7 +47,7 @@ private:
     boost::asio::io_service _io_service;
     boost::asio::ip::udp::socket _socket;
     boost::asio::deadline_timer _deadline;
-    boost::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
+    std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
 
     packet _request;
     callback_t _callback;

@@ -6,7 +6,6 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include "options.h"
 #include "server.h"

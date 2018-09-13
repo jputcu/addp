@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <array>
 
 #include <boost/asio.hpp>
 
@@ -80,7 +81,7 @@ public:
 
     size_t size() const;
     const std::vector<uint8_t>& payload() const;
-    template<class T, std::size_t N> void add_raw(const boost::array<T, N>& data)
+    template<class T, std::size_t N> void add_raw(const std::array<T, N>& data)
     {
         copy(data.begin(), data.end(), back_inserter(_payload));
         _header.size = htons(_payload.size());
