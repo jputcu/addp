@@ -3,7 +3,6 @@
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
-#include <boost/asio/placeholders.hpp>
 
 connection::connection(boost::asio::ip::udp::socket& socket,
         const boost::asio::ip::udp::endpoint& endpoint,
@@ -40,10 +39,11 @@ void connection::handle_request(const addp::packet& request)
         return;
 
     _socket.async_send_to(
-        boost::asio::buffer(_data, _data_bytes), _endpoint,
-        boost::bind(&connection::handle_send_to, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        boost::asio::buffer(_data, _data_bytes),
+		_endpoint,
+		[this](boost::system::error_code ec, std::size_t bytes_sent) {
+			handle_send_to(ec, bytes_sent);
+		});
 }
 
 void connection::handle_send_to(const boost::system::error_code& error, size_t bytes_sent)

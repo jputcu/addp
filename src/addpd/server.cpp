@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <boost/asio/buffer.hpp>
-#include <boost/asio/placeholders.hpp>
 #include <boost/asio/ip/multicast.hpp>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
@@ -23,10 +22,11 @@ server::server(uint16_t port, const std::string& mcast_ip) :
         );
 
     _socket.async_receive_from(
-        boost::asio::buffer(_data), _sender_address,
-        boost::bind(&server::handle_receive_from, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        boost::asio::buffer(_data),
+		_sender_address,
+		[this](boost::system::error_code ec, std::size_t bytes_recvd) {
+			handle_receive_from(ec, bytes_recvd);
+		});
 }
 
 void server::run()
@@ -57,9 +57,10 @@ void server::handle_receive_from(const boost::system::error_code& error, size_t 
             << "bytes_recvd: " << bytes_recvd << std::endl;
 
     _socket.async_receive_from(
-        boost::asio::buffer(_data), _sender_address,
-        boost::bind(&server::handle_receive_from, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        boost::asio::buffer(_data),
+		_sender_address,
+		[this](boost::system::error_code ec, std::size_t bytes_recvd) {
+			handle_receive_from(ec, bytes_recvd);
+		});
 }
 

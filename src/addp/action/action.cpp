@@ -3,7 +3,6 @@
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/format.hpp>
-#include <boost/asio/placeholders.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <addp/packet/packet.h>
@@ -86,9 +85,9 @@ bool action::run()
     _socket.async_send_to(
         boost::asio::buffer(_request.raw()),
         _dest_address,
-        boost::bind(&action::handle_send_to, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        [this](boost::system::error_code ec, std::size_t bytes_sent) {
+			handle_send_to(ec, bytes_sent);
+		});
 
     // set timeout from now
     if(_timeout_ms)
@@ -137,10 +136,11 @@ void action::handle_send_to(const boost::system::error_code& error, size_t bytes
             << " sent: " << bytes_sent << std::endl;
 
     _socket.async_receive_from(
-        boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN), _sender_address,
-        boost::bind(&action::handle_receive_from, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN),
+		_sender_address,
+        [this](boost::system::error_code ec, std::size_t bytes_recvd) {
+			handle_receive_from(ec, bytes_recvd);
+		});
 }
 
 void action::handle_receive_from(const boost::system::error_code& error, size_t bytes_recvd)
@@ -180,10 +180,11 @@ void action::handle_receive_from(const boost::system::error_code& error, size_t 
 
     // continue receiving
     _socket.async_receive_from(
-        boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN), _sender_address,
-        boost::bind(&action::handle_receive_from, this,
-            boost::asio::placeholders::error,
-            boost::asio::placeholders::bytes_transferred));
+        boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN),
+		_sender_address,
+        [this](boost::system::error_code ec, std::size_t bytes_recvd) {
+			handle_receive_from(ec, bytes_recvd);
+		});
 }
 
 void action::print_brief(const boost::asio::ip::udp::endpoint& sender, const packet& /*pckt*/) const
