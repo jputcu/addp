@@ -18,7 +18,7 @@ server::server(uint16_t port, const std::string& mcast_ip) :
 {
     _socket.set_option(
             boost::asio::ip::multicast::join_group(
-                boost::asio::ip::address::from_string(mcast_ip)
+                boost::asio::ip::make_address(mcast_ip)
             )
         );
 

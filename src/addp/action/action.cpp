@@ -14,7 +14,7 @@ namespace addp {
 
 action::action(const packet& request) :
     _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
-    _dest_address(boost::asio::ip::address::from_string(MCAST_IP_ADDRESS), UDP_PORT),
+    _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT),
     _sender_address(),
     _io_service(),
     _socket(_io_service),
@@ -34,13 +34,13 @@ action::action(const packet& request) :
 void action::set_listen_address(const std::string& listen_ip, uint16_t port)
 {
     _listen_address = boost::asio::ip::udp::endpoint(
-            boost::asio::ip::address::from_string(listen_ip), port);
+            boost::asio::ip::make_address(listen_ip), port);
 }
 
 void action::set_dest_address(const std::string& dest_ip, uint16_t port)
 {
     _dest_address = boost::asio::ip::udp::endpoint(
-            boost::asio::ip::address::from_string(dest_ip), port);
+            boost::asio::ip::make_address(dest_ip), port);
 }
 
 void action::set_request(const packet& request)
