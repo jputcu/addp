@@ -31,10 +31,7 @@ field::field(std::vector<uint8_t>::iterator& iter, const std::vector<uint8_t>::i
 
 bool field::check() const
 {
-    if(_payload.size() != _header.size)
-        return false;
-
-    return true;
+    return _payload.size() == _header.size;
 }
 
 field::field_type field::type() const

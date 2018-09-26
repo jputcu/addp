@@ -34,10 +34,7 @@ packet::packet(const uint8_t* data, size_t len)
 
 bool packet::check() const
 {
-    if(_payload.size() != _header.size)
-        return false;
-
-    return true;
+    return _payload.size() == _header.size;
 }
 
 packet::packet_type packet::type() const
