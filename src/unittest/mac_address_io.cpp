@@ -1,13 +1,14 @@
 #include <sstream>
 #include <string>
 #include <limits>
-#define BOOST_TEST_MODULE type_io_tests
+
+#define BOOST_TEST_MODULE addp_tests
+
 #include <boost/test/included/unit_test.hpp>
 #include <boost/numeric/conversion/converter_policies.hpp>
+
 #include <addp/types.h>
 #include <addp/types_io.h>
-
-BOOST_AUTO_TEST_SUITE( mac_io_suite )
 
 BOOST_AUTO_TEST_CASE( mac_address_format )
 {
@@ -86,4 +87,3 @@ BOOST_AUTO_TEST_CASE( mac_address_parse_from_str )
 	BOOST_CHECK_EQUAL(mac[5], 0x55);
 }
 
-BOOST_AUTO_TEST_SUITE_END()

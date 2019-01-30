@@ -1,12 +1,13 @@
 #include <sstream>
 #include <string>
 #include <limits>
-#define BOOST_TEST_MODULE type_io_tests
+
+#define BOOST_TEST_MODULE addp_tests
+
 #include <boost/test/included/unit_test.hpp>
 #include <boost/numeric/conversion/converter_policies.hpp>
-#include <addp/types_io.h>
 
-BOOST_AUTO_TEST_SUITE( ip_address_io_suite )
+#include <addp/types_io.h>
 
 BOOST_AUTO_TEST_CASE( ip_address_format )
 {
@@ -72,4 +73,3 @@ BOOST_AUTO_TEST_CASE( ip_address_throw_on_value_underflow )
     BOOST_CHECK_THROW(is >> ip, boost::numeric::negative_overflow);
 }
 
-BOOST_AUTO_TEST_SUITE_END()

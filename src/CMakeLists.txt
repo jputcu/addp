@@ -1,7 +1,0 @@
-include_directories(.)
-add_subdirectory(addp)
-add_subdirectory(addpc)
-if( NOT WIN32 )
-  add_subdirectory(addpd)
-endif()
-add_subdirectory(unittest)

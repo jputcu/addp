@@ -6,6 +6,8 @@ find_package(Boost
   COMPONENTS system program_options filesystem thread)
 
 add_library(${LIB} ${SRC})
+target_include_directories(${LIB}
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 target_link_libraries(${LIB}
   Boost::system
   Boost::program_options
