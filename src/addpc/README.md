@@ -1,3 +1,7 @@
+Client application
+==================
+
+~~~~
 $ addpc -h
 Usage: addpc [options...] <action> [args...]
 
@@ -59,3 +63,4 @@ Operation Successful
 
 $ addpc dhcp 01:02:03:04:05:07 off
 Operation Successful
+~~~~
