@@ -5,8 +5,15 @@ project(addp CXX)
 enable_testing()
 
 add_subdirectory(src/addp)
-add_subdirectory(src/addpc)
+
+option(ADDP_CLIENT_APP "Build client application" ON)
+if( ADDP_CLIENT_APP )
+  add_subdirectory(src/addpc)
+endif()
+
 if( NOT WIN32 )
+  option(ADDP_SERVER "Build server" ON)
   add_subdirectory(src/addpd)
 endif()
+
 add_subdirectory(src/unittest)
