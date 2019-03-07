@@ -51,7 +51,7 @@ public:
     template<class T, std::size_t N> void add(const std::array<T, N>& data)
     {
         copy(data.begin(), data.end(), back_inserter(_payload));
-        _header.size = htons(_payload.size());
+        _header.size = htons(static_cast<u_short>(_payload.size()));
     }
     const std::vector<uint8_t>& payload() const;
     std::vector<uint8_t> raw() const;
