@@ -73,14 +73,29 @@ public:
     field(field_type t);
     field(std::vector<uint8_t>::iterator& iter, const std::vector<uint8_t>::iterator& end);
 
-    bool check() const;
-    field_type type() const;
-    std::string type_str() const;
+    bool check() const {
+        return _payload.size() == _header.size;
+    }
+
+    field_type type() const {
+        return static_cast<field::field_type>(_header.type);
+    }
+
+    std::string type_str() const {
+        return field_type2str(type());
+    }
+
     template<typename T> T value() const;
     std::string value_str() const;
 
-    size_t size() const;
-    const std::vector<uint8_t>& payload() const;
+    size_t size() const {
+        return _payload.size();
+    }
+
+    const std::vector<uint8_t>& payload() const {
+        return _payload;
+    }
+
     template<class T, std::size_t N> void add_raw(const std::array<T, N>& data)
     {
         copy(data.begin(), data.end(), back_inserter(_payload));

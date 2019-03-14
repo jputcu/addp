@@ -29,20 +29,6 @@ field::field(std::vector<uint8_t>::iterator& iter, const std::vector<uint8_t>::i
     }
 }
 
-bool field::check() const
-{
-    return _payload.size() == _header.size;
-}
-
-field::field_type field::type() const
-{
-    return static_cast<field::field_type>(_header.type);
-}
-
-std::string field::type_str() const
-{
-    return field_type2str(type());
-}
 
 template<>
 bool field::value() const
@@ -173,15 +159,6 @@ std::string field::value_str() const
     return os.str();
 }
 
-size_t field::size() const
-{
-    return _payload.size();
-}
-
-const std::vector<uint8_t>& field::payload() const
-{
-    return _payload;
-}
 
 std::vector<uint8_t> field::raw() const
 {
@@ -192,6 +169,7 @@ std::vector<uint8_t> field::raw() const
 
     return buffer;
 }
+
 
 std::string field::field_type2str(field_type type)
 {

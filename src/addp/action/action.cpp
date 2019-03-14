@@ -42,22 +42,7 @@ void action::set_dest_address(const std::string& dest_ip, uint16_t port)
             boost::asio::ip::make_address(dest_ip), port);
 }
 
-void action::set_request(const packet& request)
-{
-    _request = request;
-}
-
-void action::set_timeout(size_t timeout_ms)
-{
-    _timeout_ms = timeout_ms;
-}
-
-void action::set_max_count(size_t max_count)
-{
-    _max_count = max_count;
-}
-
-void action::set_verbose(size_t verbose)
+void action::set_verbose(const size_t verbose)
 {
     _verbose = verbose;
 
@@ -67,10 +52,6 @@ void action::set_verbose(size_t verbose)
         set_callback(boost::bind(&action::print_brief, this, _1, _2));
 }
 
-void action::set_callback(callback_t callback)
-{
-    _callback = callback;
-}
 
 bool action::run()
 {
@@ -86,8 +67,8 @@ bool action::run()
         boost::asio::buffer(_request.raw()),
         _dest_address,
         [this](boost::system::error_code ec, std::size_t bytes_sent) {
-			handle_send_to(ec, bytes_sent);
-		});
+            handle_send_to(ec, bytes_sent);
+        });
 
     // set timeout from now
     if(_timeout_ms)
@@ -137,10 +118,10 @@ void action::handle_send_to(const boost::system::error_code& error, size_t bytes
 
     _socket.async_receive_from(
         boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN),
-		_sender_address,
+        _sender_address,
         [this](boost::system::error_code ec, std::size_t bytes_recvd) {
-			handle_receive_from(ec, bytes_recvd);
-		});
+            handle_receive_from(ec, bytes_recvd);
+        });
 }
 
 void action::handle_receive_from(const boost::system::error_code& error, size_t bytes_recvd)
@@ -181,10 +162,10 @@ void action::handle_receive_from(const boost::system::error_code& error, size_t 
     // continue receiving
     _socket.async_receive_from(
         boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN),
-		_sender_address,
+        _sender_address,
         [this](boost::system::error_code ec, std::size_t bytes_recvd) {
-			handle_receive_from(ec, bytes_recvd);
-		});
+            handle_receive_from(ec, bytes_recvd);
+        });
 }
 
 void action::print_brief(const boost::asio::ip::udp::endpoint& sender, const packet& /*pckt*/) const

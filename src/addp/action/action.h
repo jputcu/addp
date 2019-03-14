@@ -23,11 +23,24 @@ public:
 
     void set_listen_address(const std::string& listen_ip, uint16_t port = UDP_PORT);
     void set_dest_address(const std::string& dest_ip, uint16_t port = UDP_PORT);
-    void set_request(const packet& request);
-    void set_timeout(size_t timeout_ms);
-    void set_max_count(size_t max_count);
-    void set_verbose(size_t verbose);
-    void set_callback(callback_t callback);
+
+    void set_request(const packet& request) {
+        _request = request;
+    }
+
+    void set_timeout(const size_t timeout_ms) {
+        _timeout_ms = timeout_ms;
+    }
+
+    void set_max_count(const size_t max_count) {
+        _max_count = max_count;
+    }
+
+    void set_verbose(const size_t verbose);
+
+    void set_callback(callback_t callback) {
+        _callback = callback;
+    }
 
     bool run();
     void stop();
