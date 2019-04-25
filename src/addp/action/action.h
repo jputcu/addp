@@ -3,7 +3,7 @@
 
 #include <list>
 #include <array>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/function.hpp>
@@ -57,7 +57,7 @@ private:
     boost::asio::ip::udp::endpoint _listen_address;
     boost::asio::ip::udp::endpoint _dest_address;
     boost::asio::ip::udp::endpoint _sender_address;
-    boost::asio::io_service _io_service;
+    boost::asio::io_context _io_context;
     boost::asio::ip::udp::socket _socket;
     boost::asio::deadline_timer _deadline;
     std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;

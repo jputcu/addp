@@ -15,9 +15,9 @@ action::action(const packet& request) :
     _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
     _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT),
     _sender_address(),
-    _io_service(),
-    _socket(_io_service),
-    _deadline(_socket.get_executor()),
+    _io_context(),
+    _socket(_io_context),
+    _deadline(_io_context),
     _request(request),
     _callback(boost::bind(&action::print_brief, this, _1, _2)),
     _count(0),
@@ -76,7 +76,7 @@ bool action::run()
 
     try
     {
-        _io_service.run();
+        _io_context.run();
     }
     catch (const boost::system::system_error& error)
     {
@@ -94,7 +94,7 @@ bool action::run()
 void action::stop()
 {
     _socket.cancel();
-    _io_service.stop();
+    _io_context.stop();
 }
 
 void action::check_timeout()

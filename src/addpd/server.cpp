@@ -10,9 +10,9 @@
 #include "connection.h"
 
 server::server(uint16_t port, const std::string& mcast_ip) :
-    _io_service(),
+    _io_context(),
     _listen_address(boost::asio::ip::udp::v4(), port),
-    _socket(_io_service, _listen_address),
+    _socket(_io_context, _listen_address),
     _thread_count(4)
 {
     _socket.set_option(
@@ -35,7 +35,7 @@ void server::run()
     for(size_t i=0; i < _thread_count; ++i)
     {
         boost::shared_ptr<boost::thread> thread(
-                new boost::thread(boost::bind(&boost::asio::io_service::run, &_io_service)));
+                new boost::thread(boost::bind(&boost::asio::io_context::run, &_io_context)));
         threads.push_back(thread);
     }
 
@@ -45,7 +45,7 @@ void server::run()
 
 void server::stop()
 {
-    _io_service.stop();
+    _io_context.stop();
 }
 
 void server::handle_receive_from(const boost::system::error_code& error, size_t bytes_recvd)

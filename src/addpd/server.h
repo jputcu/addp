@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <array>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/udp.hpp>
 #include <boost/system/system_error.hpp>
 #include <addp/addp.h>
@@ -21,7 +21,7 @@ public:
 private:
     void handle_receive_from(const boost::system::error_code& error, size_t bytes_recvd);
 
-    boost::asio::io_service _io_service;
+    boost::asio::io_context _io_context;
     boost::asio::ip::udp::endpoint _listen_address;
     boost::asio::ip::udp::socket _socket;
     size_t _thread_count;
