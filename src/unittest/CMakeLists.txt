@@ -1,4 +1,4 @@
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost REQUIRED COMPONENTS unit_test_framework)
 
 set(ADDP_TEST_IP_BIN addp_ip_tests)
 add_executable(${ADDP_TEST_IP_BIN}
