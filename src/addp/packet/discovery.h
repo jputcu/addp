@@ -6,17 +6,22 @@
 
 namespace addp {
 
-class discovery_request : public packet
-{
-public:
-    discovery_request(const mac_address mac = MAC_ADDR_BROADCAST);
-};
+    class discovery_request : public packet {
+    public:
+        discovery_request(const mac_address mac = MAC_ADDR_BROADCAST)
+                : packet(packet::PT_DISCOVERY_REQUEST)
+        {
+            add(mac);
+        }
+    };
 
-class discovery_response : public packet
-{
-public:
-    discovery_response();
-};
+    class discovery_response : public packet {
+    public:
+        discovery_response()
+                : packet(packet::PT_DISCOVERY_RESPONSE)
+        {
+        }
+    };
 
 } // namespace addp
 
