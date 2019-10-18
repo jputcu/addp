@@ -16,6 +16,10 @@ endif()
 
 if( NOT WIN32 )
   option(ADDP_SERVER "Build server" ON)
+elseif()
+  option(ADDP_SERVER "Build server" OFF)
+endif()
+if( ADDP_SERVER )
   add_subdirectory(src/addpd)
 endif()
 
