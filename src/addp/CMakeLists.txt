@@ -1,21 +1,13 @@
 set(LIB addp)
 file(GLOB_RECURSE SRC *.cpp)
 
-find_package(Boost
-  REQUIRED
-  COMPONENTS system program_options filesystem thread)
-
 add_library(${LIB} ${SRC})
 target_include_directories(${LIB}
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/.. )
-target_link_libraries(${LIB}
-  Boost::system
-  Boost::program_options
-  Boost::filesystem
-  Boost::thread)
+target_link_libraries(${LIB} CONAN_PKG::boost)
 
 if( WIN32 )
-  target_link_libraries(${LIB} Ws2_32)
+  target_link_libraries(${LIB} ws2_32)
 endif()
 
 set_target_properties(${LIB} PROPERTIES
