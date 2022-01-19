@@ -14,7 +14,7 @@ class AddpConan(ConanFile):
     default_options = {"shared": False}
     generators = "cmake"
     exports_sources = "CMakeLists.txt", "src/addp/*", "src/unittest/*"
-    requires = "boost/1.71.0@conan/stable"
+    requires = "boost/1.73.0"
 
     def build(self):
         cmake = CMake(self)
