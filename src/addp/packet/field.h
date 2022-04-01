@@ -69,7 +69,7 @@ public:
     BF_TRUE = 0x01,
   };
 
-  field(field_type t);
+  explicit field(field_type t);
   field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end);
 
   bool check() const { return _payload.size() == _header.size; }

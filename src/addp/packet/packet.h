@@ -37,7 +37,7 @@ public:
     DHCP_NET_CONFIG_RESPONSE,
   };
 
-  packet(Type t);
+  explicit packet(Type t);
   packet(const uint8_t *data, size_t len);
 
   bool check() const;

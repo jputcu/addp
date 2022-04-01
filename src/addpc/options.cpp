@@ -11,10 +11,10 @@ options::options(int argc, char *argv[]) {
            "  config <device> <ip> <netmask> <gateway> [passwd]\n" +
            "  dhcp <device> <on|off> [passwd]\n";
 
-  parse(argc, argv);
+  opt_parse(argc, argv);
 }
 
-void options::parse(int argc, char *argv[]) {
+void options::opt_parse(int argc, char *argv[]) {
   addp::options::parse(argc, argv);
 
   if (_vm.count("action") == 0) {

@@ -8,7 +8,7 @@ namespace addp {
 
 class discovery_request : public packet {
 public:
-  discovery_request(const mac_address mac = MAC_ADDR_BROADCAST)
+  explicit discovery_request(const mac_address mac = MAC_ADDR_BROADCAST)
       : packet(packet::Type::DISCOVERY_REQUEST) {
     add(mac);
   }

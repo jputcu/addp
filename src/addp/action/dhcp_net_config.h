@@ -17,7 +17,7 @@ public:
   void set_password(const std::string &password);
 
 protected:
-  void print_brief(const boost::asio::ip::udp::endpoint &sender, const packet &response) const;
+  void print_brief(const boost::asio::ip::udp::endpoint &sender, const packet &response) const override;
 
 private:
   mac_address _mac_address;

@@ -1,14 +1,11 @@
 #ifndef ADDPC_CLIENT_H
 #define ADDPC_CLIENT_H
 
-#include <boost/asio/io_context.hpp>
-#include <boost/asio/ip/udp.hpp>
-
 #include <addp/action/action.h>
 
-#include "options.h"
-
 namespace addpc {
+
+class options;
 
 class client {
 public:
@@ -24,9 +21,6 @@ public:
   bool dhcp_net_config();
 
 private:
-  void handle_send_to(const boost::system::error_code &error, size_t bytes_sent);
-  void handle_receive_from(const boost::system::error_code &error, size_t bytes_recvd);
-
   const options &_options;
 };
 

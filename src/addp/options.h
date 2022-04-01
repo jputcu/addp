@@ -18,7 +18,7 @@ public:
   uint16_t port() const;
 
 protected:
-  virtual boost::program_options::options_description all_options() const;
+  boost::program_options::options_description all_options() const override;
 };
 
 } // namespace addp

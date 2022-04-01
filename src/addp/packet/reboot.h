@@ -8,7 +8,7 @@ namespace addp {
 
 class reboot_request : public packet {
 public:
-  reboot_request(const mac_address &mac = MAC_ADDR_BROADCAST,
+  explicit reboot_request(const mac_address &mac = MAC_ADDR_BROADCAST,
                  const std::string &auth = DEFAULT_PASSWORD)
       : packet(packet::Type::REBOOT_REQUEST) {
     add(mac);

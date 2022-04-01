@@ -7,18 +7,6 @@
 namespace addp {
 
 std::ostream &operator<<(std::ostream &os, const packet &packet) {
-#ifdef ADDP_PACKET_DEBUG
-  os << std::endl;
-  os << "packet raw():" << std::endl;
-  for (uint8_t b : packet.raw())
-    os << " " << std::hex << std::setfill('0') << std::setw(2) << int(b);
-  os << std::endl << std::endl;
-  os << "packet payload():";
-  for (uint8_t b : packet.payload())
-    os << " " << std::hex << std::setfill('0') << std::setw(2) << int(b);
-  os << std::endl;
-#endif // ADDP_PACKET_DEBUG
-
   os << packet.type_str() << std::endl;
 
   for (const field &f : packet.fields())
