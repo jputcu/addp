@@ -1,6 +1,5 @@
 #include "field.h"
 
-#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <cstring>
 #include <iomanip>
@@ -120,7 +119,7 @@ std::string field::value_str() const {
     break;
 
   default: {
-    BOOST_FOREACH (uint8_t b, payload())
+    for (uint8_t b : payload())
       os << " " << std::hex << std::setfill('0') << std::setw(2) << int(b);
     break;
   }

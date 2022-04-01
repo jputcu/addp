@@ -1,6 +1,5 @@
 #include "packet_io.h"
 
-#include <boost/foreach.hpp>
 #include <iomanip>
 
 #include <addp/packet/field_io.h>
@@ -11,18 +10,18 @@ std::ostream &operator<<(std::ostream &os, const packet &packet) {
 #ifdef ADDP_PACKET_DEBUG
   os << std::endl;
   os << "packet raw():" << std::endl;
-  BOOST_FOREACH (uint8_t b, packet.raw())
+  for (uint8_t b : packet.raw())
     os << " " << std::hex << std::setfill('0') << std::setw(2) << int(b);
   os << std::endl << std::endl;
   os << "packet payload():";
-  BOOST_FOREACH (uint8_t b, packet.payload())
+  for (uint8_t b : packet.payload())
     os << " " << std::hex << std::setfill('0') << std::setw(2) << int(b);
   os << std::endl;
 #endif // ADDP_PACKET_DEBUG
 
   os << packet.type_str() << std::endl;
 
-  BOOST_FOREACH (const field &f, packet.fields())
+  for (const field &f : packet.fields())
     if (f.type() != field::FT_NONE)
       os << "  " << f;
 

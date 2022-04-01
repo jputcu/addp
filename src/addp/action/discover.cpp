@@ -1,6 +1,5 @@
 #include "discover.h"
 
-#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <iostream>
 
@@ -29,7 +28,7 @@ void discover::print_brief(const boost::asio::ip::udp::endpoint &sender,
   std::string device;
   std::string firmware;
 
-  BOOST_FOREACH (const field &f, response.fields()) {
+  for (const field &f : response.fields()) {
     switch (f.type()) {
     case field::FT_MAC_ADDR:
       mac_addr = f.value_str();

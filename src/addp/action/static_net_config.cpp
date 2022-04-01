@@ -1,6 +1,5 @@
 #include "static_net_config.h"
 
-#include <boost/foreach.hpp>
 #include <iostream>
 
 #include <addp/packet/packet_io.h>
@@ -45,7 +44,7 @@ void static_net_config::set_password(const std::string &password) {
 
 void static_net_config::print_brief(const boost::asio::ip::udp::endpoint & /*sender*/,
                                     const packet &response) const {
-  BOOST_FOREACH (const field &f, response.fields())
+  for (const field &f : response.fields())
     if (f.type() == field::FT_RESULT_MSG) {
       std::cout << f.value<std::string>() << std::endl;
       break;

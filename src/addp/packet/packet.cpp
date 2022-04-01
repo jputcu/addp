@@ -1,7 +1,6 @@
 #include "packet.h"
 
 #include <algorithm>
-#include <boost/foreach.hpp>
 #include <boost/format.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <cstring>
