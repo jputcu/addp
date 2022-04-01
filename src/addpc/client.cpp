@@ -1,84 +1,72 @@
 #include "client.h"
 
-#include <iostream>
 #include <addp/addp.h>
 #include <addp/types.h>
+#include <iostream>
 
 #include "options.h"
 
 namespace addpc {
 
-client::client(const options& options) :
-    _options(options)
-{
+client::client(const options &options) : _options(options) {}
+
+bool client::run() {
+  if (_options.version()) {
+    std::cout << addp::VERSION << std::endl;
+    return true;
+  }
+
+  if (_options.action() == "discover")
+    return discover();
+  if (_options.action() == "config")
+    return static_net_config();
+  if (_options.action() == "dhcp")
+    return dhcp_net_config();
+  if (_options.action() == "reboot")
+    return reboot();
+
+  // not reached
+  return false;
 }
 
-bool client::run()
-{
-    if(_options.version())
-    {
-        std::cout << addp::VERSION << std::endl;
-        return true;
-    }
+bool client::run_action(addp::action &action) {
+  action.set_verbose(_options.verbose());
+  action.set_dest_address(_options.multicast(), _options.port());
+  action.set_timeout(_options.timeout());
 
-    if(_options.action() == "discover")
-        return discover();
-    if(_options.action() == "config")
-        return static_net_config();
-    if(_options.action() == "dhcp")
-        return dhcp_net_config();
-    if(_options.action() == "reboot")
-        return reboot();
-
-    // not reached
-    return false;
+  return action.run();
 }
 
-bool client::run_action(addp::action& action)
-{
-    action.set_verbose(_options.verbose());
-    action.set_dest_address(_options.multicast(), _options.port());
-    action.set_timeout(_options.timeout());
+bool client::discover() {
+  addp::discover action;
+  action.set_listen_address(_options.listen(), _options.port());
+  action.set_max_count(_options.max_count());
+  action.set_mac_address(_options.mac());
 
-    return action.run();
+  return run_action(action);
 }
 
-bool client::discover()
-{
-    addp::discover action;
-    action.set_listen_address(_options.listen(), _options.port());
-    action.set_max_count(_options.max_count());
-    action.set_mac_address(_options.mac());
+bool client::static_net_config() {
+  addp::static_net_config action(
+      addp::parse_mac_str(_options.mac()), addp::parse_ip_str(_options.ip()),
+      addp::parse_ip_str(_options.subnet()), addp::parse_ip_str(_options.gateway()));
+  action.set_password(_options.password());
 
-    return run_action(action);
+  return run_action(action);
 }
 
-bool client::static_net_config()
-{
-    addp::static_net_config action(
-								   addp::parse_mac_str(_options.mac()),
-								   addp::parse_ip_str(_options.ip()),
-								   addp::parse_ip_str(_options.subnet()),
-								   addp::parse_ip_str(_options.gateway()));
-    action.set_password(_options.password());
+bool client::dhcp_net_config() {
+  addp::dhcp_net_config action(addp::parse_mac_str(_options.mac()), _options.dhcp());
+  action.set_password(_options.password());
 
-    return run_action(action);
+  return run_action(action);
 }
 
-bool client::dhcp_net_config()
-{
-    addp::dhcp_net_config action(addp::parse_mac_str(_options.mac()), _options.dhcp());
-    action.set_password(_options.password());
+bool client::reboot() {
+  addp::reboot action(addp::parse_mac_str(_options.mac()));
+  action.set_password(_options.password());
 
-    return run_action(action);
-}
-
-bool client::reboot()
-{
-    addp::reboot action(addp::parse_mac_str(_options.mac()));
-    action.set_password(_options.password());
-
-    return run_action(action);
+  return run_action(action);
 }
 
 } // namespace addpc

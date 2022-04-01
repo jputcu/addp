@@ -1,25 +1,24 @@
 #ifndef ADDP_OPTIONS_H
 #define ADDP_OPTIONS_H
 
+#include <boost/program_options.hpp>
 #include <cstdint>
 #include <string>
-#include <boost/program_options.hpp>
 
 #include "generic_options.h"
 
 namespace addp {
 
-class options : public generic_options
-{
+class options : public generic_options {
 public:
-    options(){}
-    options(int argc, char* argv[]);
+  options() {}
+  options(int argc, char *argv[]);
 
-    std::string multicast() const;
-    uint16_t port() const;
+  std::string multicast() const;
+  uint16_t port() const;
 
 protected:
-    virtual boost::program_options::options_description all_options() const;
+  virtual boost::program_options::options_description all_options() const;
 };
 
 } // namespace addp

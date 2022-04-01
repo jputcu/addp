@@ -10,25 +10,24 @@
 
 namespace addpc {
 
-class client
-{
+class client {
 public:
-    client(const options& options);
+  client(const options &options);
 
-    bool run();
-    bool run_action(addp::action& action);
+  bool run();
+  bool run_action(addp::action &action);
 
-    // actions
-    bool discover();
-    bool static_net_config();
-    bool reboot();
-    bool dhcp_net_config();
+  // actions
+  bool discover();
+  bool static_net_config();
+  bool reboot();
+  bool dhcp_net_config();
 
 private:
-    void handle_send_to(const boost::system::error_code& error, size_t bytes_sent);
-    void handle_receive_from(const boost::system::error_code& error, size_t bytes_recvd);
+  void handle_send_to(const boost::system::error_code &error, size_t bytes_sent);
+  void handle_receive_from(const boost::system::error_code &error, size_t bytes_recvd);
 
-    const options& _options;
+  const options &_options;
 };
 
 } // namespace addpc

@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class AddpConan(ConanFile):
     name = "addp"
-    version = "1.0.0"
+    version = "1.0.1"
     license = "<Put the package license here>"
     author = "<Put your name here> <And your email here>"
     url = "<Package recipe repository url here, for issues about the package>"
@@ -37,5 +37,5 @@ class AddpConan(ConanFile):
         self.cpp_info.libs = ["addp"]
         if self.settings.os == "Windows":
             if not self.options.shared:
-                self.cpp_info.libs.append("ws2_32")
+                self.cpp_info.system_libs.append("ws2_32")
 

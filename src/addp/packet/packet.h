@@ -1,70 +1,68 @@
 #ifndef ADDP_PACKET_PACKET_H
 #define ADDP_PACKET_PACKET_H
 
+#include <algorithm>
+#include <array>
 #include <cstdint>
 #include <cstring>
 #include <vector>
-#include <algorithm>
-#include <array>
 
-#include <boost/asio.hpp>
 #include <boost/array.hpp>
+#include <boost/asio.hpp>
 
 #include <addp/packet/field.h>
 
 namespace addp {
 
-class packet
-{
+class packet {
 public:
-    static const char* MAGIC;
+  static const char *MAGIC;
 
-    struct packet_header {
-        char magic[4];
-        uint16_t type;
-        uint16_t size;
-        packet_header() { strncpy(magic, MAGIC, 4); }
-    };
+  struct packet_header {
+    char magic[4];
+    uint16_t type;
+    uint16_t size;
+    packet_header() { strncpy(magic, MAGIC, 4); }
+  };
 
-    enum packet_type {
-        PT_NONE = 0x00,
-        PT_DISCOVERY_REQUEST,
-        PT_DISCOVERY_RESPONSE,
-        PT_STATIC_NET_CONFIG_REQUEST,
-        PT_STATIC_NET_CONFIG_RESPONSE,
-        PT_REBOOT_REQUEST,
-        PT_REBOOT_RESPONSE,
-        PT_DHCP_NET_CONFIG_REQUEST,
-        PT_DHCP_NET_CONFIG_RESPONSE,
-    };
+  enum packet_type {
+    PT_NONE = 0x00,
+    PT_DISCOVERY_REQUEST,
+    PT_DISCOVERY_RESPONSE,
+    PT_STATIC_NET_CONFIG_REQUEST,
+    PT_STATIC_NET_CONFIG_RESPONSE,
+    PT_REBOOT_REQUEST,
+    PT_REBOOT_RESPONSE,
+    PT_DHCP_NET_CONFIG_REQUEST,
+    PT_DHCP_NET_CONFIG_RESPONSE,
+  };
 
-    packet(packet_type t);
-    packet(const uint8_t* data, size_t len);
+  packet(packet_type t);
+  packet(const uint8_t *data, size_t len);
 
-    bool check() const;
+  bool check() const;
 
-    packet_type type() const;
-    std::string type_str() const;
+  packet_type type() const;
+  std::string type_str() const;
 
-    uint16_t size() const;
-    template<class T> void add(const T& data);
-    template<class T, std::size_t N> void add(const std::array<T, N>& data)
-    {
-        copy(data.begin(), data.end(), back_inserter(_payload));
-        _header.size = htons(static_cast<u_short>(_payload.size()));
-    }
-    const std::vector<uint8_t>& payload() const;
-    std::vector<uint8_t> raw() const;
+  uint16_t size() const;
+  template <class T> void add(const T &data);
+  template <class T, std::size_t N> void add(const std::array<T, N> &data) {
+    copy(data.begin(), data.end(), back_inserter(_payload));
+    _header.size = htons(static_cast<u_short>(_payload.size()));
+  }
+  const std::vector<uint8_t> &payload() const;
+  std::vector<uint8_t> raw() const;
 
-    bool parse_fields();
-    const std::vector<field>& fields() const;
+  bool parse_fields();
+  const std::vector<field> &fields() const;
 
 private:
-    static std::string packet_type2str(packet_type type);
+  static std::string packet_type2str(packet_type type);
 
-    packet_header _header;
-    std::vector<uint8_t> _payload;
-    std::vector<field> _fields;
+  packet_header _header;
+  std::vector<uint8_t> _payload;
+  std::vector<field> _fields;
 };
 
 } // namespace addp

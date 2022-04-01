@@ -1,21 +1,20 @@
 #ifndef ADDP_ACTION_DISCOVER_H
 #define ADDP_ACTION_DISCOVER_H
 
+#include <addp/action/action.h>
 #include <addp/constants.h>
 #include <addp/types.h>
-#include <addp/action/action.h>
 
 namespace addp {
 
-class discover : public action
-{
+class discover : public action {
 public:
-    discover(const mac_address& mac_address = MAC_ADDR_BROADCAST);
+  discover(const mac_address &mac_address = MAC_ADDR_BROADCAST);
 
-    void set_mac_address(const std::string& mac);
+  void set_mac_address(const std::string &mac);
 
 protected:
-    virtual void print_brief(const boost::asio::ip::udp::endpoint& sender, const packet&) const;
+  virtual void print_brief(const boost::asio::ip::udp::endpoint &sender, const packet &) const;
 };
 
 } // namespace addp

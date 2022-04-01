@@ -3,3 +3,4 @@ tags
 cscope.out
 # conventional build directory for CMake
 build
+cmake-*

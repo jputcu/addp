@@ -1,35 +1,34 @@
 #ifndef ADDP_GENERIC_OPTIONS_H
 #define ADDP_GENERIC_OPTIONS_H
 
-#include <string>
 #include <boost/program_options.hpp>
+#include <string>
 
 namespace addp {
 
-class generic_options
-{
+class generic_options {
 public:
-    generic_options();
-    generic_options(int argc, char* argv[]);
+  generic_options();
+  generic_options(int argc, char *argv[]);
 
-    void usage() const;
+  void usage() const;
 
-    bool version() const;
-    size_t verbose() const;
-    std::string logfile() const;
+  bool version() const;
+  size_t verbose() const;
+  std::string logfile() const;
 
 protected:
-    void parse(int argc, char* argv[]);
+  void parse(int argc, char *argv[]);
 
-    virtual boost::program_options::options_description all_options() const;
-    virtual boost::program_options::positional_options_description positional_options() const;
-    virtual boost::program_options::options_description visible_options() const;
+  virtual boost::program_options::options_description all_options() const;
+  virtual boost::program_options::positional_options_description positional_options() const;
+  virtual boost::program_options::options_description visible_options() const;
 
-    boost::program_options::variables_map _vm;
-    std::string _usage;
+  boost::program_options::variables_map _vm;
+  std::string _usage;
 
 private:
-    std::string _progname;
+  std::string _progname;
 };
 
 } // namespace addp

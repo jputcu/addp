@@ -1,26 +1,25 @@
 #ifndef ADDP_ACTION_REBOOT_H
 #define ADDP_ACTION_REBOOT_H
 
+#include <addp/action/action.h>
 #include <addp/constants.h>
 #include <addp/types.h>
-#include <addp/action/action.h>
 
 namespace addp {
 
-class reboot : public action
-{
+class reboot : public action {
 public:
-    reboot(const mac_address& mac_address, const std::string& password = DEFAULT_PASSWORD);
+  reboot(const mac_address &mac_address, const std::string &password = DEFAULT_PASSWORD);
 
-    void set_mac_address(const std::string& mac);
-    void set_password(const std::string& password);
+  void set_mac_address(const std::string &mac);
+  void set_password(const std::string &password);
 
 protected:
-    void print_brief(const boost::asio::ip::udp::endpoint& sender, const packet& response) const;
+  void print_brief(const boost::asio::ip::udp::endpoint &sender, const packet &response) const;
 
 private:
-    mac_address _mac_address;
-    std::string _password;
+  mac_address _mac_address;
+  std::string _password;
 };
 
 } // namespace addp
