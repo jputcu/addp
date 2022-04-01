@@ -19,7 +19,6 @@ class AddpConan(ConanFile):
     def build(self):
         cmake = CMake(self)
         cmake.definitions["ADDP_CLIENT_APP"] = "OFF"
-        cmake.definitions["ADDP_SERVER"] = "OFF"
         cmake.configure(source_folder=".")
         cmake.build()
         if not tools.cross_building(self.settings):
