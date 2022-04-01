@@ -1,6 +1,5 @@
 #include "action.h"
 
-#include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/format.hpp>
 #include <iostream>
@@ -15,8 +14,10 @@ action::action(const packet &request)
     : _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
       _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT), _sender_address(),
       _io_context(), _socket(_io_context), _deadline(_io_context), _request(request),
-      _callback(boost::bind(&action::print_brief, this, _1, _2)), _count(0),
-      _max_count(DEFAULT_MAX_COUNT), _timeout_ms(DEFAULT_TIMEOUT), _verbose(0) {
+      _callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
+        print_brief(sender, pckt);
+      }),
+      _count(0), _max_count(DEFAULT_MAX_COUNT), _timeout_ms(DEFAULT_TIMEOUT), _verbose(0) {
   // disable timer by setting expiry time to infinity
   _deadline.expires_at(boost::posix_time::pos_infin);
   check_timeout();
@@ -34,9 +35,11 @@ void action::set_verbose(const size_t verbose) {
   _verbose = verbose;
 
   if (verbose)
-    set_callback(boost::bind(&action::print_verbose, this, _1, _2));
+    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt){
+      print_verbose(sender, pckt); });
   else
-    set_callback(boost::bind(&action::print_brief, this, _1, _2));
+    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt){
+      print_brief(sender, pckt); });
 }
 
 bool action::run() {
@@ -82,7 +85,7 @@ void action::check_timeout() {
     stop();
     _deadline.expires_at(boost::posix_time::pos_infin);
   }
-  _deadline.async_wait(boost::bind(&action::check_timeout, this));
+  _deadline.async_wait([&](const boost::system::error_code&){ check_timeout(); });
 }
 
 void action::handle_send_to(const boost::system::error_code &error, size_t bytes_sent) {
