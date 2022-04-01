@@ -9,14 +9,14 @@ namespace addp {
 class discovery_request : public packet {
 public:
   discovery_request(const mac_address mac = MAC_ADDR_BROADCAST)
-      : packet(packet::PT_DISCOVERY_REQUEST) {
+      : packet(packet::Type::DISCOVERY_REQUEST) {
     add(mac);
   }
 };
 
 class discovery_response : public packet {
 public:
-  discovery_response() : packet(packet::PT_DISCOVERY_RESPONSE) {}
+  discovery_response() : packet(packet::Type::DISCOVERY_RESPONSE) {}
 };
 
 } // namespace addp

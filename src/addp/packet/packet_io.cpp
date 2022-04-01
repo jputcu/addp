@@ -26,7 +26,7 @@ std::ostream &operator<<(std::ostream &os, const packet &packet) {
       os << "  " << f;
 
   switch (packet.type()) {
-  case packet::PT_DISCOVERY_REQUEST: {
+  case packet::Type::DISCOVERY_REQUEST: {
     os << std::hex << std::setfill('0');
 
     std::vector<uint8_t> payload = packet.payload();

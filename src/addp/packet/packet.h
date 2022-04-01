@@ -25,24 +25,24 @@ public:
     packet_header() { strncpy(magic, MAGIC, 4); }
   };
 
-  enum packet_type {
-    PT_NONE = 0x00,
-    PT_DISCOVERY_REQUEST,
-    PT_DISCOVERY_RESPONSE,
-    PT_STATIC_NET_CONFIG_REQUEST,
-    PT_STATIC_NET_CONFIG_RESPONSE,
-    PT_REBOOT_REQUEST,
-    PT_REBOOT_RESPONSE,
-    PT_DHCP_NET_CONFIG_REQUEST,
-    PT_DHCP_NET_CONFIG_RESPONSE,
+  enum class Type {
+    NONE,
+    DISCOVERY_REQUEST,
+    DISCOVERY_RESPONSE,
+    STATIC_NET_CONFIG_REQUEST,
+    STATIC_NET_CONFIG_RESPONSE,
+    REBOOT_REQUEST,
+    REBOOT_RESPONSE,
+    DHCP_NET_CONFIG_REQUEST,
+    DHCP_NET_CONFIG_RESPONSE,
   };
 
-  packet(packet_type t);
+  packet(Type t);
   packet(const uint8_t *data, size_t len);
 
   bool check() const;
 
-  packet_type type() const;
+  Type type() const;
   std::string type_str() const;
 
   uint16_t size() const;
@@ -58,7 +58,7 @@ public:
   const std::vector<field> &fields() const;
 
 private:
-  static std::string packet_type2str(packet_type type);
+  static std::string packet_type2str(Type type);
 
   packet_header _header;
   std::vector<uint8_t> _payload;
