@@ -3,7 +3,7 @@ from conans import ConanFile, CMake, tools
 
 class AddpConan(ConanFile):
     name = "addp"
-    version = "1.0.1"
+    version = "1.0.2"
     license = "<Put the package license here>"
     author = "<Put your name here> <And your email here>"
     url = "<Package recipe repository url here, for issues about the package>"
@@ -14,7 +14,7 @@ class AddpConan(ConanFile):
     default_options = {"shared": False}
     generators = "cmake"
     exports_sources = "CMakeLists.txt", "src/addp/*", "src/unittest/*"
-    requires = "boost/1.73.0"
+    requires = "boost/1.80.0"
 
     def build(self):
         cmake = CMake(self)
