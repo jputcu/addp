@@ -1,21 +1,20 @@
-set(LIB addp)
 file(GLOB_RECURSE SRC *.cpp)
 
-add_library(${LIB} ${SRC})
-target_include_directories(${LIB}
+add_library(addp_lib ${SRC})
+set_target_properties(addp_lib PROPERTIES OUTPUT_NAME addp)
+target_include_directories(addp_lib
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/.. )
-target_link_libraries(${LIB} CONAN_PKG::boost)
+
+find_package(Boost COMPONENTS system program_options)
+target_link_libraries(addp_lib PRIVATE Boost::system)
 
 if( WIN32 )
-  target_link_libraries(${LIB} ws2_32)
+  target_link_libraries(addp_lib PRIVATE ws2_32)
 endif()
 
-set_target_properties(${LIB} PROPERTIES
-    VERSION ${ADDP_VERSION}
-    SOVERSION ${ADDP_VERSION}
-    )
+add_library(addp::addp ALIAS addp_lib)
 
-install(TARGETS ${LIB}
+install(TARGETS addp_lib
     DESTINATION lib)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     DESTINATION include

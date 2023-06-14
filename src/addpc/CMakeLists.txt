@@ -1,5 +1,3 @@
-set(BIN addpc)
-file(GLOB_RECURSE SRC *.cpp)
-add_executable(${BIN} ${SRC})
-target_link_libraries(${BIN} addp)
-install(TARGETS ${BIN} DESTINATION bin)
+add_executable(addpc main.cpp client.cpp options.cpp)
+target_link_libraries(addpc PRIVATE addp::addp)
+install(TARGETS addpc DESTINATION bin)

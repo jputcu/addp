@@ -1,15 +1,10 @@
-set(ADDP_TEST_IP_BIN addp_ip_tests)
-add_executable(${ADDP_TEST_IP_BIN}
-    ip_address_io.cpp)
-target_link_libraries(${ADDP_TEST_IP_BIN}
-    addp
-    CONAN_PKG::boost)
-add_test(NAME ${ADDP_TEST_IP_BIN} COMMAND ${ADDP_TEST_IP_BIN})
+find_package(Boost COMPONENTS unit_test_framework)
 
-set(ADDP_TEST_MAC_BIN addp_mac_tests)
-add_executable(${ADDP_TEST_MAC_BIN}
-    mac_address_io.cpp)
-target_link_libraries(${ADDP_TEST_MAC_BIN}
-    addp
-    CONAN_PKG::boost)
-add_test(NAME ${ADDP_TEST_MAC_BIN} COMMAND ${ADDP_TEST_MAC_BIN})
+add_executable(addp_ip_tests ip_address_io.cpp)
+target_link_libraries(addp_ip_tests PRIVATE addp::addp Boost::unit_test_framework)
+add_test(NAME addp_ip_tests COMMAND addp_ip_tests)
+
+add_executable(addp_mac_tests mac_address_io.cpp)
+target_link_libraries(addp_mac_tests PRIVATE addp::addp Boost::unit_test_framework)
+add_test(NAME addp_mac_tests COMMAND addp_mac_tests)
+

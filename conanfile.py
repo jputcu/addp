@@ -1,40 +1,40 @@
-from conans import ConanFile, CMake, tools
+import os
+
+from conan import ConanFile
+from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
+from conan.tools.build import can_run
+from conan.tools.files import copy
 
 
 class AddpConan(ConanFile):
     name = "addp"
     version = "1.0.2"
-    license = "<Put the package license here>"
-    author = "<Put your name here> <And your email here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of Addp here>"
-    topics = ("<Put some tag here>", "<here>", "<and here>")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = {"shared": False}
-    generators = "cmake"
+    generators = "CMakeDeps"
     exports_sources = "CMakeLists.txt", "src/addp/*", "src/unittest/*"
     requires = "boost/1.80.0"
 
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.variables["ADDP_CLIENT_APP"] = False
+        tc.generate()
+
     def build(self):
         cmake = CMake(self)
-        cmake.definitions["ADDP_CLIENT_APP"] = "OFF"
-        cmake.configure(source_folder=".")
+        cmake.configure()
         cmake.build()
-        if not tools.cross_building(self.settings):
+        if can_run(self):
             cmake.test()
 
+    def layout(self):
+        cmake_layout(self)
+
     def package(self):
-        self.copy("*.h", dst="include/addp", src="src/addp")
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.dylib*", dst="lib", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False)
+        copy(self, "*.h", os.path.join(self.source_folder, "src", "addp"), os.path.join(self.package_folder, "include", "addp"))
+        copy(self, "*.a", self.build_folder, os.path.join(self.package_folder, "lib"), keep_path=False)
 
     def package_info(self):
         self.cpp_info.libs = ["addp"]
         if self.settings.os == "Windows":
-            if not self.options.shared:
-                self.cpp_info.system_libs.append("ws2_32")
+            self.cpp_info.system_libs.append("ws2_32")
 
