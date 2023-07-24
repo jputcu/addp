@@ -5,8 +5,8 @@ set_target_properties(addp_lib PROPERTIES OUTPUT_NAME addp)
 target_include_directories(addp_lib
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
-find_package(Boost COMPONENTS system program_options)
-target_link_libraries(addp_lib PRIVATE Boost::system)
+find_package(Boost COMPONENTS system program_options filesystem)
+target_link_libraries(addp_lib PUBLIC Boost::system Boost::program_options Boost::filesystem)
 
 if( WIN32 )
   target_link_libraries(addp_lib PRIVATE ws2_32)
