@@ -1,6 +1,5 @@
 #include "discover.h"
 
-#include <boost/format.hpp>
 #include <iostream>
 
 #include <addp/packet/discovery.h>
@@ -47,9 +46,7 @@ void discover::print_brief(const boost::asio::ip::udp::endpoint &sender,
     }
   }
 
-  std::cout << str(boost::format("%-15.15s  %-15.15s  %-17.17s  %-15.15s  %s") % sender.address() %
-                   name % mac_addr % device % firmware)
-            << std::endl;
+  std::cout << sender.address() << '\t' << name << '\t' << mac_addr << '\t' << device << '\t' << firmware << std::endl;
 }
 
 } // namespace addp
