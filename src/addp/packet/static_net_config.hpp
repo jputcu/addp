@@ -1,8 +1,8 @@
 #ifndef ADDP_PACKET_PACKETS_H
 #define ADDP_PACKET_PACKETS_H
 
-#include <addp/packet/packet.h>
-#include <addp/types.h>
+#include <addp/packet/packet.hpp>
+#include <addp/types.hpp>
 
 namespace addp {
 

@@ -1,9 +1,9 @@
 #ifndef ADDP_ACTION_STATIC_NET_CONFIG_H
 #define ADDP_ACTION_STATIC_NET_CONFIG_H
 
-#include <addp/action/action.h>
-#include <addp/constants.h>
-#include <addp/types.h>
+#include <addp/action/action.hpp>
+#include <addp/constants.hpp>
+#include <addp/types.hpp>
 
 namespace addp {
 

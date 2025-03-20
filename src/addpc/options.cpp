@@ -1,6 +1,6 @@
-#include "options.h"
+#include "options.hpp"
 
-#include <addp/types.h>
+#include <addp/types.hpp>
 #include <iostream>
 
 namespace addpc {

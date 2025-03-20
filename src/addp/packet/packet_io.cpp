@@ -1,8 +1,8 @@
-#include "packet_io.h"
+#include "packet_io.hpp"
 
 #include <iomanip>
 
-#include <addp/packet/field_io.h>
+#include <addp/packet/field_io.hpp>
 
 namespace addp {
 

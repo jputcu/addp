@@ -10,7 +10,7 @@
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
 
-#include <addp/packet/field.h>
+#include <addp/packet/field.hpp>
 
 namespace addp {
 

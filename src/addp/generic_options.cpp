@@ -1,4 +1,4 @@
-#include "generic_options.h"
+#include "generic_options.hpp"
 
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>

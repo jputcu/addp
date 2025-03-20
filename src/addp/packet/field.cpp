@@ -1,11 +1,11 @@
-#include "field.h"
+#include "field.hpp"
 
 #include <boost/format.hpp>
 #include <cstring>
 #include <iomanip>
 #include <sstream>
 
-#include <addp/types_io.h>
+#include <addp/types_io.hpp>
 
 namespace addp {
 

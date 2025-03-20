@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-#include <addp/types.h>
+#include <addp/types.hpp>
 
 namespace addp {
 

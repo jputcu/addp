@@ -3,7 +3,7 @@
 
 #include <ostream>
 
-#include <addp/packet/field.h>
+#include <addp/packet/field.hpp>
 
 namespace addp {
 

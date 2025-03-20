@@ -1,7 +1,7 @@
 #ifndef ADDPC_OPTIONS_H
 #define ADDPC_OPTIONS_H
 
-#include <addp/addp.h>
+#include <addp/addp.hpp>
 #include <boost/program_options.hpp>
 #include <string>
 #include <vector>

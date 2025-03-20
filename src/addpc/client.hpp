@@ -1,7 +1,7 @@
 #ifndef ADDPC_CLIENT_H
 #define ADDPC_CLIENT_H
 
-#include <addp/action/action.h>
+#include <addp/action/action.hpp>
 
 namespace addpc {
 

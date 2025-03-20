@@ -7,7 +7,7 @@
 #include <boost/numeric/conversion/converter_policies.hpp>
 #include <boost/test/included/unit_test.hpp>
 
-#include <addp/types_io.h>
+#include <addp/types_io.hpp>
 
 BOOST_AUTO_TEST_CASE(ip_address_format) {
   addp::ip_address ip = {{192, 168, 1, 1}};

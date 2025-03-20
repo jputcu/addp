@@ -1,9 +1,9 @@
-#include "discover.h"
+#include "discover.hpp"
 
 #include <iostream>
 
-#include <addp/packet/discovery.h>
-#include <addp/types_io.h>
+#include <addp/packet/discovery.hpp>
+#include <addp/types_io.hpp>
 
 namespace addp {
 

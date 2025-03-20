@@ -1,10 +1,10 @@
-#include "client.h"
+#include "client.hpp"
 
-#include <addp/addp.h>
-#include <addp/types.h>
+#include <addp/addp.hpp>
+#include <addp/types.hpp>
 #include <iostream>
 
-#include "options.h"
+#include "options.hpp"
 
 namespace addpc {
 

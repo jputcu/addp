@@ -1,11 +1,11 @@
-#include "reboot.h"
+#include "reboot.hpp"
 
 #include <iostream>
 
-#include <addp/packet/packet_io.h>
-#include <addp/packet/reboot.h>
-#include <addp/types.h>
-#include <addp/types_io.h>
+#include <addp/packet/packet_io.hpp>
+#include <addp/packet/reboot.hpp>
+#include <addp/types.hpp>
+#include <addp/types_io.hpp>
 
 namespace addp {
 

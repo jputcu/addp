@@ -1,11 +1,11 @@
-#include "static_net_config.h"
+#include "static_net_config.hpp"
 
 #include <iostream>
 
-#include <addp/packet/packet_io.h>
-#include <addp/packet/static_net_config.h>
-#include <addp/types.h>
-#include <addp/types_io.h>
+#include <addp/packet/packet_io.hpp>
+#include <addp/packet/static_net_config.hpp>
+#include <addp/types.hpp>
+#include <addp/types_io.hpp>
 
 namespace addp {
 

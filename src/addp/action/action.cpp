@@ -1,12 +1,12 @@
-#include "action.h"
+#include "action.hpp"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/format.hpp>
 #include <iostream>
 
-#include <addp/packet/packet.h>
-#include <addp/packet/packet_io.h>
-#include <addp/types_io.h>
+#include <addp/packet/packet.hpp>
+#include <addp/packet/packet_io.hpp>
+#include <addp/types_io.hpp>
 
 namespace addp {
 

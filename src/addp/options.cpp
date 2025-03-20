@@ -1,6 +1,6 @@
-#include "options.h"
+#include "options.hpp"
 
-#include "constants.h"
+#include "constants.hpp"
 
 namespace addp {
 

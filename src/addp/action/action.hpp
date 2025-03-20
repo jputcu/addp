@@ -8,9 +8,9 @@
 #include <boost/function.hpp>
 #include <list>
 
-#include <addp/constants.h>
-#include <addp/packet/packet.h>
-#include <addp/types.h>
+#include <addp/constants.hpp>
+#include <addp/packet/packet.hpp>
+#include <addp/types.hpp>
 
 namespace addp {
 

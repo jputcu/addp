@@ -7,8 +7,8 @@
 #include <boost/numeric/conversion/converter_policies.hpp>
 #include <boost/test/included/unit_test.hpp>
 
-#include <addp/types.h>
-#include <addp/types_io.h>
+#include <addp/types.hpp>
+#include <addp/types_io.hpp>
 
 BOOST_AUTO_TEST_CASE(mac_address_format) {
   addp::mac_address mac = {{0x01, 0x20, 0x03, 0x4d, 0xfe, 0xef}};

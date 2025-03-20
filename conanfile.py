@@ -8,7 +8,7 @@ from conan.tools.files import copy
 
 class AddpConan(ConanFile):
     name = "addp"
-    version = "1.0.3"
+    version = "1.1.0"
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps"
     exports_sources = "CMakeLists.txt", "src/addp/*", "src/unittest/*"
@@ -30,7 +30,7 @@ class AddpConan(ConanFile):
         cmake_layout(self)
 
     def package(self):
-        copy(self, "*.h", os.path.join(self.source_folder, "src", "addp"), os.path.join(self.package_folder, "include", "addp"))
+        copy(self, "*.hpp", os.path.join(self.source_folder, "src", "addp"), os.path.join(self.package_folder, "include", "addp"))
         copy(self, "*.a", self.build_folder, os.path.join(self.package_folder, "lib"), keep_path=False)
 
     def package_info(self):

@@ -7,7 +7,7 @@
 
 #include <boost/asio.hpp>
 
-#include <addp/constants.h>
+#include <addp/constants.hpp>
 
 namespace addp {
 

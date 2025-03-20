@@ -1,4 +1,4 @@
-#include "packet.h"
+#include "packet.hpp"
 
 #include <algorithm>
 #include <boost/format.hpp>

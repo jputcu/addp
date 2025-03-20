@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <string>
 
-#include "generic_options.h"
+#include "generic_options.hpp"
 
 namespace addp {
 
