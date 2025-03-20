@@ -1,6 +1,4 @@
 bin*
-tags
-cscope.out
-# conventional build directory for CMake
+.idea
 build
-cmake-*
+CMakeUserPresets.json
