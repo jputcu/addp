@@ -1,5 +1,5 @@
 #include <limits>
-#include <sstream>
+#include <iostream>
 #include <string>
 
 #define BOOST_TEST_MODULE addp_tests
@@ -7,7 +7,7 @@
 #include <boost/numeric/conversion/converter_policies.hpp>
 #include <boost/test/included/unit_test.hpp>
 
-#include <addp/types_io.hpp>
+#include <addp/types.hpp>
 
 BOOST_AUTO_TEST_CASE(ip_address_format) {
   addp::ip_address ip = {{192, 168, 1, 1}};

@@ -5,20 +5,18 @@
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/udp.hpp>
-#include <boost/function.hpp>
 #include <list>
 
-#include <addp/constants.hpp>
 #include <addp/packet/packet.hpp>
-#include <addp/types.hpp>
+#include <addp/constants.hpp>
 
 namespace addp {
 
 class action {
 public:
-  typedef boost::function<void(boost::asio::ip::udp::endpoint sender, packet)> callback_t;
+  using callback_t = std::function<void(boost::asio::ip::udp::endpoint sender, packet const &)>;
 
-  action(const packet &request);
+  explicit action(packet &&request);
 
   void set_listen_address(const std::string &listen_ip, uint16_t port = UDP_PORT);
   void set_dest_address(const std::string &dest_ip, uint16_t port = UDP_PORT);
@@ -29,7 +27,7 @@ public:
 
   void set_max_count(const size_t max_count) { _max_count = max_count; }
 
-  void set_verbose(const size_t verbose);
+  void set_verbose(size_t verbose);
 
   void set_callback(callback_t callback) { _callback = callback; }
 
@@ -56,10 +54,10 @@ private:
   packet _request;
   callback_t _callback;
 
-  size_t _count;
-  size_t _max_count;
-  size_t _timeout_ms;
-  size_t _verbose;
+  size_t _count {};
+  size_t _max_count {DEFAULT_MAX_COUNT};
+  size_t _timeout_ms {DEFAULT_TIMEOUT};
+  size_t _verbose {};
 };
 
 } // namespace addp

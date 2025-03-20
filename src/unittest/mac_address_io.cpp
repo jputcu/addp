@@ -1,5 +1,5 @@
 #include <limits>
-#include <sstream>
+#include <iostream>
 #include <string>
 
 #define BOOST_TEST_MODULE addp_tests
@@ -8,10 +8,9 @@
 #include <boost/test/included/unit_test.hpp>
 
 #include <addp/types.hpp>
-#include <addp/types_io.hpp>
 
 BOOST_AUTO_TEST_CASE(mac_address_format) {
-  addp::mac_address mac = {{0x01, 0x20, 0x03, 0x4d, 0xfe, 0xef}};
+  addp::mac_address mac {{0x01, 0x20, 0x03, 0x4d, 0xfe, 0xef}};
   std::ostringstream os;
   os << mac;
   BOOST_CHECK_EQUAL(os.str(), "01:20:03:4d:fe:ef");

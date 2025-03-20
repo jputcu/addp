@@ -1,26 +1,12 @@
 #include "field.hpp"
 
 #include <boost/format.hpp>
-#include <cstring>
 #include <iomanip>
 #include <sstream>
+#include <iostream>
 
-#include <addp/types_io.hpp>
+#include <addp/types.hpp>
 using namespace addp;
-
-field::field(field::field_type type) { _header.type = htons(type); }
-
-field::field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
-  // header
-  copy(iter, iter + sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
-  std::advance(iter, sizeof(_header));
-
-  // payload
-  if (std::distance(iter, end) >= _header.size) {
-    std::copy(iter, iter + _header.size, back_inserter(_payload));
-    std::advance(iter, _header.size);
-  }
-}
 
 template <> bool field::value() const { return _payload[0] == BF_TRUE; }
 
@@ -36,26 +22,26 @@ template <> uint32_t field::value() const {
 
 template <> std::string field::value() const {
   std::string s;
-  copy(_payload.begin(), _payload.end(), back_inserter(s));
+  std::copy(_payload.begin(), _payload.end(), back_inserter(s));
   return s;
 }
 
 template <> field::config_error field::value() const {
-  return static_cast<field::config_error>(value<uint16_t>());
+  return static_cast<config_error>(value<uint16_t>());
 }
 
 template <> field::error_code field::value() const {
-  return static_cast<field::error_code>(value<uint8_t>());
+  return static_cast<error_code>(value<uint8_t>());
 }
 
 template <> field::result_flag field::value() const {
-  return static_cast<field::result_flag>(value<uint8_t>());
+  return static_cast<result_flag>(value<uint8_t>());
 }
 
 template <typename T> T field::value() const {
   T t;
   if (_payload.size() == t.size())
-    copy(_payload.begin(), _payload.end(), t.begin());
+    std::copy(_payload.begin(), _payload.end(), t.begin());
   return t;
 }
 
@@ -70,7 +56,7 @@ std::string field::value_str() const {
   case FT_HW_TYPE:
   case FT_HW_REV:
   case FT_SERIAL_COUNT:
-    os << std::dec << int(value<uint8_t>());
+    os << std::dec << static_cast<int>(value<uint8_t>());
     break;
 
   case FT_VERSION:
@@ -118,8 +104,8 @@ std::string field::value_str() const {
     break;
 
   default: {
-    for (uint8_t b : payload())
-      os << " " << std::hex << std::setfill('0') << std::setw(2) << int(b);
+    for (const uint8_t b : payload())
+      os << " " << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(b);
     break;
   }
   }
@@ -128,9 +114,9 @@ std::string field::value_str() const {
 
 std::vector<uint8_t> field::raw() const {
   std::vector<uint8_t> buffer;
-  const uint8_t *headerp = reinterpret_cast<const uint8_t *>(&_header);
-  copy(headerp, headerp + sizeof(_header), back_inserter(buffer));
-  copy(_payload.begin(), _payload.end(), back_inserter(buffer));
+  auto headerp = reinterpret_cast<const uint8_t *>(&_header);
+  std::copy_n(headerp, sizeof(_header), back_inserter(buffer));
+  std::copy(_payload.begin(), _payload.end(), back_inserter(buffer));
 
   return buffer;
 }
@@ -181,7 +167,7 @@ std::string field::field_type2str(field_type type) {
     return "Version ID";
   case FT_VENDOR:
     return "Vendor GUID";
-  };
+  }
   return str(boost::format("Unknown (0x%02x)") % type);
 }
 
@@ -217,4 +203,11 @@ std::string field::config_error2str(config_error error) {
     return "Error";
   }
   return str(boost::format("Unknown (0x%02x)") % error);
+}
+
+std::ostream &addp::operator<<(std::ostream &os, const field &field) {
+  if (field.type() == field::FT_NONE)
+    return os;
+
+  return os << field.type_str() << " = " << field.value_str() << "\n";
 }

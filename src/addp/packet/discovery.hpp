@@ -2,21 +2,18 @@
 #define ADDP_PACKET_DISCOVERY_H
 
 #include <addp/packet/packet.hpp>
-#include <addp/types.hpp>
 
 namespace addp {
 
-class discovery_request : public packet {
-public:
+struct discovery_request : packet {
   explicit discovery_request(const mac_address mac = MAC_ADDR_BROADCAST)
-      : packet(packet::Type::DISCOVERY_REQUEST) {
+      : packet(Type::DISCOVERY_REQUEST) {
     add(mac);
   }
 };
 
-class discovery_response : public packet {
-public:
-  discovery_response() : packet(packet::Type::DISCOVERY_RESPONSE) {}
+struct discovery_response : packet {
+  discovery_response() : packet(Type::DISCOVERY_RESPONSE) {}
 };
 
 } // namespace addp

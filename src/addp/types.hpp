@@ -4,16 +4,23 @@
 #include <array>
 #include <cstdint>
 #include <string>
+#include <iosfwd>
 
 namespace addp {
 
-typedef std::array<uint8_t, 4> ip_address;
-typedef std::array<uint8_t, 6> mac_address;
-typedef std::array<uint8_t, 16> guid;
+struct ip_address : std::array<uint8_t, 4> {};
+struct mac_address : std::array<uint8_t, 6> {};
+struct guid : std::array<uint8_t, 16> {};
 
 mac_address parse_mac_str(const std::string &mac_str);
 
 ip_address parse_ip_str(const std::string &ip_str);
+
+std::ostream &operator<<(std::ostream &os, const ip_address &ip_addr);
+std::istream &operator>>(std::istream &is, ip_address &ip_addr);
+std::ostream &operator<<(std::ostream &os, const mac_address &mac_addr);
+std::istream &operator>>(std::istream &is, mac_address &mac_addr);
+std::ostream &operator<<(std::ostream &os, const guid &guid);
 
 } // namespace addp
 

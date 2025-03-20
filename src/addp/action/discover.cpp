@@ -3,8 +3,6 @@
 #include <iostream>
 
 #include <addp/packet/discovery.hpp>
-#include <addp/types_io.hpp>
-
 using namespace addp;
 
 discover::discover(const mac_address &mac_address) : action(discovery_request(mac_address)) {
@@ -13,7 +11,7 @@ discover::discover(const mac_address &mac_address) : action(discovery_request(ma
 }
 
 void discover::set_mac_address(const std::string &mac) {
-  mac_address mac_addr = parse_mac_str(mac);
+  const auto mac_addr = parse_mac_str(mac);
   set_request(discovery_request(mac_addr));
 
   if (mac_addr != MAC_ADDR_BROADCAST)
@@ -46,5 +44,6 @@ void discover::print_brief(const boost::asio::ip::udp::endpoint &sender,
     }
   }
 
-  std::cout << sender.address() << '\t' << name << '\t' << mac_addr << '\t' << device << '\t' << firmware << std::endl;
+  std::cout << sender.address() << '\t' << name << '\t' << mac_addr << '\t' << device << '\t'
+            << firmware << "\n";
 }

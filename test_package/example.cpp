@@ -4,5 +4,5 @@
 int main() {
   using namespace addp;
   auto p = packet(packet::Type::NONE);
-  std::cout << p.type_str() << std::endl;
+  std::cout << p.type_str() << "\n";
 }

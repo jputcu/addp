@@ -3,15 +3,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 #include <iostream>
-#include <sstream>
 
 using namespace addp;
-
-generic_options::generic_options() : _usage("Usage: %s [options...]\n") {}
-
-generic_options::generic_options(int argc, char *argv[]) : _usage("Usage: %s [options...]\n") {
-  parse(argc, argv);
-}
 
 void generic_options::parse(int argc, char *argv[]) {
   _progname = boost::filesystem::path(argv[0]).filename().string();
@@ -28,7 +21,7 @@ void generic_options::parse(int argc, char *argv[]) {
 }
 
 void generic_options::usage() const {
-  std::cout << str(boost::format(_usage) % _progname) << std::endl << visible_options();
+  std::cout << str(boost::format(_usage) % _progname) << "\n" << visible_options();
 }
 
 boost::program_options::options_description generic_options::all_options() const {
@@ -43,18 +36,3 @@ boost::program_options::options_description generic_options::all_options() const
                  "logfile");
   return opts;
 }
-
-boost::program_options::positional_options_description generic_options::positional_options() const {
-  boost::program_options::positional_options_description positional;
-  return positional;
-}
-
-boost::program_options::options_description generic_options::visible_options() const {
-  return all_options();
-}
-
-bool generic_options::version() const { return _vm["version"].as<bool>(); }
-
-size_t generic_options::verbose() const { return _vm["verbose"].as<size_t>(); }
-
-std::string generic_options::logfile() const { return _vm["logfile"].as<std::string>(); }

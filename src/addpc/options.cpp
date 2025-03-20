@@ -5,20 +5,11 @@
 
 using namespace addpc;
 
-options::options(int argc, char *argv[]) {
-  _usage = std::string() + "Usage: %s [options...] <action> [args...]\n" + "\n" + " actions:\n" +
-           "  discover [device]\n" + "  reboot <device> [passwd]\n" +
-           "  config <device> <ip> <netmask> <gateway> [passwd]\n" +
-           "  dhcp <device> <on|off> [passwd]\n";
-
-  opt_parse(argc, argv);
-}
-
 void options::opt_parse(int argc, char *argv[]) {
   addp::options::parse(argc, argv);
 
   if (_vm.count("action") == 0) {
-    std::cerr << "No action given" << std::endl << std::endl;
+    std::cerr << "No action given\n\n";
     usage();
     std::exit(1);
   }
@@ -41,7 +32,7 @@ void options::opt_parse(int argc, char *argv[]) {
   } else {
     // must have a specific device address for further actions
     if (addp::parse_mac_str(mac()) == addp::MAC_ADDR_BROADCAST) {
-      std::cerr << "Please select a device's mac address" << std::endl << std::endl;
+      std::cerr << "Please select a device's mac address\n\n";
       usage();
       std::exit(1);
     }
@@ -56,14 +47,13 @@ void options::opt_parse(int argc, char *argv[]) {
       min = 1;
       max = 2;
     } else {
-      std::cerr << "Unknown action \"" << action << "\"" << std::endl << std::endl;
+      std::cerr << "Unknown action \"" << action << "\"\n\n";
       usage();
       std::exit(1);
     }
   }
 
-  size_t count = args().size();
-  if (count < min || count > max) {
+  if (size_t count = args().size(); count < min || count > max) {
     usage();
     std::exit(1);
   }
@@ -73,9 +63,7 @@ void options::opt_parse(int argc, char *argv[]) {
 }
 
 boost::program_options::options_description options::addpc_options() const {
-  const std::string usage = "ADDP client options";
-
-  boost::program_options::options_description addpc_opts(usage);
+  boost::program_options::options_description addpc_opts("ADDP client options");
   addpc_opts.add_options()("listen,L",
                            boost::program_options::value<std::string>()->default_value("0.0.0.0"),
                            "ip address to listen")(
@@ -120,43 +108,22 @@ boost::program_options::positional_options_description options::positional_optio
   return positional;
 }
 
-std::string options::listen() const { return _vm["listen"].as<std::string>(); }
-
-size_t options::timeout() const { return _vm["timeout"].as<size_t>(); }
-
-size_t options::max_count() const { return _vm["max_count"].as<size_t>(); }
-
-std::string options::action() const { return _vm["action"].as<std::string>(); }
-
-std::string options::mac() const { return _vm["mac"].as<std::string>(); }
-
-std::vector<std::string> options::args() const {
-  return _vm["args"].as<std::vector<std::string>>();
-}
-
 std::string options::password() const {
   if (args().size() <= _password_index)
     return addp::DEFAULT_PASSWORD;
-
-  return args()[_password_index];
+  else
+    return args()[_password_index];
 }
 
-std::string options::ip() const { return args()[0]; }
-
-std::string options::subnet() const { return args()[1]; }
-
-std::string options::gateway() const { return args()[2]; }
-
 bool options::dhcp() const {
-  std::string value = args()[0];
-
+  const std::string value = args()[0];
   if (value == "on")
     return true;
-
-  if (value == "off")
+  else if (value == "off")
     return false;
-
-  std::cerr << "illegal value for dhcp: \"" << value << "\"" << std::endl << std::endl;
-  usage();
-  std::exit(1);
+  else {
+    std::cerr << "illegal value for dhcp: \"" << value << "\"\n\n";
+    usage();
+    std::exit(1);
+  }
 }

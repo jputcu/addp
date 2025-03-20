@@ -4,20 +4,13 @@
 #include <boost/format.hpp>
 #include <iostream>
 
-#include <addp/packet/packet.hpp>
-#include <addp/packet/packet_io.hpp>
-#include <addp/types_io.hpp>
-
 using namespace addp;
 
-action::action(const packet &request)
+action::action(packet &&request)
     : _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
-      _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT), _sender_address(),
-      _io_context(), _socket(_io_context), _deadline(_io_context), _request(request),
-      _callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
-        print_brief(sender, pckt);
-      }),
-      _count(0), _max_count(DEFAULT_MAX_COUNT), _timeout_ms(DEFAULT_TIMEOUT), _verbose(0) {
+      _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT),
+      _socket(_io_context), _deadline(_io_context), _request(std::move(request)) {
+  set_verbose(_verbose);
   // disable timer by setting expiry time to infinity
   _deadline.expires_at(boost::posix_time::pos_infin);
   check_timeout();
@@ -35,11 +28,13 @@ void action::set_verbose(const size_t verbose) {
   _verbose = verbose;
 
   if (verbose)
-    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt){
-      print_verbose(sender, pckt); });
+    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
+      print_verbose(sender, pckt);
+    });
   else
-    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt){
-      print_brief(sender, pckt); });
+    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
+      print_brief(sender, pckt);
+    });
 }
 
 bool action::run() {
@@ -47,8 +42,7 @@ bool action::run() {
   _socket.bind(_listen_address);
 
   if (_verbose)
-    std::cout << "sending to: " << _dest_address << " packet: " << _request << std::endl
-              << std::endl;
+    std::cout << "sending to: " << _dest_address << " packet: " << _request << "\n\n";
 
   // send request to multicast address
   _socket.async_send_to(boost::asio::buffer(_request.raw()), _dest_address,
@@ -65,7 +59,7 @@ bool action::run() {
   } catch (const boost::system::system_error &error) {
     std::cerr << str(boost::format("Error: %s (%d)") % error.code().message() %
                      error.code().value())
-              << std::endl;
+              << "\n";
     return false;
   }
 
@@ -80,18 +74,18 @@ void action::stop() {
 void action::check_timeout() {
   if (_deadline.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
     if (_verbose >= 2)
-      std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)" << std::endl;
+      std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
 
     stop();
     _deadline.expires_at(boost::posix_time::pos_infin);
   }
-  _deadline.async_wait([&](const boost::system::error_code&){ check_timeout(); });
+  _deadline.async_wait([&](const boost::system::error_code &) { check_timeout(); });
 }
 
 void action::handle_send_to(const boost::system::error_code &error, size_t bytes_sent) {
   if (error)
     std::cerr << "error: " << error.value() << "(" << error.message() << ")"
-              << " sent: " << bytes_sent << std::endl;
+              << " sent: " << bytes_sent << "\n";
 
   _socket.async_receive_from(boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN), _sender_address,
                              [this](boost::system::error_code ec, std::size_t bytes_recvd) {
@@ -101,10 +95,10 @@ void action::handle_send_to(const boost::system::error_code &error, size_t bytes
 
 void action::handle_receive_from(const boost::system::error_code &error, size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
-    packet response(_data.data(), bytes_recvd);
+    packet response{_data.data(), bytes_recvd};
 
     if (!response.parse_fields())
-      std::cerr << "failed to parse fields!" << std::endl;
+      std::cerr << "failed to parse fields!\n";
 
     _callback(_sender_address, response);
 
@@ -114,7 +108,7 @@ void action::handle_receive_from(const boost::system::error_code &error, size_t 
   // max count reached?
   if (_max_count && _count == _max_count) {
     if (_verbose >= 2)
-      std::cout << "max_count reached (" << std::dec << _max_count << ")" << std::endl;
+      std::cout << "max_count reached (" << std::dec << _max_count << ")\n";
 
     stop();
     return;
@@ -128,7 +122,7 @@ void action::handle_receive_from(const boost::system::error_code &error, size_t 
   // other error?
   if (error)
     std::cerr << "error: " << error.value() << "(" << error.message() << ")"
-              << " received: " << bytes_recvd << std::endl;
+              << " received: " << bytes_recvd << "\n";
 
   // continue receiving
   _socket.async_receive_from(boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN), _sender_address,
@@ -138,10 +132,10 @@ void action::handle_receive_from(const boost::system::error_code &error, size_t 
 }
 
 void action::print_brief(const boost::asio::ip::udp::endpoint &sender,
-                         const packet & /*pckt*/) const {
-  std::cout << sender.address() << std::endl;
+                         const packet &) const {
+  std::cout << sender.address() << "\n";
 }
 
 void action::print_verbose(const boost::asio::ip::udp::endpoint &sender, const packet &pckt) const {
-  std::cout << sender << " " << pckt << std::endl;
+  std::cout << sender << " " << pckt << "\n";
 }

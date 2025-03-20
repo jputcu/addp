@@ -2,11 +2,7 @@
 
 #include <iostream>
 
-#include <addp/packet/packet_io.hpp>
 #include <addp/packet/reboot.hpp>
-#include <addp/types.hpp>
-#include <addp/types_io.hpp>
-
 using namespace addp;
 
 reboot::reboot(const mac_address &mac_address, const std::string &password)
@@ -16,7 +12,7 @@ reboot::reboot(const mac_address &mac_address, const std::string &password)
 }
 
 void reboot::set_mac_address(const std::string &mac) {
-  set_request(reboot_request(addp::parse_mac_str(mac), _password));
+  set_request(reboot_request(parse_mac_str(mac), _password));
 }
 
 void reboot::set_password(const std::string &password) {
@@ -28,7 +24,7 @@ void reboot::print_brief(const boost::asio::ip::udp::endpoint & /*sender*/,
                          const packet &response) const {
   for (const field &f : response.fields())
     if (f.type() == field::FT_RESULT_MSG) {
-      std::cout << f.value<std::string>() << std::endl;
+      std::cout << f.value<std::string>() << "\n";
       break;
     }
 }

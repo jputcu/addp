@@ -1,21 +1,19 @@
 #ifndef ADDP_PACKET_FIELD_H
 #define ADDP_PACKET_FIELD_H
 
-#include <array>
 #include <cstdint>
 #include <vector>
+#include <iosfwd>
 
 #include <boost/asio.hpp>
-
-#include <addp/constants.hpp>
 
 namespace addp {
 
 class field {
 public:
-  struct field_header {
+  struct header {
     uint8_t type;
-    uint8_t size;
+    uint8_t size {};
   };
 
   enum field_type {
@@ -69,12 +67,23 @@ public:
     BF_TRUE = 0x01,
   };
 
-  explicit field(field_type t);
-  field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end);
+  explicit field(field_type type) : _header{static_cast<uint8_t>(htons(type))} {}
+
+  field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
+    // header
+    std::copy(iter, iter + sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
+    std::advance(iter, sizeof(_header));
+
+    // payload
+    if (std::distance(iter, end) >= _header.size) {
+      std::copy(iter, iter + _header.size, back_inserter(_payload));
+      std::advance(iter, _header.size);
+    }
+  }
 
   bool check() const { return _payload.size() == _header.size; }
 
-  field_type type() const { return static_cast<field::field_type>(_header.type); }
+  field_type type() const { return static_cast<field_type>(_header.type); }
 
   std::string type_str() const { return field_type2str(type()); }
 
@@ -85,21 +94,19 @@ public:
 
   const std::vector<uint8_t> &payload() const { return _payload; }
 
-  template <class T, std::size_t N> void add_raw(const std::array<T, N> &data) {
-    copy(data.begin(), data.end(), back_inserter(_payload));
-    _header.size = static_cast<uint8_t>(htons(static_cast<u_short>(_payload.size())));
-  }
   std::vector<uint8_t> raw() const;
 
 private:
-  static std::string field_type2str(field_type type);
-  static std::string error_code2str(error_code code);
-  static std::string result_flag2str(result_flag flag);
-  static std::string config_error2str(config_error error);
+  static std::string field_type2str(field_type);
+  static std::string error_code2str(error_code);
+  static std::string result_flag2str(result_flag);
+  static std::string config_error2str(config_error);
 
-  field_header _header;
+  header _header;
   std::vector<uint8_t> _payload;
 };
+
+std::ostream &operator<<(std::ostream &, const field &);
 
 } // namespace addp
 

@@ -9,7 +9,7 @@ class options;
 
 class client {
 public:
-  client(const options &options);
+  explicit client(const options &options) : _options(options) {}
 
   bool run();
   bool run_action(addp::action &action);

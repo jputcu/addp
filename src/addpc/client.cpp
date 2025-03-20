@@ -8,11 +8,9 @@
 
 using namespace addpc;
 
-client::client(const options &options) : _options(options) {}
-
 bool client::run() {
   if (_options.version()) {
-    std::cout << addp::VERSION << std::endl;
+    std::cout << addp::VERSION << "\n";
     return true;
   }
 

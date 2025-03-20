@@ -1,9 +1,7 @@
 #ifndef ADDP_ACTION_DISCOVER_H
 #define ADDP_ACTION_DISCOVER_H
 
-#include <addp/action/action.hpp>
-#include <addp/constants.hpp>
-#include <addp/types.hpp>
+#include "action.hpp"
 
 namespace addp {
 

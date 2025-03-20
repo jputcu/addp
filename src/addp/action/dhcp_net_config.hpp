@@ -1,9 +1,7 @@
 #ifndef ADDP_ACTION_DHCP_NET_CONFIG_H
 #define ADDP_ACTION_DHCP_NET_CONFIG_H
 
-#include <addp/action/action.hpp>
-#include <addp/constants.hpp>
-#include <addp/types.hpp>
+#include "action.hpp"
 
 namespace addp {
 
@@ -17,7 +15,8 @@ public:
   void set_password(const std::string &password);
 
 protected:
-  void print_brief(const boost::asio::ip::udp::endpoint &sender, const packet &response) const override;
+  void print_brief(const boost::asio::ip::udp::endpoint &sender,
+                   const packet &response) const override;
 
 private:
   mac_address _mac_address;
