@@ -3,10 +3,9 @@
 #include <iomanip>
 
 #include <addp/packet/field_io.hpp>
+using namespace addp;
 
-namespace addp {
-
-std::ostream &operator<<(std::ostream &os, const packet &packet) {
+std::ostream &addp::operator<<(std::ostream &os, const packet &packet) {
   os << packet.type_str() << std::endl;
 
   for (const field &f : packet.fields())
@@ -28,5 +27,3 @@ std::ostream &operator<<(std::ostream &os, const packet &packet) {
 
   return os;
 }
-
-} // namespace addp

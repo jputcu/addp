@@ -7,7 +7,7 @@
 #include <addp/types.hpp>
 #include <addp/types_io.hpp>
 
-namespace addp {
+using namespace addp;
 
 reboot::reboot(const mac_address &mac_address, const std::string &password)
     : action(reboot_request(mac_address, password)), _mac_address(mac_address),
@@ -32,5 +32,3 @@ void reboot::print_brief(const boost::asio::ip::udp::endpoint & /*sender*/,
       break;
     }
 }
-
-} // namespace addp

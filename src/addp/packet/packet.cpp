@@ -7,8 +7,7 @@
 #include <iostream>
 #include <iterator>
 #include <vector>
-
-namespace addp {
+using namespace addp;
 
 const char *packet::MAGIC = "DIGI";
 
@@ -101,5 +100,3 @@ std::string packet::packet_type2str(packet::Type type) {
   };
   return str(boost::format("unknown (0x%02x)") % static_cast<int>(type));
 }
-
-} // namespace addp

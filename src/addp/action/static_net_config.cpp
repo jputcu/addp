@@ -6,8 +6,7 @@
 #include <addp/packet/static_net_config.hpp>
 #include <addp/types.hpp>
 #include <addp/types_io.hpp>
-
-namespace addp {
+using namespace addp;
 
 static_net_config::static_net_config(const mac_address &mac_address, const ip_address &ip,
                                      const ip_address &subnet, const ip_address &gateway,
@@ -50,5 +49,3 @@ void static_net_config::print_brief(const boost::asio::ip::udp::endpoint & /*sen
       break;
     }
 }
-
-} // namespace addp

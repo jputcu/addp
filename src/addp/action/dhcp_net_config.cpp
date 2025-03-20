@@ -7,7 +7,7 @@
 #include <addp/types.hpp>
 #include <addp/types_io.hpp>
 
-namespace addp {
+using namespace addp;
 
 dhcp_net_config::dhcp_net_config(const mac_address &mac_address, bool enable,
                                  const std::string &password)
@@ -38,5 +38,3 @@ void dhcp_net_config::print_brief(const boost::asio::ip::udp::endpoint & /*sende
       break;
     }
 }
-
-} // namespace addp

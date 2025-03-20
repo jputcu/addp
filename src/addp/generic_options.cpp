@@ -5,7 +5,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace addp {
+using namespace addp;
 
 generic_options::generic_options() : _usage("Usage: %s [options...]\n") {}
 
@@ -58,5 +58,3 @@ bool generic_options::version() const { return _vm["version"].as<bool>(); }
 size_t generic_options::verbose() const { return _vm["verbose"].as<size_t>(); }
 
 std::string generic_options::logfile() const { return _vm["logfile"].as<std::string>(); }
-
-} // namespace addp

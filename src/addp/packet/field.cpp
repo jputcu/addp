@@ -6,8 +6,7 @@
 #include <sstream>
 
 #include <addp/types_io.hpp>
-
-namespace addp {
+using namespace addp;
 
 field::field(field::field_type type) { _header.type = htons(type); }
 
@@ -219,5 +218,3 @@ std::string field::config_error2str(config_error error) {
   }
   return str(boost::format("Unknown (0x%02x)") % error);
 }
-
-} // namespace addp

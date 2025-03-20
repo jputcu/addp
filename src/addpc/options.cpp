@@ -3,7 +3,7 @@
 #include <addp/types.hpp>
 #include <iostream>
 
-namespace addpc {
+using namespace addpc;
 
 options::options(int argc, char *argv[]) {
   _usage = std::string() + "Usage: %s [options...] <action> [args...]\n" + "\n" + " actions:\n" +
@@ -160,5 +160,3 @@ bool options::dhcp() const {
   usage();
   std::exit(1);
 }
-
-} // namespace addpc

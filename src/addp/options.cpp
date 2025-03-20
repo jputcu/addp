@@ -2,7 +2,7 @@
 
 #include "constants.hpp"
 
-namespace addp {
+using namespace addp;
 
 options::options(int argc, char *argv[]) { parse(argc, argv); }
 
@@ -25,5 +25,3 @@ boost::program_options::options_description options::all_options() const {
 std::string options::multicast() const { return _vm["multicast"].as<std::string>(); }
 
 uint16_t options::port() const { return _vm["port"].as<uint16_t>(); }
-
-} // namespace addp

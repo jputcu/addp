@@ -8,7 +8,7 @@
 #include <addp/packet/packet_io.hpp>
 #include <addp/types_io.hpp>
 
-namespace addp {
+using namespace addp;
 
 action::action(const packet &request)
     : _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
@@ -145,5 +145,3 @@ void action::print_brief(const boost::asio::ip::udp::endpoint &sender,
 void action::print_verbose(const boost::asio::ip::udp::endpoint &sender, const packet &pckt) const {
   std::cout << sender << " " << pckt << std::endl;
 }
-
-} // namespace addp

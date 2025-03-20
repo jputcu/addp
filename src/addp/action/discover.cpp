@@ -5,7 +5,7 @@
 #include <addp/packet/discovery.hpp>
 #include <addp/types_io.hpp>
 
-namespace addp {
+using namespace addp;
 
 discover::discover(const mac_address &mac_address) : action(discovery_request(mac_address)) {
   if (mac_address != MAC_ADDR_BROADCAST)
@@ -48,5 +48,3 @@ void discover::print_brief(const boost::asio::ip::udp::endpoint &sender,
 
   std::cout << sender.address() << '\t' << name << '\t' << mac_addr << '\t' << device << '\t' << firmware << std::endl;
 }
-
-} // namespace addp

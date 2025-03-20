@@ -6,7 +6,7 @@
 
 #include "options.hpp"
 
-namespace addpc {
+using namespace addpc;
 
 client::client(const options &options) : _options(options) {}
 
@@ -68,5 +68,3 @@ bool client::reboot() {
 
   return run_action(action);
 }
-
-} // namespace addpc
