@@ -1,4 +1,5 @@
 #include "field_io.hpp"
+#include <iostream>
 using namespace addp;
 
 std::ostream &addp::operator<<(std::ostream &os, const field &field) {

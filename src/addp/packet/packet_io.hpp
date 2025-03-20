@@ -1,8 +1,7 @@
 #ifndef ADDP_PACKET_IO_H
 #define ADDP_PACKET_IO_H
 
-#include <ostream>
-
+#include <iosfwd>
 #include <addp/packet/packet.hpp>
 
 namespace addp {

@@ -1,6 +1,7 @@
 #include "packet_io.hpp"
 
 #include <iomanip>
+#include <iostream>
 
 #include <addp/packet/field_io.hpp>
 using namespace addp;
