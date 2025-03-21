@@ -8,7 +8,6 @@ using namespace addp;
 reboot::reboot(mac_address const &mac, const std::string &password)
     : action(reboot_request(mac, password)), _mac_address(mac),
       _password(password) {
-  set_max_count(1);
 }
 
 void reboot::set_mac_address(mac_address const &mac) {

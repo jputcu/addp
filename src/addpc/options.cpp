@@ -63,28 +63,30 @@ void options::opt_parse(int argc, char *argv[]) {
 }
 
 boost::program_options::options_description options::addpc_options() const {
+  // clang-format off
   boost::program_options::options_description addpc_opts("ADDP client options");
-  addpc_opts.add_options()("listen,L",
-                           boost::program_options::value<std::string>()->default_value("0.0.0.0"),
-                           "ip address to listen")(
-      "timeout,t", boost::program_options::value<size_t>()->default_value(addp::DEFAULT_TIMEOUT),
-      "response timeout (in ms)")(
-      "max_count,c",
-      boost::program_options::value<size_t>()->default_value(addp::DEFAULT_MAX_COUNT),
-      "stop after receiving n responses");
+  addpc_opts.add_options()
+    ("listen,L", boost::program_options::value<std::string>()->default_value("0.0.0.0"),
+      "ip address to listen")
+    ("timeout,t", boost::program_options::value<size_t>()->default_value(addp::DEFAULT_TIMEOUT),
+      "response timeout (in ms)");
+  // clang-format on
   return addpc_opts;
 }
 
 boost::program_options::options_description options::addpc_hidden_options() const {
+  // clang-format off
   boost::program_options::options_description hidden_opts;
-  hidden_opts.add_options()("action", boost::program_options::value<std::string>(),
-                            "action (discover/static/reboot/dhcp)")(
-      "mac", boost::program_options::value<std::string>()->default_value("ff:ff:ff:ff:ff:ff"),
-      "mac address of target device")("args",
-                                      boost::program_options::value<std::vector<std::string>>()
-                                          ->default_value(std::vector<std::string>(), "")
-                                          ->multitoken(),
-                                      "action arguments");
+  hidden_opts.add_options()
+    ("action", boost::program_options::value<std::string>(),
+      "action (discover/static/reboot/dhcp)")
+    ("mac", boost::program_options::value<std::string>()->default_value("ff:ff:ff:ff:ff:ff"),
+      "mac address of target device")
+    ("args", boost::program_options::value<std::vector<std::string>>()
+       ->default_value(std::vector<std::string>(), "")
+       ->multitoken(),
+       "action arguments");
+  // clang-format on
   return hidden_opts;
 }
 

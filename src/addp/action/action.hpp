@@ -25,14 +25,16 @@ public:
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  void set_max_count(const size_t max_count) { _max_count = max_count; }
-
   void set_verbose(bool);
 
   void set_callback(callback_t callback) { _callback = callback; }
 
   bool run();
-  void stop();
+
+  void stop() {
+    _socket.cancel();
+    _io_context.stop();
+  }
 
 protected:
   virtual void print_brief(const boost::asio::ip::udp::endpoint &sender, const packet &) const;
@@ -55,7 +57,6 @@ private:
   callback_t _callback;
 
   size_t _count {};
-  size_t _max_count {DEFAULT_MAX_COUNT};
   size_t _timeout_ms {DEFAULT_TIMEOUT};
   bool _verbose {};
 };

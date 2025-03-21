@@ -70,7 +70,7 @@ bool packet::parse_fields() {
   return std::distance(iter, end) == 0;
 }
 
-std::string packet::packet_type2str(Type type) {
+std::string packet::packet_type2str(const Type type) {
   switch (type) {
   case Type::NONE:
     return "None";
@@ -90,14 +90,15 @@ std::string packet::packet_type2str(Type type) {
     return "DHCP Net Config Request";
   case Type::DHCP_NET_CONFIG_RESPONSE:
     return "DHCP Net Config Response";
+  default:
+    return str(boost::format("unknown (0x%02x)") % static_cast<int>(type));
   }
-  return str(boost::format("unknown (0x%02x)") % static_cast<int>(type));
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const packet &packet) {
   os << packet.type_str() << "\n";
 
-  for (const field &f : packet.fields())
+  for (const auto &f : packet.fields())
     if (f.type() != field::FT_NONE)
       os << "  " << f;
 

@@ -66,11 +66,6 @@ bool action::run() {
   return true;
 }
 
-void action::stop() {
-  _socket.cancel();
-  _io_context.stop();
-}
-
 void action::check_timeout() {
   if (_deadline.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
     if (_verbose)
@@ -82,36 +77,24 @@ void action::check_timeout() {
   _deadline.async_wait([&](const boost::system::error_code &) { check_timeout(); });
 }
 
-void action::handle_send_to(const boost::system::error_code &error, size_t bytes_sent) {
+void action::handle_send_to(const boost::system::error_code &error, const size_t bytes_sent) {
   if (error)
     std::cerr << "error: " << error.value() << "(" << error.message() << ")"
               << " sent: " << bytes_sent << "\n";
 
-  _socket.async_receive_from(boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN), _sender_address,
+  _socket.async_receive_from(boost::asio::buffer(_data, _data.size()), _sender_address,
                              [this](boost::system::error_code ec, std::size_t bytes_recvd) {
                                handle_receive_from(ec, bytes_recvd);
                              });
 }
 
-void action::handle_receive_from(const boost::system::error_code &error, size_t bytes_recvd) {
+void action::handle_receive_from(const boost::system::error_code &error, const size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
     packet response{_data.data(), bytes_recvd};
-
     if (!response.parse_fields())
       std::cerr << "failed to parse fields!\n";
-
     _callback(_sender_address, response);
-
     ++_count;
-  }
-
-  // max count reached?
-  if (_max_count && _count == _max_count) {
-    if (_verbose)
-      std::cout << "max_count reached (" << std::dec << _max_count << ")\n";
-
-    stop();
-    return;
   }
 
   // timeout reached?
@@ -125,7 +108,7 @@ void action::handle_receive_from(const boost::system::error_code &error, size_t 
               << " received: " << bytes_recvd << "\n";
 
   // continue receiving
-  _socket.async_receive_from(boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN), _sender_address,
+  _socket.async_receive_from(boost::asio::buffer(_data, _data.size()), _sender_address,
                              [this](boost::system::error_code ec, std::size_t n_bytes_recvd) {
                                handle_receive_from(ec, n_bytes_recvd);
                              });

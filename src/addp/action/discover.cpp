@@ -5,16 +5,10 @@
 #include <addp/packet/discovery.hpp>
 using namespace addp;
 
-discover::discover(mac_address const &mac) : action(discovery_request(mac)) {
-  if (mac != MAC_ADDR_BROADCAST)
-    set_max_count(1);
-}
+discover::discover(mac_address const &mac) : action(discovery_request(mac)) { }
 
 void discover::set_mac_address(mac_address const &mac) {
   set_request(discovery_request(mac));
-
-  if (mac != MAC_ADDR_BROADCAST)
-    set_max_count(1);
 }
 
 void discover::print_brief(const boost::asio::ip::udp::endpoint &sender,
@@ -24,7 +18,7 @@ void discover::print_brief(const boost::asio::ip::udp::endpoint &sender,
   std::string device;
   std::string firmware;
 
-  for (const field &f : response.fields()) {
+  for (const auto &f : response.fields()) {
     switch (f.type()) {
     case field::FT_MAC_ADDR:
       mac_addr = f.value_str();

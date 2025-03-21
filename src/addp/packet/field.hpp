@@ -12,7 +12,7 @@ namespace addp {
 class field {
 public:
   struct header {
-    uint8_t type;
+    uint8_t type {};
     uint8_t size {};
   };
 
@@ -71,17 +71,17 @@ public:
 
   field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
     // header
-    std::copy(iter, iter + sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
+    std::copy_n(iter, sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
     std::advance(iter, sizeof(_header));
 
     // payload
     if (std::distance(iter, end) >= _header.size) {
-      std::copy(iter, iter + _header.size, back_inserter(_payload));
+      std::copy_n(iter, _header.size, back_inserter(_payload));
       std::advance(iter, _header.size);
     }
   }
 
-  bool check() const { return _payload.size() == _header.size; }
+  bool check() const { return size() == _header.size; }
 
   field_type type() const { return static_cast<field_type>(_header.type); }
 

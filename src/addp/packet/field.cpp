@@ -117,11 +117,10 @@ std::vector<uint8_t> field::raw() const {
   auto headerp = reinterpret_cast<const uint8_t *>(&_header);
   std::copy_n(headerp, sizeof(_header), back_inserter(buffer));
   std::copy(_payload.begin(), _payload.end(), back_inserter(buffer));
-
   return buffer;
 }
 
-std::string field::field_type2str(field_type type) {
+std::string field::field_type2str(const field_type type) {
   switch (type) {
   case FT_NONE:
     return "None";
@@ -167,11 +166,12 @@ std::string field::field_type2str(field_type type) {
     return "Version ID";
   case FT_VENDOR:
     return "Vendor GUID";
+  default:
+    return str(boost::format("Unknown (0x%02x)") % type);
   }
-  return str(boost::format("Unknown (0x%02x)") % type);
 }
 
-std::string field::error_code2str(error_code code) {
+std::string field::error_code2str(const error_code code) {
   switch (code) {
   case EC_SUCCESS:
     return "Success";
@@ -181,33 +181,35 @@ std::string field::error_code2str(error_code code) {
     return "Invalid";
   case EC_SAVE:
     return "Save";
+  default:
+    return str(boost::format("Unknown (0x%02x)") % code);
   }
-  return str(boost::format("Unknown (0x%02x)") % code);
 }
 
-std::string field::result_flag2str(result_flag flag) {
+std::string field::result_flag2str(const result_flag flag) {
   switch (flag) {
   case RF_SUCCESS:
     return "Success";
   case RF_ERROR:
     return "Error";
+  default:
+    return str(boost::format("Unknown (0x%02x)") % flag);
   }
-  return str(boost::format("Unknown (0x%02x)") % flag);
 }
 
-std::string field::config_error2str(config_error error) {
+std::string field::config_error2str(const config_error error) {
   switch (error) {
   case CE_SUCCESS:
     return "SUCCESS";
   case CE_ERROR:
     return "Error";
+  default:
+    return str(boost::format("Unknown (0x%02x)") % error);
   }
-  return str(boost::format("Unknown (0x%02x)") % error);
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const field &field) {
-  if (field.type() == field::FT_NONE)
-    return os;
-
-  return os << field.type_str() << " = " << field.value_str() << "\n";
+  if (field.type() != field::FT_NONE)
+    os << field.type_str() << " = " << field.value_str() << "\n";
+  return os;
 }

@@ -26,8 +26,6 @@ public:
 
   size_t timeout() const { return _vm["timeout"].as<size_t>(); }
 
-  size_t max_count() const { return _vm["max_count"].as<size_t>(); }
-
   std::string action() const { return _vm["action"].as<std::string>(); }
 
   std::string mac() const { return _vm["mac"].as<std::string>(); }

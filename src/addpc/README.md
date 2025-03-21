@@ -24,7 +24,6 @@ ADDP options:
 ADDP client options:
   -m [ --multicast ] arg (=224.0.5.128) multicast address for discovery
   -t [ --timeout ] arg (=2000)          response timeout (in ms)
-  -c [ --max_count ] arg (=0)           stop after receiving n responses
 
 $ addpc discover
 1.2.3.4     01:02:03:04:05:06   Digi Connect ME     digi1

@@ -10,7 +10,6 @@ static_net_config::static_net_config(mac_address const &mac, const ip_address &i
                                      const std::string &password)
     : action(static_net_config_request(mac, ip, subnet, gateway, password)),
       _mac_address(mac), _ip(ip), _subnet(subnet), _gateway(gateway), _password(password) {
-  set_max_count(1);
 }
 
 void static_net_config::set_mac_address(mac_address const &mac) {
