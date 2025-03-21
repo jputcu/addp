@@ -11,15 +11,15 @@
 #include <addp/packet/field.hpp>
 using namespace addp;
 
-packet::packet(const uint8_t *data, const size_t len) {
+packet::packet(std::span<const uint8_t> const &data) {
   // header
-  std::memcpy(&_header, data, std::min(sizeof(_header), len));
+  std::memcpy(&_header, data.data(), std::min(sizeof(_header), data.size()));
 
   // payload
-  if (len > sizeof(_header)) {
+  if (data.size() > sizeof(_header)) {
     _payload.clear();
-    _payload.reserve(len - sizeof(_header));
-    std::copy_n(data + sizeof(_header), len, back_inserter(_payload));
+    _payload.reserve(data.size() - sizeof(_header));
+    std::copy_n(data.data() + sizeof(_header), data.size() - sizeof(_header), std::back_inserter(_payload));
   }
 }
 
@@ -56,18 +56,12 @@ std::vector<uint8_t> packet::raw() const {
   return buffer;
 }
 
-bool packet::parse_fields() {
+void packet::parse_fields() {
   auto iter = _payload.begin();
   const auto end = _payload.end();
-
-  while (static_cast<size_t>(std::distance(iter, end)) > sizeof(field::header)) {
-    const field f{iter, end};
-    if (!f.check())
-      return false;
-    _fields.push_back(f);
+  while (iter != end) {
+    _fields.emplace_back(iter, end);
   }
-
-  return std::distance(iter, end) == 0;
 }
 
 std::string packet::packet_type2str(const Type type) {

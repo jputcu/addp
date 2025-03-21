@@ -90,11 +90,13 @@ void action::handle_send_to(const boost::system::error_code &error, const size_t
 
 void action::handle_receive_from(const boost::system::error_code &error, const size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
-    packet response{_data.data(), bytes_recvd};
-    if (!response.parse_fields())
-      std::cerr << "failed to parse fields!\n";
+    packet response{{_data.data(), bytes_recvd}};
+    try {
+      response.parse_fields();
+    } catch (std::exception &ex) {
+      std::cerr << "exception: " << ex.what() << "\n";
+    }
     _callback(_sender_address, response);
-    ++_count;
   }
 
   // timeout reached?

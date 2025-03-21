@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <iosfwd>
+#include <span>
 
 #include <boost/asio.hpp>
 
@@ -35,7 +36,7 @@ public:
 
   explicit packet(Type type) { _header.type = htons(static_cast<u_short>(type)); }
 
-  packet(const uint8_t *data, size_t len);
+  explicit packet(std::span<const uint8_t> const &data);
 
   bool check() const { return _payload.size() == _header.size; }
 
@@ -52,7 +53,7 @@ public:
 
   std::vector<uint8_t> raw() const;
 
-  bool parse_fields();
+  void parse_fields();
   const std::vector<field> &fields() const { return _fields; }
 
 private:

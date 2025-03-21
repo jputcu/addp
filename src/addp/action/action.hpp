@@ -56,7 +56,6 @@ private:
   packet _request;
   callback_t _callback;
 
-  size_t _count {};
   size_t _timeout_ms {DEFAULT_TIMEOUT};
   bool _verbose {};
 };

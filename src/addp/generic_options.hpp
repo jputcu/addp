@@ -13,8 +13,8 @@ public:
 
   void usage() const;
 
-  bool version() const { return _vm.count("version") != 0; }
-  bool verbose() const { return _vm.count("verbose") != 0; }
+  bool version() const { return _vm.contains("version"); }
+  bool verbose() const { return _vm.contains("verbose"); }
   std::string logfile() const { return _vm["logfile"].as<std::string>(); }
 
 protected:
@@ -22,8 +22,7 @@ protected:
 
   virtual boost::program_options::options_description all_options() const;
   virtual boost::program_options::positional_options_description positional_options() const {
-    boost::program_options::positional_options_description positional;
-    return positional;
+    return {};
   }
 
   virtual boost::program_options::options_description visible_options() const {

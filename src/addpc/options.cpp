@@ -8,7 +8,7 @@ using namespace addpc;
 void options::opt_parse(int argc, char *argv[]) {
   addp::options::parse(argc, argv);
 
-  if (_vm.count("action") == 0) {
+  if (!_vm.contains("action")) {
     std::cerr << "No action given\n\n";
     usage();
     std::exit(1);

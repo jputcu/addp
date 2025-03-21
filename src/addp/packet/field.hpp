@@ -78,10 +78,10 @@ public:
     if (std::distance(iter, end) >= _header.size) {
       std::copy_n(iter, _header.size, back_inserter(_payload));
       std::advance(iter, _header.size);
+    } else {
+      throw std::runtime_error("not enough data for field");
     }
   }
-
-  bool check() const { return size() == _header.size; }
 
   field_type type() const { return static_cast<field_type>(_header.type); }
 
