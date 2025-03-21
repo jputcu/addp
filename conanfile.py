@@ -14,9 +14,12 @@ class AddpConan(ConanFile):
     exports_sources = "CMakeLists.txt", "src/addp/*", "src/unittest/*"
     requires = "boost/[>=1.80.0 <=1.84.0]"
 
+    options = {"client": [True, False]}
+    default_options = {"client": False}
+
     def generate(self):
         tc = CMakeToolchain(self)
-        tc.variables["ADDP_CLIENT_APP"] = False
+        tc.variables["ADDP_CLIENT_APP"] = self.options.client
         tc.generate()
 
     def build(self):
