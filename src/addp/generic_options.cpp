@@ -26,13 +26,16 @@ void generic_options::usage() const {
 
 boost::program_options::options_description generic_options::all_options() const {
   boost::program_options::options_description opts("Generic options");
-  opts.add_options()("help,h", "produce help message")(
-      "version,V", boost::program_options::value<bool>()->default_value(false)->zero_tokens(),
-      "program version")(
-      "verbose,v",
+  // clang-format off
+  opts.add_options()
+    ("help,h", "produce help message")
+    ("version,V", boost::program_options::value<bool>()->default_value(false)->zero_tokens(),
+      "program version")
+    ("verbose,v",
       boost::program_options::value<size_t>()->default_value(0)->implicit_value(1)->zero_tokens(),
-      "verbose")("logfile,l",
-                 boost::program_options::value<std::string>()->default_value("/dev/stdout"),
-                 "logfile");
+      "verbose")
+    ("logfile,l",
+      boost::program_options::value<std::string>()->default_value("/dev/stdout"), "logfile");
+  // clang-format on
   return opts;
 }

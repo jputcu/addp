@@ -11,11 +11,9 @@
 #include "types.hpp"
 using namespace addp;
 
-mac_address addp::parse_mac_str(const std::string &mac_str) {
+mac_address::mac_address(std::string const &mac_str) {
   std::istringstream is(mac_str);
-  mac_address mac_addr;
-  is >> mac_addr;
-  return mac_addr;
+  is >> *this;
 }
 
 ip_address addp::parse_ip_str(const std::string &ip_str) {

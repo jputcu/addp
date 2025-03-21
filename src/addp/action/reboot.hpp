@@ -7,9 +7,9 @@ namespace addp {
 
 class reboot : public action {
 public:
-  explicit reboot(const mac_address &mac_address, const std::string &password = DEFAULT_PASSWORD);
+  explicit reboot(mac_address const &mac, const std::string &password = DEFAULT_PASSWORD);
 
-  void set_mac_address(const std::string &mac);
+  void set_mac_address(mac_address const &);
   void set_password(const std::string &password);
 
 protected:

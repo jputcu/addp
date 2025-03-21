@@ -6,7 +6,7 @@
 namespace addp {
 
 struct discovery_request : packet {
-  explicit discovery_request(const mac_address mac = MAC_ADDR_BROADCAST)
+  explicit discovery_request(mac_address const &mac = MAC_ADDR_BROADCAST)
       : packet(Type::DISCOVERY_REQUEST) {
     add(mac);
   }

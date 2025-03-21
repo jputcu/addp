@@ -12,8 +12,8 @@ dhcp_net_config::dhcp_net_config(const mac_address &mac_address, bool enable,
   set_max_count(1);
 }
 
-void dhcp_net_config::set_mac_address(const std::string &mac) {
-  set_request(dhcp_net_config_request(parse_mac_str(mac), _enable, _password));
+void dhcp_net_config::set_mac_address(mac_address const &mac) {
+  set_request(dhcp_net_config_request(mac, _enable, _password));
 }
 
 void dhcp_net_config::set_enable(bool enable) {

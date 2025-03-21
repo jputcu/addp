@@ -10,7 +10,7 @@ public:
   dhcp_net_config(const mac_address &mac_address, bool enable,
                   const std::string &password = DEFAULT_PASSWORD);
 
-  void set_mac_address(const std::string &mac);
+  void set_mac_address(mac_address const &);
   void set_enable(bool enable);
   void set_password(const std::string &password);
 

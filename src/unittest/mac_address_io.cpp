@@ -10,7 +10,7 @@
 #include <addp/types.hpp>
 
 BOOST_AUTO_TEST_CASE(mac_address_format) {
-  addp::mac_address mac {{0x01, 0x20, 0x03, 0x4d, 0xfe, 0xef}};
+  addp::mac_address mac {"01:20:03:4d:fe:ef"};
   std::ostringstream os;
   os << mac;
   BOOST_CHECK_EQUAL(os.str(), "01:20:03:4d:fe:ef");
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(mac_address_throw_on_value_underflow) {
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_parse_from_str) {
-  addp::mac_address mac = addp::parse_mac_str("00:11:22:33:44:55");
+  const auto mac = addp::mac_address{"00:11:22:33:44:55"};
   BOOST_CHECK_EQUAL(mac[0], 0x00);
   BOOST_CHECK_EQUAL(mac[1], 0x11);
   BOOST_CHECK_EQUAL(mac[2], 0x22);

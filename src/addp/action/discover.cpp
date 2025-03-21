@@ -5,16 +5,15 @@
 #include <addp/packet/discovery.hpp>
 using namespace addp;
 
-discover::discover(const mac_address &mac_address) : action(discovery_request(mac_address)) {
-  if (mac_address != MAC_ADDR_BROADCAST)
+discover::discover(mac_address const &mac) : action(discovery_request(mac)) {
+  if (mac != MAC_ADDR_BROADCAST)
     set_max_count(1);
 }
 
-void discover::set_mac_address(const std::string &mac) {
-  const auto mac_addr = parse_mac_str(mac);
-  set_request(discovery_request(mac_addr));
+void discover::set_mac_address(mac_address const &mac) {
+  set_request(discovery_request(mac));
 
-  if (mac_addr != MAC_ADDR_BROADCAST)
+  if (mac != MAC_ADDR_BROADCAST)
     set_max_count(1);
 }
 

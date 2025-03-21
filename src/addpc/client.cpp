@@ -46,7 +46,7 @@ bool client::discover() {
 
 bool client::static_net_config() {
   addp::static_net_config action(
-      addp::parse_mac_str(_options.mac()), addp::parse_ip_str(_options.ip()),
+      _options.mac(), addp::parse_ip_str(_options.ip()),
       addp::parse_ip_str(_options.subnet()), addp::parse_ip_str(_options.gateway()));
   action.set_password(_options.password());
 
@@ -54,14 +54,14 @@ bool client::static_net_config() {
 }
 
 bool client::dhcp_net_config() {
-  addp::dhcp_net_config action(addp::parse_mac_str(_options.mac()), _options.dhcp());
+  addp::dhcp_net_config action(_options.mac(), _options.dhcp());
   action.set_password(_options.password());
 
   return run_action(action);
 }
 
 bool client::reboot() {
-  addp::reboot action(addp::parse_mac_str(_options.mac()));
+  addp::reboot action(_options.mac());
   action.set_password(_options.password());
 
   return run_action(action);

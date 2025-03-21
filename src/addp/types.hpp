@@ -9,10 +9,11 @@
 namespace addp {
 
 struct ip_address : std::array<uint8_t, 4> {};
-struct mac_address : std::array<uint8_t, 6> {};
+struct mac_address : std::array<uint8_t, 6> {
+  mac_address() = default;
+  mac_address(std::string const &mac_str);
+};
 struct guid : std::array<uint8_t, 16> {};
-
-mac_address parse_mac_str(const std::string &mac_str);
 
 ip_address parse_ip_str(const std::string &ip_str);
 

@@ -5,14 +5,14 @@
 #include <addp/packet/reboot.hpp>
 using namespace addp;
 
-reboot::reboot(const mac_address &mac_address, const std::string &password)
-    : action(reboot_request(mac_address, password)), _mac_address(mac_address),
+reboot::reboot(mac_address const &mac, const std::string &password)
+    : action(reboot_request(mac, password)), _mac_address(mac),
       _password(password) {
   set_max_count(1);
 }
 
-void reboot::set_mac_address(const std::string &mac) {
-  set_request(reboot_request(parse_mac_str(mac), _password));
+void reboot::set_mac_address(mac_address const &mac) {
+  set_request(reboot_request(mac, _password));
 }
 
 void reboot::set_password(const std::string &password) {

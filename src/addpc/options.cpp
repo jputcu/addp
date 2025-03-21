@@ -31,7 +31,7 @@ void options::opt_parse(int argc, char *argv[]) {
     max = 0;
   } else {
     // must have a specific device address for further actions
-    if (addp::parse_mac_str(mac()) == addp::MAC_ADDR_BROADCAST) {
+    if (addp::mac_address{mac()} == addp::MAC_ADDR_BROADCAST) {
       std::cerr << "Please select a device's mac address\n\n";
       usage();
       std::exit(1);

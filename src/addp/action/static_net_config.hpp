@@ -7,10 +7,10 @@ namespace addp {
 
 class static_net_config : public action {
 public:
-  static_net_config(const mac_address &mac_address, const ip_address &ip, const ip_address &subnet,
+  static_net_config(mac_address const &mac, const ip_address &ip, const ip_address &subnet,
                     const ip_address &gateway, const std::string &password = DEFAULT_PASSWORD);
 
-  void set_mac_address(const std::string &mac);
+  void set_mac_address(mac_address const &mac);
   void set_ip(const std::string &ip);
   void set_subnet(const std::string &subnet);
   void set_gateway(const std::string &gateway);
