@@ -12,6 +12,8 @@ if( WIN32 )
   target_link_libraries(addp_lib PRIVATE ws2_32)
 endif()
 
+target_compile_options(addp_lib PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wsign-conversion)
+
 add_library(addp::addp ALIAS addp_lib)
 
 install(TARGETS addp_lib

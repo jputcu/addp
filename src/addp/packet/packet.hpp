@@ -34,7 +34,7 @@ public:
     DHCP_NET_CONFIG_RESPONSE,
   };
 
-  explicit packet(Type type) { _header.type = htons(static_cast<int>(type)); }
+  explicit packet(Type type) { _header.type = htons(static_cast<u_short>(type)); }
 
   packet(const uint8_t *data, size_t len);
 

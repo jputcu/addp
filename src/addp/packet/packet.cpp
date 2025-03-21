@@ -25,17 +25,17 @@ packet::packet(const uint8_t *data, const size_t len) {
 
 template <> void packet::add(const field::bool_flag &data) {
   _payload.push_back(data);
-  _header.size = htons(_payload.size());
+  _header.size = htons(static_cast<u_short>(_payload.size()));
 }
 
 template <> void packet::add(const mac_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
-  _header.size = htons(_payload.size());
+  _header.size = htons(static_cast<u_short>(_payload.size()));
 }
 
 template <> void packet::add(const ip_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
-  _header.size = htons(_payload.size());
+  _header.size = htons(static_cast<u_short>(_payload.size()));
 }
 
 template <> void packet::add(const std::string &str) {
@@ -44,7 +44,7 @@ template <> void packet::add(const std::string &str) {
 
   const auto data = reinterpret_cast<const uint8_t *>(str.data());
   std::copy_n(data, str.size(), std::back_inserter(_payload));
-  _header.size = htons(_payload.size());
+  _header.size = htons(static_cast<u_short>(_payload.size()));
 }
 
 std::vector<uint8_t> packet::raw() const {
@@ -60,7 +60,7 @@ bool packet::parse_fields() {
   auto iter = _payload.begin();
   const auto end = _payload.end();
 
-  while (std::distance(iter, end) > sizeof(field::header)) {
+  while (static_cast<size_t>(std::distance(iter, end)) > sizeof(field::header)) {
     const field f{iter, end};
     if (!f.check())
       return false;

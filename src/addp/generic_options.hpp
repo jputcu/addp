@@ -13,8 +13,8 @@ public:
 
   void usage() const;
 
-  bool version() const { return _vm["version"].as<bool>(); }
-  size_t verbose() const { return _vm["verbose"].as<size_t>(); }
+  bool version() const { return _vm.count("version") != 0; }
+  bool verbose() const { return _vm.count("verbose") != 0; }
   std::string logfile() const { return _vm["logfile"].as<std::string>(); }
 
 protected:

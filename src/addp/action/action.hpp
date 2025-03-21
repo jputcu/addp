@@ -27,7 +27,7 @@ public:
 
   void set_max_count(const size_t max_count) { _max_count = max_count; }
 
-  void set_verbose(size_t verbose);
+  void set_verbose(bool);
 
   void set_callback(callback_t callback) { _callback = callback; }
 
@@ -57,7 +57,7 @@ private:
   size_t _count {};
   size_t _max_count {DEFAULT_MAX_COUNT};
   size_t _timeout_ms {DEFAULT_TIMEOUT};
-  size_t _verbose {};
+  bool _verbose {};
 };
 
 } // namespace addp

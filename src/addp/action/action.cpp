@@ -24,7 +24,7 @@ void action::set_dest_address(const std::string &dest_ip, uint16_t port) {
   _dest_address = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(dest_ip), port);
 }
 
-void action::set_verbose(const size_t verbose) {
+void action::set_verbose(bool verbose) {
   _verbose = verbose;
 
   if (verbose)
@@ -73,7 +73,7 @@ void action::stop() {
 
 void action::check_timeout() {
   if (_deadline.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-    if (_verbose >= 2)
+    if (_verbose)
       std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
 
     stop();
@@ -107,7 +107,7 @@ void action::handle_receive_from(const boost::system::error_code &error, size_t 
 
   // max count reached?
   if (_max_count && _count == _max_count) {
-    if (_verbose >= 2)
+    if (_verbose)
       std::cout << "max_count reached (" << std::dec << _max_count << ")\n";
 
     stop();
@@ -126,8 +126,8 @@ void action::handle_receive_from(const boost::system::error_code &error, size_t 
 
   // continue receiving
   _socket.async_receive_from(boost::asio::buffer(_data, MAX_UDP_MESSAGE_LEN), _sender_address,
-                             [this](boost::system::error_code ec, std::size_t bytes_recvd) {
-                               handle_receive_from(ec, bytes_recvd);
+                             [this](boost::system::error_code ec, std::size_t n_bytes_recvd) {
+                               handle_receive_from(ec, n_bytes_recvd);
                              });
 }
 
