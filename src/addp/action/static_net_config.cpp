@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <addp/packet/static_net_config.hpp>
+#include <addp/packet/packet.hpp>
 using namespace addp;
 
 static_net_config::static_net_config(mac_address const &mac, const ip_address &ip,

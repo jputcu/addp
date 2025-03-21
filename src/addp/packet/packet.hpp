@@ -1,14 +1,13 @@
 #ifndef ADDP_PACKET_PACKET_H
 #define ADDP_PACKET_PACKET_H
 
-#include <algorithm>
-#include <array>
 #include <cstdint>
 #include <vector>
 #include <iosfwd>
 
 #include <boost/asio.hpp>
 
+#include <addp/constants.hpp>
 #include <addp/types.hpp>
 #include <addp/packet/field.hpp>
 
@@ -44,7 +43,10 @@ public:
 
   std::string type_str() const { return packet_type2str(type()); }
 
-  template <class T> void add(const T &);
+  void add(const field::bool_flag &);
+  void add(const mac_address &);
+  void add(const ip_address &);
+  void add(const std::string &);
 
   const std::vector<uint8_t> &payload() const { return _payload; }
 
@@ -62,6 +64,60 @@ private:
 };
 
 std::ostream &operator<<(std::ostream &os, const packet &packet);
+
+struct discovery_request : packet {
+  explicit discovery_request(mac_address const &mac = MAC_ADDR_BROADCAST)
+      : packet(Type::DISCOVERY_REQUEST) {
+    add(mac);
+  }
+};
+
+struct discovery_response : packet {
+  discovery_response() : packet(Type::DISCOVERY_RESPONSE) {}
+};
+
+struct static_net_config_request : packet {
+  static_net_config_request(const mac_address &mac, const ip_address &ip, const ip_address &subnet,
+                            const ip_address &gateway, const std::string &auth = DEFAULT_PASSWORD)
+      : packet(Type::STATIC_NET_CONFIG_REQUEST) {
+    add(ip);
+    add(subnet);
+    add(gateway);
+    add(mac);
+    add(auth);
+  }
+};
+
+struct static_net_config_response : packet {
+  static_net_config_response() : packet(Type::STATIC_NET_CONFIG_RESPONSE) {}
+};
+
+struct reboot_request : packet {
+  explicit reboot_request(const mac_address &mac = MAC_ADDR_BROADCAST,
+                 const std::string &auth = DEFAULT_PASSWORD)
+      : packet(Type::REBOOT_REQUEST) {
+    add(mac);
+    add(auth);
+  }
+};
+
+struct reboot_response : packet {
+  reboot_response() : packet(Type::REBOOT_RESPONSE) {}
+};
+
+struct dhcp_net_config_request : packet {
+  dhcp_net_config_request(const mac_address &mac, bool enable,
+                          const std::string &auth = DEFAULT_PASSWORD)
+      : packet(Type::DHCP_NET_CONFIG_REQUEST) {
+    add(enable ? field::BF_TRUE : field::BF_FALSE);
+    add(mac);
+    add(auth);
+  }
+};
+
+struct dhcp_net_config_response : packet {
+  dhcp_net_config_response() : packet(Type::DHCP_NET_CONFIG_RESPONSE) {}
+};
 
 } // namespace addp
 

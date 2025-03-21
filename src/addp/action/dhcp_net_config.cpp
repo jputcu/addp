@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <addp/packet/dhcp_net_config.hpp>
+#include <addp/packet/packet.hpp>
 using namespace addp;
 
 dhcp_net_config::dhcp_net_config(const mac_address &mac_address, bool enable,

@@ -9,11 +9,6 @@
 #include <addp/packet/field.hpp>
 #include <addp/packet/packet.hpp>
 
-#include <addp/packet/dhcp_net_config.hpp>
-#include <addp/packet/discovery.hpp>
-#include <addp/packet/reboot.hpp>
-#include <addp/packet/static_net_config.hpp>
-
 #include <addp/action/dhcp_net_config.hpp>
 #include <addp/action/discover.hpp>
 #include <addp/action/reboot.hpp>

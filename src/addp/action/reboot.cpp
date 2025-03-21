@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <addp/packet/reboot.hpp>
+#include <addp/packet/packet.hpp>
 using namespace addp;
 
 reboot::reboot(mac_address const &mac, const std::string &password)

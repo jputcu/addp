@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <addp/packet/discovery.hpp>
+#include <addp/packet/packet.hpp>
 using namespace addp;
 
 discover::discover(mac_address const &mac) : action(discovery_request(mac)) { }

@@ -23,22 +23,22 @@ packet::packet(const uint8_t *data, const size_t len) {
   }
 }
 
-template <> void packet::add(const field::bool_flag &data) {
+void packet::add(const field::bool_flag &data) {
   _payload.push_back(data);
   _header.size = htons(static_cast<u_short>(_payload.size()));
 }
 
-template <> void packet::add(const mac_address &data) {
+void packet::add(const mac_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
 }
 
-template <> void packet::add(const ip_address &data) {
+void packet::add(const ip_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
 }
 
-template <> void packet::add(const std::string &str) {
+void packet::add(const std::string &str) {
   // 1 byte length
   _payload.push_back(static_cast<uint8_t>(str.size()));
 
