@@ -11,7 +11,7 @@ class AddpConan(ConanFile):
     version = "1.1.0"
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps"
-    exports_sources = "CMakeLists.txt", "src/addp/*", "src/unittest/*"
+    exports_sources = "CMakeLists.txt", "src/addp/*", "src/addpc/*", "src/unittest/*"
     requires = "boost/[>=1.80.0 <=1.84.0]"
 
     options = {"client": [True, False]}
