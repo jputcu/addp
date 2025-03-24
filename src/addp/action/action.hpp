@@ -27,8 +27,6 @@ public:
     _dest_address = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(dest_ip), port);
   }
 
-  void set_request(packet &&request) { _request = std::move(request); }
-
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
   void set_verbose(bool verbose) { _verbose = verbose; }

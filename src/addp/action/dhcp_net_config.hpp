@@ -12,20 +12,6 @@ public:
       : action(dhcp_net_config_request(mac_address, enable, password)), _mac_address(mac_address),
         _enable(enable), _password(password) {}
 
-  void set_mac_address(mac_address const &mac) {
-    set_request(dhcp_net_config_request(mac, _enable, _password));
-  }
-
-  void set_enable(bool enable) {
-    _enable = enable;
-    set_request(dhcp_net_config_request(_mac_address, _enable, _password));
-  }
-
-  void set_password(const std::string &password) {
-    _password = password;
-    set_request(dhcp_net_config_request(_mac_address, _enable, _password));
-  }
-
 private:
   mac_address _mac_address;
   bool _enable;

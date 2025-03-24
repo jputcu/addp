@@ -91,21 +91,20 @@ boost::program_options::options_description options::addpc_hidden_options() cons
 }
 
 boost::program_options::options_description options::visible_options() const {
-  boost::program_options::options_description opts = addp::options::all_options();
+  auto opts = addp::options::all_options();
   opts.add(addpc_options());
   return opts;
 }
 
 boost::program_options::options_description options::all_options() const {
-  boost::program_options::options_description opts = addp::options::all_options();
+  auto opts = addp::options::all_options();
   opts.add(addpc_options());
   opts.add(addpc_hidden_options());
   return opts;
 }
 
 boost::program_options::positional_options_description options::positional_options() const {
-  boost::program_options::positional_options_description positional =
-      addp::options::positional_options();
+  auto positional = addp::options::positional_options();
   positional.add("action", 1).add("mac", 1).add("args", -1);
   return positional;
 }

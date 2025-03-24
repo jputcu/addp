@@ -12,7 +12,7 @@ public:
   explicit client(const options &options) : _options(options) {}
 
   bool run();
-  bool run_action(addp::action &action);
+  bool run_action(addp::action &&action);
 
   // actions
   bool discover();

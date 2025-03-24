@@ -12,30 +12,6 @@ public:
       : action(static_net_config_request(mac, ip, subnet, gateway, password)), _mac_address(mac),
         _ip(ip), _subnet(subnet), _gateway(gateway), _password(password) {}
 
-  void set_mac_address(mac_address const &mac) {
-    set_request(static_net_config_request(mac, _ip, _subnet, _gateway, _password));
-  }
-
-  void set_ip(const std::string &ip) {
-    set_request(
-        static_net_config_request(_mac_address, parse_ip_str(ip), _subnet, _gateway, _password));
-  }
-
-  void set_subnet(const std::string &subnet) {
-    set_request(
-        static_net_config_request(_mac_address, _ip, parse_ip_str(subnet), _gateway, _password));
-  }
-
-  void set_gateway(const std::string &gateway) {
-    set_request(
-        static_net_config_request(_mac_address, _ip, _subnet, parse_ip_str(gateway), _password));
-  }
-
-  void set_password(const std::string &password) {
-    _password = password;
-    set_request(static_net_config_request(_mac_address, _ip, _subnet, _gateway, _password));
-  }
-
 private:
   mac_address _mac_address;
   ip_address _ip;
