@@ -17,7 +17,6 @@ Generic options:
   -v [ --verbose ]                      verbose
 
 ADDP options:
-  -l [ --logfile ] arg (=/dev/stdout) logfile
   -L [ --listen ] arg (=0.0.0.0)      ip address to listen
   -p [ --port ] arg (=2362)           udp port
 

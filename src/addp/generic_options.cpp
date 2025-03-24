@@ -30,9 +30,7 @@ boost::program_options::options_description generic_options::all_options() const
   opts.add_options()
     ("help,h", "produce help message")
     ("version,V", "program version")
-    ("verbose,v", "verbose")
-    ("logfile,l",
-      boost::program_options::value<std::string>()->default_value("/dev/stdout"), "logfile");
+    ("verbose,v", "verbose");
   // clang-format on
   return opts;
 }

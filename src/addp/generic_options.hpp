@@ -15,7 +15,6 @@ public:
 
   bool version() const { return _vm.contains("version"); }
   bool verbose() const { return _vm.contains("verbose"); }
-  std::string logfile() const { return _vm["logfile"].as<std::string>(); }
 
 protected:
   void parse(int argc, char *argv[]);
