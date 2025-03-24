@@ -98,7 +98,7 @@ std::ostream &addp::operator<<(std::ostream &os, const packet &packet) {
 
   if ( packet.type() == packet::Type::DISCOVERY_REQUEST ) {
     os << std::hex << std::setfill('0');
-    const auto payload = packet.payload();
+    auto const &payload = packet.payload();
     for (size_t i = 0; i < payload.size(); ++i)
       os << (i ? ":" : " ") << static_cast<int>(payload[i]);
   }

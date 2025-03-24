@@ -18,14 +18,31 @@ public:
 
   explicit action(packet &&request);
 
-  void set_listen_address(const std::string &listen_ip, uint16_t port = UDP_PORT);
-  void set_dest_address(const std::string &dest_ip, uint16_t port = UDP_PORT);
+  void set_listen_address(const std::string &listen_ip, uint16_t port = UDP_PORT) {
+    _listen_address =
+        boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(listen_ip), port);
+  }
+
+  void set_dest_address(const std::string &dest_ip, uint16_t port = UDP_PORT) {
+    _dest_address = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(dest_ip), port);
+  }
 
   void set_request(packet &&request) { _request = std::move(request); }
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  void set_verbose(bool);
+  void set_verbose(bool verbose) {
+    _verbose = verbose;
+
+    if (verbose)
+      set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
+        print_verbose(sender, pckt);
+      });
+    else
+      set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
+        print_brief(sender, pckt);
+      });
+  }
 
   void set_callback(callback_t callback) { _callback = callback; }
 
@@ -56,8 +73,8 @@ private:
   packet _request;
   callback_t _callback;
 
-  size_t _timeout_ms {DEFAULT_TIMEOUT};
-  bool _verbose {};
+  size_t _timeout_ms{DEFAULT_TIMEOUT};
+  bool _verbose{};
 };
 
 } // namespace addp

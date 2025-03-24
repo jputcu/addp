@@ -16,27 +16,6 @@ action::action(packet &&request)
   check_timeout();
 }
 
-void action::set_listen_address(const std::string &listen_ip, uint16_t port) {
-  _listen_address = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(listen_ip), port);
-}
-
-void action::set_dest_address(const std::string &dest_ip, uint16_t port) {
-  _dest_address = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(dest_ip), port);
-}
-
-void action::set_verbose(bool verbose) {
-  _verbose = verbose;
-
-  if (verbose)
-    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
-      print_verbose(sender, pckt);
-    });
-  else
-    set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
-      print_brief(sender, pckt);
-    });
-}
-
 bool action::run() {
   _socket.open(boost::asio::ip::udp::v4());
   _socket.bind(_listen_address);

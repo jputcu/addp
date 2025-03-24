@@ -1,15 +1,6 @@
 #include "discover.hpp"
-
 #include <iostream>
-
-#include <addp/packet/packet.hpp>
 using namespace addp;
-
-discover::discover(mac_address const &mac) : action(discovery_request(mac)) { }
-
-void discover::set_mac_address(mac_address const &mac) {
-  set_request(discovery_request(mac));
-}
 
 void discover::print_brief(const boost::asio::ip::udp::endpoint &sender,
                            const packet &response) const {
