@@ -36,10 +36,6 @@ public:
     set_request(static_net_config_request(_mac_address, _ip, _subnet, _gateway, _password));
   }
 
-protected:
-  void print_brief(const boost::asio::ip::udp::endpoint &sender,
-                   const packet &response) const override;
-
 private:
   mac_address _mac_address;
   ip_address _ip;

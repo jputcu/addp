@@ -26,10 +26,6 @@ public:
     set_request(dhcp_net_config_request(_mac_address, _enable, _password));
   }
 
-protected:
-  void print_brief(const boost::asio::ip::udp::endpoint &sender,
-                   const packet &response) const override;
-
 private:
   mac_address _mac_address;
   bool _enable;

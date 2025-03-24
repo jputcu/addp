@@ -10,7 +10,7 @@
 
 #include <addp/constants.hpp>
 #include <addp/types.hpp>
-#include <addp/packet/field.hpp>
+#include "field.hpp"
 
 namespace addp {
 

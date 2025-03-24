@@ -31,20 +31,7 @@ public:
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  void set_verbose(bool verbose) {
-    _verbose = verbose;
-
-    if (verbose)
-      set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
-        print_verbose(sender, pckt);
-      });
-    else
-      set_callback([&](const boost::asio::ip::udp::endpoint &sender, const packet &pckt) {
-        print_brief(sender, pckt);
-      });
-  }
-
-  void set_callback(callback_t callback) { _callback = callback; }
+  void set_verbose(bool verbose) { _verbose = verbose; }
 
   bool run();
 
@@ -54,8 +41,7 @@ public:
   }
 
 protected:
-  virtual void print_brief(const boost::asio::ip::udp::endpoint &sender, const packet &) const;
-  virtual void print_verbose(const boost::asio::ip::udp::endpoint &sender, const packet &) const;
+  virtual void on_response(const boost::asio::ip::udp::endpoint &sender, const packet &) = 0;
 
 private:
   void check_timeout();
@@ -71,8 +57,6 @@ private:
   std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
 
   packet _request;
-  callback_t _callback;
-
   size_t _timeout_ms{DEFAULT_TIMEOUT};
   bool _verbose{};
 };

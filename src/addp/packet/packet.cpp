@@ -7,8 +7,6 @@
 #include <iterator>
 #include <vector>
 #include <iomanip>
-
-#include <addp/packet/field.hpp>
 using namespace addp;
 
 packet::packet(std::span<const uint8_t> const &data) {

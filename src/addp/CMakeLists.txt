@@ -1,6 +1,10 @@
-file(GLOB_RECURSE SRC *.cpp)
-
-add_library(addp_lib ${SRC})
+add_library(addp_lib
+        action/action.cpp
+        generic_options.cpp
+        packet/field.cpp
+        packet/packet.cpp
+        types.cpp
+        )
 set_target_properties(addp_lib PROPERTIES OUTPUT_NAME addp)
 target_include_directories(addp_lib
   PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/.. )

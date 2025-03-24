@@ -75,7 +75,7 @@ void action::handle_receive_from(const boost::system::error_code &error, const s
     } catch (std::exception &ex) {
       std::cerr << "exception: " << ex.what() << "\n";
     }
-    _callback(_sender_address, response);
+    on_response(_sender_address, response);
   }
 
   // timeout reached?
@@ -93,13 +93,4 @@ void action::handle_receive_from(const boost::system::error_code &error, const s
                              [this](boost::system::error_code ec, std::size_t n_bytes_recvd) {
                                handle_receive_from(ec, n_bytes_recvd);
                              });
-}
-
-void action::print_brief(const boost::asio::ip::udp::endpoint &sender,
-                         const packet &) const {
-  std::cout << sender.address() << "\n";
-}
-
-void action::print_verbose(const boost::asio::ip::udp::endpoint &sender, const packet &pckt) const {
-  std::cout << sender << " " << pckt << "\n";
 }

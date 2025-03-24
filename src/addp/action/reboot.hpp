@@ -17,10 +17,6 @@ public:
     set_request(reboot_request(_mac_address, _password));
   }
 
-protected:
-  void print_brief(const boost::asio::ip::udp::endpoint &sender,
-                   const packet &response) const override;
-
 private:
   mac_address _mac_address;
   std::string _password;
