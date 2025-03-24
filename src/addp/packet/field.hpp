@@ -4,8 +4,9 @@
 #include <cstdint>
 #include <vector>
 #include <iosfwd>
-
-#include <boost/asio.hpp>
+#include <algorithm>
+#include <string>
+#include <stdexcept>
 
 namespace addp {
 
@@ -68,7 +69,7 @@ public:
     BF_TRUE = 0x01,
   };
 
-  explicit field(field_type type) : _header{static_cast<uint8_t>(htons(type))} {}
+  explicit field(field_type type) : _header{static_cast<uint8_t>(type)} {}
 
   field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
     // header

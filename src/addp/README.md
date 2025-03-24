@@ -421,6 +421,7 @@ the protocol.
 * 0x11: 1 byte Error code
 * 0x12: 1 byte Serial Port Count
 * 0x13: 4 byte Encrypted Real Port number
+* 0x1a: Device-ID 4x 4 byte
 
 ### Error codes (Field 0x11)
 

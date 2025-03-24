@@ -24,9 +24,8 @@ void options::opt_parse(int argc, char *argv[]) {
   size_t min = 0;
   size_t max = 0;
 
-  const std::string &action = this->action();
-
-  if (action == "discover") {
+  const std::string &action_string = this->action();
+  if (action_string == "discover") {
     min = 0;
     max = 0;
   } else {
@@ -37,17 +36,17 @@ void options::opt_parse(int argc, char *argv[]) {
       std::exit(1);
     }
 
-    if (action == "reboot") {
+    if (action_string == "reboot") {
       min = 0;
       max = 1;
-    } else if (action == "config") {
+    } else if (action_string == "config") {
       min = 3;
       max = 4;
-    } else if (action == "dhcp") {
+    } else if (action_string == "dhcp") {
       min = 1;
       max = 2;
     } else {
-      std::cerr << "Unknown action \"" << action << "\"\n\n";
+      std::cerr << "Unknown action \"" << action_string << "\"\n\n";
       usage();
       std::exit(1);
     }
@@ -91,22 +90,15 @@ boost::program_options::options_description options::addpc_hidden_options() cons
 }
 
 boost::program_options::options_description options::visible_options() const {
-  auto opts = addp::options::all_options();
-  opts.add(addpc_options());
-  return opts;
+  return addp::options::all_options().add(addpc_options());
 }
 
 boost::program_options::options_description options::all_options() const {
-  auto opts = addp::options::all_options();
-  opts.add(addpc_options());
-  opts.add(addpc_hidden_options());
-  return opts;
+  return addp::options::all_options().add(addpc_options()).add(addpc_hidden_options());
 }
 
 boost::program_options::positional_options_description options::positional_options() const {
-  auto positional = addp::options::positional_options();
-  positional.add("action", 1).add("mac", 1).add("args", -1);
-  return positional;
+  return addp::options::positional_options().add("action", 1).add("mac", 1).add("args", -1);
 }
 
 std::string options::password() const {

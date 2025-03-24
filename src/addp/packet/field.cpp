@@ -1,5 +1,6 @@
 #include "field.hpp"
 
+#include <boost/asio.hpp>
 #include <boost/format.hpp>
 #include <iomanip>
 #include <sstream>
@@ -8,9 +9,9 @@
 #include <addp/types.hpp>
 using namespace addp;
 
-template <> bool field::value() const { return _payload[0] == BF_TRUE; }
+template <> bool field::value() const { return _payload.front() == BF_TRUE; }
 
-template <> uint8_t field::value() const { return _payload[0]; }
+template <> uint8_t field::value() const { return _payload.front(); }
 
 template <> uint16_t field::value() const {
   return ntohs(*reinterpret_cast<const uint16_t *>(_payload.data()));
@@ -203,7 +204,7 @@ std::string field::result_flag2str(const result_flag flag) {
 std::string field::config_error2str(const config_error error) {
   switch (error) {
   case CE_SUCCESS:
-    return "SUCCESS";
+    return "Success";
   case CE_ERROR:
     return "Error";
   default:

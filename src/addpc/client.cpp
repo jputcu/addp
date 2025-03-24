@@ -48,7 +48,7 @@ bool client::discover() {
       std::string device;
       std::string firmware;
 
-      for (const auto &f : packet.fields()) {
+      for (auto const &f : packet.fields()) {
         switch (f.type()) {
         case addp::field::FT_MAC_ADDR:
           mac_addr = f.value_str();
@@ -83,7 +83,7 @@ bool client::static_net_config() {
 
     void on_response(const boost::asio::ip::udp::endpoint &sender [[maybe_unused]],
                      const addp::packet &packet) override {
-      for (const addp::field &f : packet.fields())
+      for (auto const &f : packet.fields())
         if (f.type() == addp::field::FT_RESULT_MSG) {
           std::cout << f.value<std::string>() << "\n";
           break;
@@ -103,7 +103,7 @@ bool client::dhcp_net_config() {
 
     void on_response(const boost::asio::ip::udp::endpoint &sender [[maybe_unused]],
                      const addp::packet &packet) override {
-      for (const addp::field &f : packet.fields())
+      for (auto const &f : packet.fields())
         if (f.type() == addp::field::FT_RESULT_MSG) {
           std::cout << f.value_str() << "\n";
           break;
@@ -120,7 +120,7 @@ bool client::reboot() {
 
     void on_response(const boost::asio::ip::udp::endpoint &sender [[maybe_unused]],
                      const addp::packet &packet) override {
-      for (const addp::field &f : packet.fields())
+      for (auto const &f : packet.fields())
         if (f.type() == addp::field::FT_RESULT_MSG) {
           std::cout << f.value<std::string>() << "\n";
           break;

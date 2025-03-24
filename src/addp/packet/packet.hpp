@@ -17,9 +17,9 @@ namespace addp {
 class packet {
 public:
   struct header {
-    char magic[4] {'D','I','G','I'};
-    uint16_t type;
-    uint16_t size;
+    char magic[4]{'D', 'I', 'G', 'I'};
+    uint16_t type {};
+    uint16_t size {};
   };
 
   enum class Type {
@@ -38,13 +38,17 @@ public:
 
   explicit packet(std::span<const uint8_t> const &data);
 
-  bool check() const { return _payload.size() == _header.size; }
+  bool check() const { return htons(static_cast<u_short>(_payload.size())) == _header.size; }
 
   Type type() const { return static_cast<Type>(ntohs(_header.type)); }
 
   std::string type_str() const { return packet_type2str(type()); }
 
-  void add(const field::bool_flag &);
+  void add(const field::bool_flag data) {
+    _payload.push_back(data);
+    _header.size = htons(static_cast<u_short>(_payload.size()));
+  }
+
   void add(const mac_address &);
   void add(const ip_address &);
   void add(const std::string &);
@@ -53,7 +57,14 @@ public:
 
   std::vector<uint8_t> raw() const;
 
-  void parse_fields();
+  void parse_fields() {
+    auto iter = _payload.begin();
+    const auto end = _payload.end();
+    while (iter != end) {
+      _fields.emplace_back(iter, end);
+    }
+  }
+
   const std::vector<field> &fields() const { return _fields; }
 
 private:
@@ -95,7 +106,7 @@ struct static_net_config_response : packet {
 
 struct reboot_request : packet {
   explicit reboot_request(const mac_address &mac = MAC_ADDR_BROADCAST,
-                 const std::string &auth = DEFAULT_PASSWORD)
+                          const std::string &auth = DEFAULT_PASSWORD)
       : packet(Type::REBOOT_REQUEST) {
     add(mac);
     add(auth);

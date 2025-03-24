@@ -61,7 +61,7 @@ void action::handle_send_to(const boost::system::error_code &error, const size_t
     std::cerr << "error: " << error.value() << "(" << error.message() << ")"
               << " sent: " << bytes_sent << "\n";
 
-  _socket.async_receive_from(boost::asio::buffer(_data, _data.size()), _sender_address,
+  _socket.async_receive_from(boost::asio::buffer(_data), _sender_address,
                              [this](boost::system::error_code ec, std::size_t bytes_recvd) {
                                handle_receive_from(ec, bytes_recvd);
                              });

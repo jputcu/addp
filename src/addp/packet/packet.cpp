@@ -21,11 +21,6 @@ packet::packet(std::span<const uint8_t> const &data) {
   }
 }
 
-void packet::add(const field::bool_flag &data) {
-  _payload.push_back(data);
-  _header.size = htons(static_cast<u_short>(_payload.size()));
-}
-
 void packet::add(const mac_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
@@ -52,14 +47,6 @@ std::vector<uint8_t> packet::raw() const {
   std::copy_n(headerp, sizeof(_header), std::back_inserter(buffer));
   std::copy(_payload.begin(), _payload.end(), std::back_inserter(buffer));
   return buffer;
-}
-
-void packet::parse_fields() {
-  auto iter = _payload.begin();
-  const auto end = _payload.end();
-  while (iter != end) {
-    _fields.emplace_back(iter, end);
-  }
 }
 
 std::string packet::packet_type2str(const Type type) {
