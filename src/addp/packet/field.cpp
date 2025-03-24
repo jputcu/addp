@@ -39,7 +39,7 @@ template <> field::result_flag field::value() const {
 }
 
 template <typename T> T field::value() const {
-  T t;
+  T t {};
   if (_payload.size() == t.size())
     std::copy(_payload.begin(), _payload.end(), t.begin());
   return t;
@@ -103,6 +103,7 @@ std::string field::value_str() const {
     os << std::dec << value<result_flag>();
     break;
 
+  case FT_DEVICE_ID:
   default: {
     for (const uint8_t b : payload())
       os << " " << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(b);
@@ -166,6 +167,8 @@ std::string field::field_type2str(const field_type type) {
     return "Version ID";
   case FT_VENDOR:
     return "Vendor GUID";
+  case FT_DEVICE_ID:
+    return "Device-ID";
   default:
     return str(boost::format("Unknown (0x%02x)") % type);
   }

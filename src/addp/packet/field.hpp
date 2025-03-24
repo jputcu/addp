@@ -18,27 +18,28 @@ public:
 
   enum field_type {
     FT_NONE = 0x00,
-    FT_MAC_ADDR,      // 6 byte MAC address
-    FT_IP_ADDR,       // 4 byte IP address
-    FT_NETMASK,       // 4 byte netmask
-    FT_NAME,          // string name
-    FT_DOMAIN,        // domain
-    FT_HW_TYPE,       // hardware type
-    FT_HW_REV,        // hardware Revision
-    FT_FIRMWARE,      // string firmware
-    FT_RESULT_MSG,    // string result message
-    FT_RESULT_FLAG,   // 1 byte result flag
-    FT_GATEWAY,       // 4 byte gateway IP
-    FT_CONF_ERR_CODE, // 2 byte configuration error code
-    FT_DEVICE,        // string device
-    FT_PORT,          // 4 byte port
-    FT_DNS,           // 4 byte DNS IP
-    FT_DCHP,          // bool DHCP enabled
-    FT_ERR_CODE,      // 1 byte error code
-    FT_SERIAL_COUNT,  // 1 byte serial port count
-    FT_SSL_PORT,      // 4 byte encrypted port
-    FT_VERSION,       // version ID
-    FT_VENDOR,        // vendor GUID
+    FT_MAC_ADDR,        // 6 byte MAC address
+    FT_IP_ADDR,         // 4 byte IP address
+    FT_NETMASK,         // 4 byte netmask
+    FT_NAME,            // string name
+    FT_DOMAIN,          // domain
+    FT_HW_TYPE,         // hardware type
+    FT_HW_REV,          // hardware Revision
+    FT_FIRMWARE,        // string firmware
+    FT_RESULT_MSG,      // string result message
+    FT_RESULT_FLAG,     // 1 byte result flag
+    FT_GATEWAY,         // 4 byte gateway IP
+    FT_CONF_ERR_CODE,   // 2 byte configuration error code
+    FT_DEVICE,          // string device
+    FT_PORT,            // 4 byte port
+    FT_DNS,             // 4 byte DNS IP
+    FT_DCHP,            // bool DHCP enabled
+    FT_ERR_CODE,        // 1 byte error code
+    FT_SERIAL_COUNT,    // 1 byte serial port count
+    FT_SSL_PORT,        // 4 byte encrypted port
+    FT_VERSION,         // version ID
+    FT_VENDOR = 0x15,   // vendor GUID
+    FT_DEVICE_ID = 0x1a // Device ID: '00000000-00000000-00409DFF-FF300000'
   };
 
   // FT_ERR_CODE
