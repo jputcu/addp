@@ -2,24 +2,33 @@
 
 #include <addp/types.hpp>
 #include <iostream>
+#include <boost/filesystem.hpp>
+#include <boost/format.hpp>
 
 using namespace addpc;
 
+void options::usage() const {
+  std::cout << str(boost::format(_usage) % _progname) << "\n" << all_options();
+}
+
 void options::opt_parse(int argc, char *argv[]) {
-  addp::options::parse(argc, argv);
+  _progname = boost::filesystem::path(argv[0]).filename().string();
+
+  boost::program_options::command_line_parser parser(argc, argv);
+  boost::program_options::store(
+      parser.options(all_options()).positional(positional_options()).run(), _vm);
+  boost::program_options::notify(_vm);
+
+  if (_vm.count("help")) {
+    usage();
+    std::exit(1);
+  }
 
   if (!_vm.contains("action")) {
     std::cerr << "No action given\n\n";
     usage();
     std::exit(1);
   }
-
-  /*
-   *  discover [device]
-   *  reboot <device> [passwd]
-   *  config <device> <ip> <netmask> <gateway> [passwd]
-   *  dhcp <device> <on|off> [passwd]
-   */
 
   size_t min = 0;
   size_t max = 0;
@@ -61,7 +70,14 @@ void options::opt_parse(int argc, char *argv[]) {
   _password_index = max - 1;
 }
 
-boost::program_options::options_description options::addpc_options() const {
+boost::program_options::options_description options::all_options() const {
+  boost::program_options::options_description addp_opts("ADDP options");
+  addp_opts.add_options()(
+        "multicast,m",
+        boost::program_options::value<std::string>()->default_value(addp::MCAST_IP_ADDRESS),
+        "multicast address for discovery")(
+        "port,p", boost::program_options::value<uint16_t>()->default_value(addp::UDP_PORT), "udp port");
+
   // clang-format off
   boost::program_options::options_description addpc_opts("ADDP client options");
   addpc_opts.add_options()
@@ -70,11 +86,7 @@ boost::program_options::options_description options::addpc_options() const {
     ("timeout,t", boost::program_options::value<size_t>()->default_value(addp::DEFAULT_TIMEOUT),
       "response timeout (in ms)");
   // clang-format on
-  return addpc_opts;
-}
 
-boost::program_options::options_description options::addpc_hidden_options() const {
-  // clang-format off
   boost::program_options::options_description hidden_opts;
   hidden_opts.add_options()
     ("action", boost::program_options::value<std::string>(),
@@ -86,19 +98,16 @@ boost::program_options::options_description options::addpc_hidden_options() cons
        ->multitoken(),
        "action arguments");
   // clang-format on
-  return hidden_opts;
-}
 
-boost::program_options::options_description options::visible_options() const {
-  return addp::options::all_options().add(addpc_options());
-}
-
-boost::program_options::options_description options::all_options() const {
-  return addp::options::all_options().add(addpc_options()).add(addpc_hidden_options());
-}
-
-boost::program_options::positional_options_description options::positional_options() const {
-  return addp::options::positional_options().add("action", 1).add("mac", 1).add("args", -1);
+  boost::program_options::options_description opts("Generic options");
+  // clang-format off
+  opts.add_options()
+    ("help,h", "produce help message")
+    ("version,V", "program version")
+    ("verbose,v", "verbose");
+  // clang-format on
+  opts.add(addp_opts).add(addpc_opts).add(hidden_opts);
+  return opts;
 }
 
 std::string options::password() const {

@@ -40,35 +40,7 @@ bool client::discover() {
 
     void on_response(const boost::asio::ip::udp::endpoint &sender [[maybe_unused]],
                      const addp::packet &packet) override {
-#if 1
       std::cout << sender << " " << packet << "\n";
-#else
-      std::string mac_addr;
-      std::string name;
-      std::string device;
-      std::string firmware;
-
-      for (auto const &f : packet.fields()) {
-        switch (f.type()) {
-        case addp::field::FT_MAC_ADDR:
-          mac_addr = f.value_str();
-          break;
-        case addp::field::FT_NAME:
-          name = f.value_str();
-          break;
-        case addp::field::FT_DEVICE:
-          device = f.value_str();
-          break;
-        case addp::field::FT_FIRMWARE:
-          firmware = f.value_str();
-          break;
-        default:
-          break;
-        }
-      }
-      std::cout << sender.address() << '\t' << name << '\t' << mac_addr << '\t' << device << '\t'
-                << firmware << "\n";
-#endif
     }
   };
 

@@ -8,7 +8,7 @@
 
 namespace addpc {
 
-class options : public addp::options {
+class options {
 public:
   options(int argc, char *argv[]) {
     _usage = {"Usage: %s [options...] <action> [args...]\n"
@@ -32,26 +32,31 @@ public:
 
   std::vector<std::string> args() const { return _vm["args"].as<std::vector<std::string>>(); }
 
-  // action options
+  std::string multicast() const { return _vm["multicast"].as<std::string>(); }
+
+  uint16_t port() const { return _vm["port"].as<uint16_t>(); }
+  bool version() const { return _vm.contains("version"); }
+  bool verbose() const { return _vm.contains("verbose"); }
   std::string password() const;
   std::string ip() const { return args()[0]; }
   std::string subnet() const { return args()[1]; }
   std::string gateway() const { return args()[2]; }
-
   bool dhcp() const;
-
-protected:
-  void opt_parse(int argc, char *argv[]);
-
-  boost::program_options::options_description all_options() const override;
-  boost::program_options::positional_options_description positional_options() const override;
-  boost::program_options::options_description visible_options() const override;
+  void usage() const;
 
 private:
-  boost::program_options::options_description addpc_options() const;
-  boost::program_options::options_description addpc_hidden_options() const;
+  void opt_parse(int argc, char *argv[]);
 
+  boost::program_options::options_description all_options() const;
+  boost::program_options::positional_options_description positional_options() const {
+    boost::program_options::positional_options_description pos_args;
+    return pos_args.add("action", 1).add("mac", 1).add("args", -1);
+  }
+
+  boost::program_options::variables_map _vm;
+  std::string _usage = "Usage: %s [options...]\n";
   size_t _password_index;
+  std::string _progname;
 };
 
 } // namespace addpc

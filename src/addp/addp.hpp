@@ -2,7 +2,6 @@
 #define ADDP_H
 
 #include <addp/constants.hpp>
-#include <addp/options.hpp>
 #include <addp/types.hpp>
 #include <addp/version.hpp>
 
