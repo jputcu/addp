@@ -63,10 +63,8 @@ bool client::static_net_config() {
     }
   };
 
-  return run_action(StaticNetHandle{_options.mac(), addp::parse_ip_str(_options.ip()),
-                         addp::parse_ip_str(_options.subnet()),
-                         addp::parse_ip_str(_options.gateway()),
-                         _options.password()});
+  return run_action(StaticNetHandle{_options.mac(), _options.ip(), _options.subnet(),
+                         _options.gateway(), _options.password()});
 }
 
 bool client::dhcp_net_config() {

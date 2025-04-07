@@ -16,11 +16,9 @@ mac_address::mac_address(std::string const &mac_str) {
   is >> *this;
 }
 
-ip_address addp::parse_ip_str(const std::string &ip_str) {
+ip_address::ip_address(std::string const &ip_str) {
   std::istringstream is(ip_str);
-  ip_address ip_addr;
-  is >> ip_addr;
-  return ip_addr;
+  is >> *this;
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const ip_address &ip_addr) {

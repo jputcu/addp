@@ -9,7 +9,7 @@
 #include <addp/types.hpp>
 
 BOOST_AUTO_TEST_CASE(ip_address_format) {
-  addp::ip_address ip = {{192, 168, 1, 1}};
+  addp::ip_address ip {"192.168.1.1"};
   std::ostringstream os;
   os << ip;
   BOOST_CHECK_EQUAL(os.str(), "192.168.1.1");
