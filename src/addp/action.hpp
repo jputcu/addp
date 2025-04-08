@@ -59,48 +59,26 @@ private:
   bool _verbose{};
 };
 
-class discover : public action {
-public:
+struct discover : action {
   explicit discover(mac_address const &mac = MAC_ADDR_BROADCAST)
       : action(request::discovery_request(mac)) {}
 };
 
-class reboot : public action {
-public:
+struct reboot : action {
   explicit reboot(mac_address const &mac, const std::string &password = DEFAULT_PASSWORD)
-      : action(request::reboot_request(mac, password)), _mac_address(mac), _password(password) {}
-
-private:
-  mac_address _mac_address;
-  std::string _password;
+      : action(request::reboot_request(mac, password)) {}
 };
 
-class static_net_config : public action {
-public:
+struct static_net_config : action {
   static_net_config(mac_address const &mac, const ip_address &ip, const ip_address &subnet,
                     const ip_address &gateway, const std::string &password = DEFAULT_PASSWORD)
-      : action(request::static_net_config_request(mac, ip, subnet, gateway, password)),
-        _mac_address(mac), _ip(ip), _subnet(subnet), _gateway(gateway), _password(password) {}
-
-private:
-  mac_address _mac_address;
-  ip_address _ip;
-  ip_address _subnet;
-  ip_address _gateway;
-  std::string _password;
+      : action(request::static_net_config_request(mac, ip, subnet, gateway, password)) {}
 };
 
-class dhcp_net_config : public action {
-public:
+struct dhcp_net_config : action {
   dhcp_net_config(const mac_address &mac_address, bool enable,
                   const std::string &password = DEFAULT_PASSWORD)
-      : action(request::dhcp_net_config_request(mac_address, enable, password)),
-        _mac_address(mac_address), _enable(enable), _password(password) {}
-
-private:
-  mac_address _mac_address;
-  bool _enable;
-  std::string _password;
+      : action(request::dhcp_net_config_request(mac_address, enable, password)) {}
 };
 
 } // namespace addp
