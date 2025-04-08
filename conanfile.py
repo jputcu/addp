@@ -31,6 +31,8 @@ class AddpConan(ConanFile):
 
     def layout(self):
         cmake_layout(self)
+        self.cpp.source.includedirs = [os.path.join("src")]
+        self.cpp.build.libdirs = [os.path.join("src" ,"addp")]
 
     def package(self):
         copy(self, "*.hpp", os.path.join(self.source_folder, "src", "addp"), os.path.join(self.package_folder, "include", "addp"))
