@@ -9,15 +9,14 @@
 #include <iomanip>
 using namespace addp;
 
-packet::packet(std::span<const uint8_t> const &data) {
-  // header
-  std::memcpy(&_header, data.data(), std::min(sizeof(_header), data.size()));
+packet::packet(const uint8_t *begin_it, const uint8_t *end_it) {
+  if ( static_cast<size_t>(std::distance(begin_it, end_it)) >= sizeof(_header) ) {
+    // header
+    std::memcpy(&_header, begin_it, sizeof(_header));
+    begin_it += sizeof(_header);
 
-  // payload
-  if (data.size() > sizeof(_header)) {
-    _payload.clear();
-    _payload.reserve(data.size() - sizeof(_header));
-    std::copy_n(data.data() + sizeof(_header), data.size() - sizeof(_header), std::back_inserter(_payload));
+    // payload
+    _payload.assign(begin_it, end_it);
   }
 }
 

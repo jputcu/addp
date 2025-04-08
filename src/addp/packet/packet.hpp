@@ -16,27 +16,27 @@ namespace addp {
 
 class packet {
 public:
+  enum class Type : uint16_t {
+    NONE = 0x0000,
+    DISCOVERY_REQUEST = 0x0001,
+    DISCOVERY_RESPONSE = 0x0002,
+    STATIC_NET_CONFIG_REQUEST = 0x0003,
+    STATIC_NET_CONFIG_RESPONSE = 0x0004,
+    REBOOT_REQUEST = 0x0005,
+    REBOOT_RESPONSE = 0x0006,
+    DHCP_NET_CONFIG_REQUEST = 0x0007,
+    DHCP_NET_CONFIG_RESPONSE = 0x0008
+  };
+
   struct header {
     char magic[4]{'D', 'I', 'G', 'I'};
     uint16_t type {};
     uint16_t size {};
   };
 
-  enum class Type {
-    NONE,
-    DISCOVERY_REQUEST,
-    DISCOVERY_RESPONSE,
-    STATIC_NET_CONFIG_REQUEST,
-    STATIC_NET_CONFIG_RESPONSE,
-    REBOOT_REQUEST,
-    REBOOT_RESPONSE,
-    DHCP_NET_CONFIG_REQUEST,
-    DHCP_NET_CONFIG_RESPONSE,
-  };
-
   explicit packet(Type type) { _header.type = htons(static_cast<u_short>(type)); }
 
-  explicit packet(std::span<const uint8_t> const &data);
+  explicit packet(const uint8_t *begin_it, const uint8_t *end_it);
 
   bool check() const { return htons(static_cast<u_short>(_payload.size())) == _header.size; }
 
