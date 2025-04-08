@@ -4,9 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <iosfwd>
-#include <algorithm>
 #include <string>
-#include <stdexcept>
 #include <boost/core/span.hpp>
 
 namespace addp {
@@ -37,6 +35,7 @@ enum class field_type : uint8_t {
   device_id = 0x1a // Device ID: '00000000-00000000-00409DFF-FF300000'
 };
 
+// view onto a response payload. Doesn't own the data
 class field {
 public:
   // FT_ERR_CODE
@@ -86,7 +85,7 @@ private:
     uint8_t size{};
   };
   header _header;
-  std::vector<uint8_t> _payload;
+  boost::span<uint8_t> _payload;
 };
 
 std::ostream &operator<<(std::ostream &, field_type);

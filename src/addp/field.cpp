@@ -16,7 +16,7 @@ field::field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::i
 
   // payload
   if (std::distance(iter, end) >= _header.size) {
-    std::copy_n(iter, _header.size, back_inserter(_payload));
+    _payload = {&iter[0], size_t{_header.size}};
     std::advance(iter, _header.size);
   } else {
     throw std::runtime_error("not enough data for field");
@@ -241,7 +241,6 @@ std::ostream &addp::operator<<(std::ostream &os, const field_type type) {
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const field &field) {
-  if (field.type() != field_type::none)
-    os << field.type() << " = " << field.value_str() << "\n";
+  os << field.type() << " = " << field.value_str() << "\n";
   return os;
 }

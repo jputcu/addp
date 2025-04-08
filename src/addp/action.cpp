@@ -62,20 +62,14 @@ void action::handle_send_to(const boost::system::error_code &error, const size_t
               << " sent: " << bytes_sent << "\n";
 
   _socket.async_receive_from(boost::asio::buffer(_data), _sender_address,
-                             [this](boost::system::error_code ec, std::size_t bytes_recvd) {
+                             [this](boost::system::error_code const &ec, std::size_t bytes_recvd) {
                                handle_receive_from(ec, bytes_recvd);
                              });
 }
 
 void action::handle_receive_from(const boost::system::error_code &error, const size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
-    response resp{_data.data(), _data.data() + bytes_recvd};
-    try {
-      resp.parse_fields();
-    } catch (std::exception &ex) {
-      std::cerr << "exception: " << ex.what() << "\n";
-    }
-    on_response(_sender_address, resp);
+    on_response(_sender_address, response{_data.data(), _data.data() + bytes_recvd});
   }
 
   // timeout reached?
@@ -90,7 +84,7 @@ void action::handle_receive_from(const boost::system::error_code &error, const s
 
   // continue receiving
   _socket.async_receive_from(boost::asio::buffer(_data, _data.size()), _sender_address,
-                             [this](boost::system::error_code ec, std::size_t n_bytes_recvd) {
+                             [this](boost::system::error_code const &ec, std::size_t n_bytes_recvd) {
                                handle_receive_from(ec, n_bytes_recvd);
                              });
 }

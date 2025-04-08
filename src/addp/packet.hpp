@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <map>
 #include <iosfwd>
 #include <span>
 
@@ -35,22 +36,6 @@ struct packet_header {
 
 class request {
 public:
-  packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
-
-  request &add(const bool data) {
-    _payload.push_back(data ? field::BF_TRUE : field::BF_FALSE);
-    _header.size = htons(static_cast<u_short>(_payload.size()));
-    return *this;
-  }
-
-  request &add(const mac_address &);
-  request &add(const ip_address &);
-  request &add(const std::string &);
-
-  boost::span<const uint8_t> payload() const { return _payload; }
-
-  std::vector<uint8_t> raw() const;
-
   static request discovery_request(mac_address const &mac = MAC_ADDR_BROADCAST) {
     return request(packet_type::DISCOVERY_REQUEST).add(mac);
   }
@@ -76,8 +61,19 @@ public:
     return request(packet_type::DHCP_NET_CONFIG_REQUEST).add(enable).add(mac).add(auth);
   }
 
+  packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
+
+  std::vector<uint8_t> raw() const;
+
+  boost::span<const uint8_t> payload() const { return _payload; }
+
 private:
   explicit request(packet_type type) { _header.type = htons(static_cast<u_short>(type)); }
+
+  request &add(bool data);
+  request &add(const mac_address &);
+  request &add(const ip_address &);
+  request &add(const std::string &);
 
   packet_header _header;
   std::vector<uint8_t> _payload;
@@ -91,22 +87,12 @@ public:
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
 
-  boost::span<const uint8_t> payload() const { return _payload; }
-
-  void parse_fields() {
-    auto iter = _payload.begin();
-    const auto end = _payload.end();
-    while (iter != end) {
-      _fields.emplace_back(iter, end);
-    }
-  }
-
-  const std::vector<field> &fields() const { return _fields; }
+  const std::map<field_type, field> &fields() const { return _fields; }
 
 private:
   packet_header _header;
   std::vector<uint8_t> _payload;
-  std::vector<field> _fields;
+  std::map<field_type, field> _fields;
 };
 
 std::ostream &operator<<(std::ostream &, packet_type);

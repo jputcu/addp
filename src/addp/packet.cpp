@@ -7,6 +7,12 @@
 #include <iterator>
 using namespace addp;
 
+request &request::add(const bool data) {
+  _payload.push_back(data ? field::BF_TRUE : field::BF_FALSE);
+  _header.size = htons(static_cast<u_short>(_payload.size()));
+  return *this;
+}
+
 request &request::add(const mac_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
@@ -45,6 +51,14 @@ response::response(const uint8_t *begin_it, const uint8_t *end_it) {
 
     // payload
     _payload.assign(begin_it, end_it);
+
+    // parse fields
+    auto iter = _payload.begin();
+    const auto end = _payload.end();
+    while (iter != end) {
+      field f{iter, end};
+      _fields.emplace(f.type(), f);
+    }
   }
 }
 
@@ -97,6 +111,6 @@ std::ostream &addp::operator<<(std::ostream &os, const request &packet) {
 std::ostream &addp::operator<<(std::ostream &os, const response &packet) {
   os << packet.type() << "\n";
   for (const auto &f : packet.fields())
-    os << "  " << f;
+    os << "  " << f.second;
   return os;
 }
