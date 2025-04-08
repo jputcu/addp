@@ -10,37 +10,37 @@
 
 namespace addp {
 
+enum class field_type : uint8_t {
+  none = 0x00,
+  mac_addr,        // 6 byte MAC address
+  ip_addr,         // 4 byte IP address
+  netmask,         // 4 byte netmask
+  name,            // string name
+  domain,          // domain
+  hw_type,         // hardware type
+  hw_rev,          // hardware Revision
+  firmware,        // string firmware
+  result_msg,      // string result message
+  result_flag,     // 1 byte result flag
+  gateway,         // 4 byte gateway IP
+  conf_err_code,   // 2 byte configuration error code
+  device,          // string device
+  port,            // 4 byte port
+  dns,             // 4 byte DNS IP
+  dhcp,            // bool DHCP enabled
+  err_code,        // 1 byte error code
+  serial_count,    // 1 byte serial port count
+  ssl_port,        // 4 byte encrypted port
+  version,         // version ID
+  vendor = 0x15,   // vendor GUID
+  device_id = 0x1a // Device ID: '00000000-00000000-00409DFF-FF300000'
+};
+
 class field {
 public:
   struct header {
-    uint8_t type {};
-    uint8_t size {};
-  };
-
-  enum field_type {
-    FT_NONE = 0x00,
-    FT_MAC_ADDR,        // 6 byte MAC address
-    FT_IP_ADDR,         // 4 byte IP address
-    FT_NETMASK,         // 4 byte netmask
-    FT_NAME,            // string name
-    FT_DOMAIN,          // domain
-    FT_HW_TYPE,         // hardware type
-    FT_HW_REV,          // hardware Revision
-    FT_FIRMWARE,        // string firmware
-    FT_RESULT_MSG,      // string result message
-    FT_RESULT_FLAG,     // 1 byte result flag
-    FT_GATEWAY,         // 4 byte gateway IP
-    FT_CONF_ERR_CODE,   // 2 byte configuration error code
-    FT_DEVICE,          // string device
-    FT_PORT,            // 4 byte port
-    FT_DNS,             // 4 byte DNS IP
-    FT_DCHP,            // bool DHCP enabled
-    FT_ERR_CODE,        // 1 byte error code
-    FT_SERIAL_COUNT,    // 1 byte serial port count
-    FT_SSL_PORT,        // 4 byte encrypted port
-    FT_VERSION,         // version ID
-    FT_VENDOR = 0x15,   // vendor GUID
-    FT_DEVICE_ID = 0x1a // Device ID: '00000000-00000000-00409DFF-FF300000'
+    field_type type{};
+    uint8_t size{};
   };
 
   // FT_ERR_CODE
@@ -69,8 +69,6 @@ public:
     BF_TRUE = 0x01,
   };
 
-  explicit field(field_type type) : _header{static_cast<uint8_t>(type)} {}
-
   field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
     // header
     std::copy_n(iter, sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
@@ -85,9 +83,7 @@ public:
     }
   }
 
-  field_type type() const { return static_cast<field_type>(_header.type); }
-
-  std::string type_str() const { return field_type2str(type()); }
+  field_type type() const { return _header.type; }
 
   template <typename T> T value() const;
   std::string value_str() const;
@@ -99,7 +95,6 @@ public:
   std::vector<uint8_t> raw() const;
 
 private:
-  static std::string field_type2str(field_type);
   static std::string error_code2str(error_code);
   static std::string result_flag2str(result_flag);
   static std::string config_error2str(config_error);
@@ -108,6 +103,7 @@ private:
   std::vector<uint8_t> _payload;
 };
 
+std::ostream &operator<<(std::ostream &, field_type);
 std::ostream &operator<<(std::ostream &, const field &);
 
 } // namespace addp

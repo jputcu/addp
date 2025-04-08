@@ -50,61 +50,61 @@ std::string field::value_str() const {
   std::ostringstream os;
 
   switch (type()) {
-  case FT_DCHP:
+  case field_type::dhcp:
     os << (value<bool>() ? "true" : "false");
     break;
 
-  case FT_HW_TYPE:
-  case FT_HW_REV:
-  case FT_SERIAL_COUNT:
+  case field_type::hw_type:
+  case field_type::hw_rev:
+  case field_type::serial_count:
     os << std::dec << static_cast<int>(value<uint8_t>());
     break;
 
-  case FT_VERSION:
+  case field_type::version:
     os << std::dec << value<uint16_t>();
     break;
 
-  case FT_PORT:
-  case FT_SSL_PORT:
+  case field_type::port:
+  case field_type::ssl_port:
     os << std::dec << value<uint32_t>();
     break;
 
-  case FT_NAME:
-  case FT_DOMAIN:
-  case FT_FIRMWARE:
-  case FT_RESULT_MSG:
-  case FT_DEVICE:
+  case field_type::name:
+  case field_type::domain:
+  case field_type::firmware:
+  case field_type::result_msg:
+  case field_type::device:
     os << value<std::string>();
     break;
 
-  case FT_IP_ADDR:
-  case FT_NETMASK:
-  case FT_GATEWAY:
-  case FT_DNS:
+  case field_type::ip_addr:
+  case field_type::netmask:
+  case field_type::gateway:
+  case field_type::dns:
     os << value<ip_address>();
     break;
 
-  case FT_MAC_ADDR:
+  case field_type::mac_addr:
     os << value<mac_address>();
     break;
 
-  case FT_VENDOR:
+  case field_type::vendor:
     os << value<guid>();
     break;
 
-  case FT_CONF_ERR_CODE:
+  case field_type::conf_err_code:
     os << std::dec << value<config_error>();
     break;
 
-  case FT_ERR_CODE:
+  case field_type::err_code:
     os << std::dec << value<error_code>();
     break;
 
-  case FT_RESULT_FLAG:
+  case field_type::result_flag:
     os << std::dec << value<result_flag>();
     break;
 
-  case FT_DEVICE_ID:
+  case field_type::device_id:
   default: {
     for (const uint8_t b : payload())
       os << " " << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(b);
@@ -120,59 +120,6 @@ std::vector<uint8_t> field::raw() const {
   std::copy_n(headerp, sizeof(_header), back_inserter(buffer));
   std::copy(_payload.begin(), _payload.end(), back_inserter(buffer));
   return buffer;
-}
-
-std::string field::field_type2str(const field_type type) {
-  switch (type) {
-  case FT_NONE:
-    return "None";
-  case FT_MAC_ADDR:
-    return "MAC address";
-  case FT_IP_ADDR:
-    return "IP address";
-  case FT_NETMASK:
-    return "Netmask";
-  case FT_NAME:
-    return "Name";
-  case FT_DOMAIN:
-    return "Domain";
-  case FT_HW_TYPE:
-    return "Hardware type";
-  case FT_HW_REV:
-    return "Hardware Revision";
-  case FT_FIRMWARE:
-    return "Firmware";
-  case FT_RESULT_MSG:
-    return "Result message";
-  case FT_RESULT_FLAG:
-    return "Result flag";
-  case FT_GATEWAY:
-    return "Gateway IP";
-  case FT_CONF_ERR_CODE:
-    return "Configuration error code";
-  case FT_DEVICE:
-    return "Device";
-  case FT_PORT:
-    return "Port";
-  case FT_DNS:
-    return "DNS IP";
-  case FT_DCHP:
-    return "DHCP enabled";
-  case FT_ERR_CODE:
-    return "Error code";
-  case FT_SERIAL_COUNT:
-    return "Serial port count";
-  case FT_SSL_PORT:
-    return "Encrypted port";
-  case FT_VERSION:
-    return "Version ID";
-  case FT_VENDOR:
-    return "Vendor GUID";
-  case FT_DEVICE_ID:
-    return "Device-ID";
-  default:
-    return str(boost::format("Unknown (0x%02x)") % type);
-  }
 }
 
 std::string field::error_code2str(const error_code code) {
@@ -212,8 +159,86 @@ std::string field::config_error2str(const config_error error) {
   }
 }
 
+std::ostream &addp::operator<<(std::ostream &os, const field_type type) {
+  switch (type) {
+  case field_type::none:
+    os << "None";
+    break;
+  case field_type::mac_addr:
+    os << "MAC address";
+    break;
+  case field_type::ip_addr:
+    os << "IP address";
+    break;
+  case field_type::netmask:
+    os << "Netmask";
+    break;
+  case field_type::name:
+    os << "Name";
+    break;
+  case field_type::domain:
+    os << "Domain";
+    break;
+  case field_type::hw_type:
+    os << "Hardware type";
+    break;
+  case field_type::hw_rev:
+    os << "Hardware Revision";
+    break;
+  case field_type::firmware:
+    os << "Firmware";
+    break;
+  case field_type::result_msg:
+    os << "Result message";
+    break;
+  case field_type::result_flag:
+    os << "Result flag";
+    break;
+  case field_type::gateway:
+    os << "Gateway IP";
+    break;
+  case field_type::conf_err_code:
+    os << "Configuration error code";
+    break;
+  case field_type::device:
+    os << "Device";
+    break;
+  case field_type::port:
+    os << "Port";
+    break;
+  case field_type::dns:
+    os << "DNS IP";
+    break;
+  case field_type::dhcp:
+    os << "DHCP enabled";
+    break;
+  case field_type::err_code:
+    os << "Error code";
+    break;
+  case field_type::serial_count:
+    os << "Serial port count";
+    break;
+  case field_type::ssl_port:
+    os << "Encrypted port";
+    break;
+  case field_type::version:
+    os << "Version ID";
+    break;
+  case field_type::vendor:
+    os << "Vendor GUID";
+    break;
+  case field_type::device_id:
+    os << "Device-ID";
+    break;
+  default:
+    os << str(boost::format("Unknown (0x%02x)") % static_cast<unsigned>(type));
+    break;
+  }
+  return os;
+}
+
 std::ostream &addp::operator<<(std::ostream &os, const field &field) {
-  if (field.type() != field::FT_NONE)
-    os << field.type_str() << " = " << field.value_str() << "\n";
+  if (field.type() != field_type::none)
+    os << field.type() << " = " << field.value_str() << "\n";
   return os;
 }

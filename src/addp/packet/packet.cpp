@@ -77,7 +77,7 @@ std::ostream &addp::operator<<(std::ostream &os, const packet &packet) {
   os << packet.type_str() << "\n";
 
   for (const auto &f : packet.fields())
-    if (f.type() != field::FT_NONE)
+    if (f.type() != field_type::none)
       os << "  " << f;
 
   if ( packet.type() == packet::Type::DISCOVERY_REQUEST ) {

@@ -56,7 +56,7 @@ bool client::static_net_config() {
     void on_response(const boost::asio::ip::udp::endpoint &sender [[maybe_unused]],
                      const addp::packet &packet) override {
       for (auto const &f : packet.fields())
-        if (f.type() == addp::field::FT_RESULT_MSG) {
+        if (f.type() == addp::field_type::result_msg) {
           std::cout << f.value<std::string>() << "\n";
           break;
         }
@@ -74,7 +74,7 @@ bool client::dhcp_net_config() {
     void on_response(const boost::asio::ip::udp::endpoint &sender [[maybe_unused]],
                      const addp::packet &packet) override {
       for (auto const &f : packet.fields())
-        if (f.type() == addp::field::FT_RESULT_MSG) {
+        if (f.type() == addp::field_type::result_msg) {
           std::cout << f.value_str() << "\n";
           break;
         }
@@ -91,7 +91,7 @@ bool client::reboot() {
     void on_response(const boost::asio::ip::udp::endpoint &sender [[maybe_unused]],
                      const addp::packet &packet) override {
       for (auto const &f : packet.fields())
-        if (f.type() == addp::field::FT_RESULT_MSG) {
+        if (f.type() == addp::field_type::result_msg) {
           std::cout << f.value<std::string>() << "\n";
           break;
         }
