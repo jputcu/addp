@@ -9,21 +9,21 @@
 #include <addp/types.hpp>
 using namespace addp;
 
-template <> bool field::value() const { return _payload.front() == BF_TRUE; }
+template <> bool field::value() const { return payload().front() == BF_TRUE; }
 
-template <> uint8_t field::value() const { return _payload.front(); }
+template <> uint8_t field::value() const { return payload().front(); }
 
 template <> uint16_t field::value() const {
-  return ntohs(*reinterpret_cast<const uint16_t *>(_payload.data()));
+  return ntohs(*reinterpret_cast<const uint16_t *>(payload().data()));
 }
 
 template <> uint32_t field::value() const {
-  return ntohl(*reinterpret_cast<const uint32_t *>(_payload.data()));
+  return ntohl(*reinterpret_cast<const uint32_t *>(payload().data()));
 }
 
 template <> std::string field::value() const {
   std::string s;
-  std::copy(_payload.begin(), _payload.end(), back_inserter(s));
+  std::copy(payload().begin(), payload().end(), back_inserter(s));
   return s;
 }
 
@@ -41,8 +41,9 @@ template <> field::result_flag field::value() const {
 
 template <typename T> T field::value() const {
   T t {};
-  if (_payload.size() == t.size())
-    std::copy(_payload.begin(), _payload.end(), t.begin());
+  const auto payload_bytes = payload();
+  if (payload_bytes.size() == t.size())
+    std::copy(payload_bytes.begin(), payload_bytes.end(), t.begin());
   return t;
 }
 

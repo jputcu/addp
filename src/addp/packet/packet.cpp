@@ -48,39 +48,50 @@ std::vector<uint8_t> packet::raw() const {
   return buffer;
 }
 
-std::string packet::packet_type2str(const Type type) {
+std::ostream &addp::operator<<(std::ostream &os, const packet_type type) {
   switch (type) {
-  case Type::NONE:
-    return "None";
-  case Type::DISCOVERY_REQUEST:
-    return "Discovery Request";
-  case Type::DISCOVERY_RESPONSE:
-    return "Discovery Response";
-  case Type::STATIC_NET_CONFIG_REQUEST:
-    return "Net Config Request";
-  case Type::STATIC_NET_CONFIG_RESPONSE:
-    return "Net Config Response";
-  case Type::REBOOT_REQUEST:
-    return "Reboot Request";
-  case Type::REBOOT_RESPONSE:
-    return "Reboot Response";
-  case Type::DHCP_NET_CONFIG_REQUEST:
-    return "DHCP Net Config Request";
-  case Type::DHCP_NET_CONFIG_RESPONSE:
-    return "DHCP Net Config Response";
+  case packet_type::NONE:
+    os << "None";
+    break;
+  case packet_type::DISCOVERY_REQUEST:
+    os << "Discovery Request";
+    break;
+  case packet_type::DISCOVERY_RESPONSE:
+    os << "Discovery Response";
+    break;
+  case packet_type::STATIC_NET_CONFIG_REQUEST:
+    os << "Net Config Request";
+    break;
+  case packet_type::STATIC_NET_CONFIG_RESPONSE:
+    os << "Net Config Response";
+    break;
+  case packet_type::REBOOT_REQUEST:
+    os << "Reboot Request";
+    break;
+  case packet_type::REBOOT_RESPONSE:
+    os << "Reboot Response";
+    break;
+  case packet_type::DHCP_NET_CONFIG_REQUEST:
+    os << "DHCP Net Config Request";
+    break;
+  case packet_type::DHCP_NET_CONFIG_RESPONSE:
+    os << "DHCP Net Config Response";
+    break;
   default:
-    return str(boost::format("unknown (0x%02x)") % static_cast<int>(type));
+    os << str(boost::format("unknown (0x%02x)") % static_cast<int>(type));
+    break;
   }
+  return os;
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const packet &packet) {
-  os << packet.type_str() << "\n";
+  os << packet.type() << "\n";
 
   for (const auto &f : packet.fields())
     if (f.type() != field_type::none)
       os << "  " << f;
 
-  if ( packet.type() == packet::Type::DISCOVERY_REQUEST ) {
+  if ( packet.type() == packet_type::DISCOVERY_REQUEST ) {
     os << std::hex << std::setfill('0');
     auto const &payload = packet.payload();
     for (size_t i = 0; i < payload.size(); ++i)

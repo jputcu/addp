@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <string>
 #include <stdexcept>
+#include <boost/core/span.hpp>
 
 namespace addp {
 
@@ -38,11 +39,6 @@ enum class field_type : uint8_t {
 
 class field {
 public:
-  struct header {
-    field_type type{};
-    uint8_t size{};
-  };
-
   // FT_ERR_CODE
   enum error_code {
     EC_SUCCESS = 0x00,
@@ -90,7 +86,7 @@ public:
 
   size_t size() const { return _payload.size(); }
 
-  const std::vector<uint8_t> &payload() const { return _payload; }
+  boost::span<const uint8_t> payload() const { return {_payload.data(), _payload.size()}; }
 
   std::vector<uint8_t> raw() const;
 
@@ -99,6 +95,10 @@ private:
   static std::string result_flag2str(result_flag);
   static std::string config_error2str(config_error);
 
+  struct header {
+    field_type type{};
+    uint8_t size{};
+  };
   header _header;
   std::vector<uint8_t> _payload;
 };
