@@ -9,7 +9,7 @@ class dhcp_net_config : public action {
 public:
   dhcp_net_config(const mac_address &mac_address, bool enable,
                   const std::string &password = DEFAULT_PASSWORD)
-      : action(dhcp_net_config_request(mac_address, enable, password)), _mac_address(mac_address),
+      : action(packet::dhcp_net_config_request(mac_address, enable, password)), _mac_address(mac_address),
         _enable(enable), _password(password) {}
 
 private:

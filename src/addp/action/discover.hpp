@@ -7,7 +7,7 @@ namespace addp {
 
 class discover : public action {
 public:
-  explicit discover(mac_address const &mac = MAC_ADDR_BROADCAST) : action(discovery_request(mac)) {}
+  explicit discover(mac_address const &mac = MAC_ADDR_BROADCAST) : action(packet::discovery_request(mac)) {}
 };
 
 } // namespace addp

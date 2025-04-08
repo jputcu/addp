@@ -20,23 +20,26 @@ packet::packet(const uint8_t *begin_it, const uint8_t *end_it) {
   }
 }
 
-void packet::add(const mac_address &data) {
+packet &packet::add(const mac_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
+  return *this;
 }
 
-void packet::add(const ip_address &data) {
+packet &packet::add(const ip_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
+  return *this;
 }
 
-void packet::add(const std::string &str) {
+packet &packet::add(const std::string &str) {
   // 1 byte length
   _payload.push_back(static_cast<uint8_t>(str.size()));
 
   const auto data = reinterpret_cast<const uint8_t *>(str.data());
   std::copy_n(data, str.size(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
+  return *this;
 }
 
 std::vector<uint8_t> packet::raw() const {
