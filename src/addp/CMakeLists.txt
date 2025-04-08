@@ -1,7 +1,7 @@
 add_library(addp_lib
-        action/action.cpp
-        packet/field.cpp
-        packet/packet.cpp
+        action.cpp
+        field.cpp
+        packet.cpp
         types.cpp
         )
 set_target_properties(addp_lib PROPERTIES OUTPUT_NAME addp)

@@ -4,13 +4,8 @@
 #include <addp/constants.hpp>
 #include <addp/types.hpp>
 #include <addp/version.hpp>
-
-#include <addp/packet/field.hpp>
-#include <addp/packet/packet.hpp>
-
-#include <addp/action/dhcp_net_config.hpp>
-#include <addp/action/discover.hpp>
-#include <addp/action/reboot.hpp>
-#include <addp/action/static_net_config.hpp>
+#include <addp/field.hpp>
+#include <addp/packet.hpp>
+#include <addp/action.hpp>
 
 #endif // ADDP_H

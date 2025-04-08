@@ -7,7 +7,7 @@
 #include <boost/asio/ip/udp.hpp>
 #include <list>
 
-#include <addp/packet/packet.hpp>
+#include <addp/packet.hpp>
 #include <addp/constants.hpp>
 
 namespace addp {
@@ -57,6 +57,50 @@ private:
   packet _request;
   size_t _timeout_ms{DEFAULT_TIMEOUT};
   bool _verbose{};
+};
+
+class discover : public action {
+public:
+  explicit discover(mac_address const &mac = MAC_ADDR_BROADCAST)
+      : action(packet::discovery_request(mac)) {}
+};
+
+class reboot : public action {
+public:
+  explicit reboot(mac_address const &mac, const std::string &password = DEFAULT_PASSWORD)
+      : action(packet::reboot_request(mac, password)), _mac_address(mac), _password(password) {}
+
+private:
+  mac_address _mac_address;
+  std::string _password;
+};
+
+class static_net_config : public action {
+public:
+  static_net_config(mac_address const &mac, const ip_address &ip, const ip_address &subnet,
+                    const ip_address &gateway, const std::string &password = DEFAULT_PASSWORD)
+      : action(packet::static_net_config_request(mac, ip, subnet, gateway, password)),
+        _mac_address(mac), _ip(ip), _subnet(subnet), _gateway(gateway), _password(password) {}
+
+private:
+  mac_address _mac_address;
+  ip_address _ip;
+  ip_address _subnet;
+  ip_address _gateway;
+  std::string _password;
+};
+
+class dhcp_net_config : public action {
+public:
+  dhcp_net_config(const mac_address &mac_address, bool enable,
+                  const std::string &password = DEFAULT_PASSWORD)
+      : action(packet::dhcp_net_config_request(mac_address, enable, password)),
+        _mac_address(mac_address), _enable(enable), _password(password) {}
+
+private:
+  mac_address _mac_address;
+  bool _enable;
+  std::string _password;
 };
 
 } // namespace addp

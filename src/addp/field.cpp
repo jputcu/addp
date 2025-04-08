@@ -6,7 +6,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <addp/types.hpp>
+#include "types.hpp"
 using namespace addp;
 
 template <> bool field::value() const { return payload().front() == BF_TRUE; }
