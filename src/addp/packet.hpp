@@ -33,6 +33,7 @@ struct packet_header {
   uint16_t type{};
   uint16_t size{};
 };
+static_assert(sizeof(packet_header) == 8);
 
 class request {
 public:
@@ -61,29 +62,44 @@ public:
     return request(packet_type::DHCP_NET_CONFIG_REQUEST).add(enable).add(mac).add(auth);
   }
 
-  packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
+  packet_type type() const { return static_cast<packet_type>(ntohs(_packet.header.type)); }
 
-  std::vector<uint8_t> raw() const;
+  boost::span<const uint8_t> raw() const {
+    return {reinterpret_cast<const uint8_t *>(&_packet),
+            sizeof(packet_header) + _packet.payload_size()};
+  }
 
-  boost::span<const uint8_t> payload() const { return _payload; }
+  boost::span<const uint8_t> payload() const { return {_packet.payload, _packet.payload_size()}; }
 
 private:
-  explicit request(packet_type type) { _header.type = htons(static_cast<u_short>(type)); }
+  explicit request(packet_type type) { _packet.header.type = htons(static_cast<u_short>(type)); }
 
   request &add(bool data);
   request &add(const mac_address &);
   request &add(const ip_address &);
   request &add(const std::string &);
 
-  packet_header _header;
-  std::vector<uint8_t> _payload;
+  struct packet {
+    static constexpr auto MAX_PAYLOAD_SIZE = 200;
+    packet_header header;
+    uint8_t payload[MAX_PAYLOAD_SIZE];
+
+    size_t payload_size() const { return ntohs(header.size); }
+    void update_payload_size(uint8_t *new_out_it) {
+      const auto payload_len = std::distance(payload, new_out_it);
+      assert(payload_len < MAX_PAYLOAD_SIZE);
+      header.size = htons(static_cast<u_short>(payload_len));
+    }
+    uint8_t *out_it() { return payload + payload_size(); }
+  };
+  static_assert(sizeof(packet) == sizeof(packet_header) + packet::MAX_PAYLOAD_SIZE);
+
+  packet _packet;
 };
 
 class response {
 public:
   explicit response(const uint8_t *begin_it, const uint8_t *end_it);
-
-  bool check() const { return htons(static_cast<u_short>(_payload.size())) == _header.size; }
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
 

@@ -8,56 +8,59 @@
 using namespace addp;
 
 request &request::add(const bool data) {
-  _payload.push_back(data ? field::BF_TRUE : field::BF_FALSE);
-  _header.size = htons(static_cast<u_short>(_payload.size()));
+  auto it = _packet.out_it();
+  *it++ = data ? field::BF_TRUE : field::BF_FALSE;
+  _packet.update_payload_size(it);
   return *this;
 }
 
 request &request::add(const mac_address &data) {
-  std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
-  _header.size = htons(static_cast<u_short>(_payload.size()));
+  auto it = _packet.out_it();
+  it = std::copy(data.cbegin(), data.cend(), it);
+  _packet.update_payload_size(it);
   return *this;
 }
 
 request &request::add(const ip_address &data) {
-  std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
-  _header.size = htons(static_cast<u_short>(_payload.size()));
+  auto it = _packet.out_it();
+  it = std::copy(data.cbegin(), data.cend(), it);
+  _packet.update_payload_size(it);
   return *this;
 }
 
 request &request::add(const std::string &str) {
   // 1 byte length
-  _payload.push_back(static_cast<uint8_t>(str.size()));
+  auto it = _packet.out_it();
+  *it++ = static_cast<uint8_t>(str.size());
 
   const auto data = reinterpret_cast<const uint8_t *>(str.data());
-  std::copy_n(data, str.size(), std::back_inserter(_payload));
-  _header.size = htons(static_cast<u_short>(_payload.size()));
+  it = std::copy_n(data, str.size(), it);
+  _packet.update_payload_size(it);
   return *this;
 }
 
-std::vector<uint8_t> request::raw() const {
-  std::vector<uint8_t> buffer;
-  auto headerp = reinterpret_cast<const uint8_t *>(&_header);
-  std::copy_n(headerp, sizeof(_header), std::back_inserter(buffer));
-  std::copy(_payload.begin(), _payload.end(), std::back_inserter(buffer));
-  return buffer;
-}
-
 response::response(const uint8_t *begin_it, const uint8_t *end_it) {
-  if ( static_cast<size_t>(std::distance(begin_it, end_it)) >= sizeof(_header) ) {
+  if (static_cast<size_t>(std::distance(begin_it, end_it)) >= sizeof(_header)) {
     // header
-    std::memcpy(&_header, begin_it, sizeof(_header));
-    begin_it += sizeof(_header);
+    {
+      packet_header h;
+      std::memcpy(&h, begin_it, sizeof(_header));
+      begin_it += sizeof(_header);
+      assert(ntohs(h.size) == std::distance(begin_it, end_it));
+      _header = h;
+    }
 
     // payload
     _payload.assign(begin_it, end_it);
 
     // parse fields
-    auto iter = _payload.begin();
-    const auto end = _payload.end();
-    while (iter != end) {
-      field f{iter, end};
-      _fields.emplace(f.type(), f);
+    {
+      auto iter = _payload.begin();
+      const auto end = _payload.end();
+      while (iter != end) {
+        field f{iter, end};
+        _fields.emplace(f.type(), f);
+      }
     }
   }
 }
@@ -100,7 +103,7 @@ std::ostream &addp::operator<<(std::ostream &os, const packet_type type) {
 
 std::ostream &addp::operator<<(std::ostream &os, const request &packet) {
   os << packet.type() << "\n";
-  if ( packet.type() == packet_type::DISCOVERY_REQUEST ) {
+  if (packet.type() == packet_type::DISCOVERY_REQUEST) {
     mac_address mac{};
     std::copy(packet.payload().cbegin(), packet.payload().cend(), mac.begin());
     os << mac;
