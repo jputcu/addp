@@ -9,6 +9,20 @@
 #include "types.hpp"
 using namespace addp;
 
+field::field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
+  // header
+  std::copy_n(iter, sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
+  std::advance(iter, sizeof(_header));
+
+  // payload
+  if (std::distance(iter, end) >= _header.size) {
+    std::copy_n(iter, _header.size, back_inserter(_payload));
+    std::advance(iter, _header.size);
+  } else {
+    throw std::runtime_error("not enough data for field");
+  }
+}
+
 template <> bool field::value() const { return payload().front() == BF_TRUE; }
 
 template <> uint8_t field::value() const { return payload().front(); }
@@ -21,11 +35,7 @@ template <> uint32_t field::value() const {
   return ntohl(*reinterpret_cast<const uint32_t *>(payload().data()));
 }
 
-template <> std::string field::value() const {
-  std::string s;
-  std::copy(payload().begin(), payload().end(), back_inserter(s));
-  return s;
-}
+template <> std::string field::value() const { return {payload().cbegin(), payload().cend()}; }
 
 template <> field::config_error field::value() const {
   return static_cast<config_error>(value<uint16_t>());
@@ -40,7 +50,7 @@ template <> field::result_flag field::value() const {
 }
 
 template <typename T> T field::value() const {
-  T t {};
+  T t{};
   const auto payload_bytes = payload();
   if (payload_bytes.size() == t.size())
     std::copy(payload_bytes.begin(), payload_bytes.end(), t.begin());
@@ -113,14 +123,6 @@ std::string field::value_str() const {
   }
   }
   return os.str();
-}
-
-std::vector<uint8_t> field::raw() const {
-  std::vector<uint8_t> buffer;
-  auto headerp = reinterpret_cast<const uint8_t *>(&_header);
-  std::copy_n(headerp, sizeof(_header), back_inserter(buffer));
-  std::copy(_payload.begin(), _payload.end(), back_inserter(buffer));
-  return buffer;
 }
 
 std::string field::error_code2str(const error_code code) {

@@ -46,10 +46,8 @@ std::istream &addp::operator>>(std::istream &is, ip_address &ip_addr) {
 
 std::ostream &addp::operator<<(std::ostream &os, const mac_address &mac_addr) {
   os << std::hex << std::setfill('0') << std::nouppercase;
-
   for (size_t i = 0; i < mac_addr.size(); ++i)
     os << (i ? ":" : "") << std::setw(2) << boost::numeric_cast<int>(mac_addr[i]);
-
   return os;
 }
 

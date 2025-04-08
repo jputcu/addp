@@ -59,25 +59,13 @@ public:
     CE_ERROR, // Digi in different subnet than sender
   };
 
-  // FT_DCHP
   enum bool_flag {
     BF_FALSE = 0x00,
     BF_TRUE = 0x01,
   };
 
-  field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
-    // header
-    std::copy_n(iter, sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
-    std::advance(iter, sizeof(_header));
-
-    // payload
-    if (std::distance(iter, end) >= _header.size) {
-      std::copy_n(iter, _header.size, back_inserter(_payload));
-      std::advance(iter, _header.size);
-    } else {
-      throw std::runtime_error("not enough data for field");
-    }
-  }
+  // Consumes the data: moves iter to the next field
+  field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end);
 
   field_type type() const { return _header.type; }
 
@@ -86,9 +74,7 @@ public:
 
   size_t size() const { return _payload.size(); }
 
-  boost::span<const uint8_t> payload() const { return {_payload.data(), _payload.size()}; }
-
-  std::vector<uint8_t> raw() const;
+  boost::span<const uint8_t> payload() const { return _payload; }
 
 private:
   static std::string error_code2str(error_code);

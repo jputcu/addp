@@ -7,6 +7,7 @@
 #include <span>
 
 #include <boost/asio.hpp>
+#include <boost/core/span.hpp>
 
 #include <addp/constants.hpp>
 #include <addp/types.hpp>
@@ -34,8 +35,8 @@ public:
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
 
-  packet &add(const field::bool_flag data) {
-    _payload.push_back(data);
+  packet &add(const bool data) {
+    _payload.push_back(data ? field::BF_TRUE : field::BF_FALSE);
     _header.size = htons(static_cast<u_short>(_payload.size()));
     return *this;
   }
@@ -44,7 +45,7 @@ public:
   packet &add(const ip_address &);
   packet &add(const std::string &);
 
-  const std::vector<uint8_t> &payload() const { return _payload; }
+  boost::span<const uint8_t> payload() const { return _payload; }
 
   std::vector<uint8_t> raw() const;
 
@@ -62,8 +63,6 @@ public:
     return packet(packet_type::DISCOVERY_REQUEST).add(mac);
   }
 
-  static packet discovery_response() { return packet(packet_type::DISCOVERY_RESPONSE); }
-
   static packet static_net_config_request(const mac_address &mac, const ip_address &ip,
                                           const ip_address &subnet, const ip_address &gateway,
                                           const std::string &auth = DEFAULT_PASSWORD) {
@@ -75,26 +74,15 @@ public:
         .add(auth);
   }
 
-  static packet static_net_config_response() {
-    return packet(packet_type::STATIC_NET_CONFIG_RESPONSE);
-  }
-
   static packet reboot_request(const mac_address &mac = MAC_ADDR_BROADCAST,
                                const std::string &auth = DEFAULT_PASSWORD) {
     return packet(packet_type::REBOOT_REQUEST).add(mac).add(auth);
   }
 
-  static packet reboot_response() { return packet(packet_type::REBOOT_RESPONSE); }
-
   static packet dhcp_net_config_request(const mac_address &mac, bool enable,
                                         const std::string &auth = DEFAULT_PASSWORD) {
-    return packet(packet_type::DHCP_NET_CONFIG_REQUEST)
-        .add(enable ? field::BF_TRUE : field::BF_FALSE)
-        .add(mac)
-        .add(auth);
+    return packet(packet_type::DHCP_NET_CONFIG_REQUEST).add(enable).add(mac).add(auth);
   }
-
-  static packet dhcp_net_config_response() { return packet(packet_type::DHCP_NET_CONFIG_RESPONSE); }
 
 private:
   explicit packet(packet_type type) { _header.type = htons(static_cast<u_short>(type)); }

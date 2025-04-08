@@ -5,8 +5,6 @@
 #include <cstring>
 #include <iostream>
 #include <iterator>
-#include <vector>
-#include <iomanip>
 using namespace addp;
 
 packet::packet(const uint8_t *begin_it, const uint8_t *end_it) {
@@ -44,7 +42,6 @@ packet &packet::add(const std::string &str) {
 
 std::vector<uint8_t> packet::raw() const {
   std::vector<uint8_t> buffer;
-  buffer.reserve(sizeof(_header) + _payload.size());
   auto headerp = reinterpret_cast<const uint8_t *>(&_header);
   std::copy_n(headerp, sizeof(_header), std::back_inserter(buffer));
   std::copy(_payload.begin(), _payload.end(), std::back_inserter(buffer));
@@ -90,15 +87,13 @@ std::ostream &addp::operator<<(std::ostream &os, const packet_type type) {
 std::ostream &addp::operator<<(std::ostream &os, const packet &packet) {
   os << packet.type() << "\n";
 
-  for (const auto &f : packet.fields())
-    if (f.type() != field_type::none)
-      os << "  " << f;
-
   if ( packet.type() == packet_type::DISCOVERY_REQUEST ) {
-    os << std::hex << std::setfill('0');
-    auto const &payload = packet.payload();
-    for (size_t i = 0; i < payload.size(); ++i)
-      os << (i ? ":" : " ") << static_cast<int>(payload[i]);
+    mac_address mac{};
+    std::copy(packet.payload().cbegin(), packet.payload().cend(), mac.begin());
+    os << mac;
+  } else {
+    for (const auto &f : packet.fields())
+      os << "  " << f;
   }
 
   return os;
