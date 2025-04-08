@@ -7,30 +7,19 @@
 #include <iterator>
 using namespace addp;
 
-packet::packet(const uint8_t *begin_it, const uint8_t *end_it) {
-  if ( static_cast<size_t>(std::distance(begin_it, end_it)) >= sizeof(_header) ) {
-    // header
-    std::memcpy(&_header, begin_it, sizeof(_header));
-    begin_it += sizeof(_header);
-
-    // payload
-    _payload.assign(begin_it, end_it);
-  }
-}
-
-packet &packet::add(const mac_address &data) {
+request &request::add(const mac_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
   return *this;
 }
 
-packet &packet::add(const ip_address &data) {
+request &request::add(const ip_address &data) {
   std::copy(data.cbegin(), data.cend(), std::back_inserter(_payload));
   _header.size = htons(static_cast<u_short>(_payload.size()));
   return *this;
 }
 
-packet &packet::add(const std::string &str) {
+request &request::add(const std::string &str) {
   // 1 byte length
   _payload.push_back(static_cast<uint8_t>(str.size()));
 
@@ -40,12 +29,23 @@ packet &packet::add(const std::string &str) {
   return *this;
 }
 
-std::vector<uint8_t> packet::raw() const {
+std::vector<uint8_t> request::raw() const {
   std::vector<uint8_t> buffer;
   auto headerp = reinterpret_cast<const uint8_t *>(&_header);
   std::copy_n(headerp, sizeof(_header), std::back_inserter(buffer));
   std::copy(_payload.begin(), _payload.end(), std::back_inserter(buffer));
   return buffer;
+}
+
+response::response(const uint8_t *begin_it, const uint8_t *end_it) {
+  if ( static_cast<size_t>(std::distance(begin_it, end_it)) >= sizeof(_header) ) {
+    // header
+    std::memcpy(&_header, begin_it, sizeof(_header));
+    begin_it += sizeof(_header);
+
+    // payload
+    _payload.assign(begin_it, end_it);
+  }
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const packet_type type) {
@@ -84,17 +84,19 @@ std::ostream &addp::operator<<(std::ostream &os, const packet_type type) {
   return os;
 }
 
-std::ostream &addp::operator<<(std::ostream &os, const packet &packet) {
+std::ostream &addp::operator<<(std::ostream &os, const request &packet) {
   os << packet.type() << "\n";
-
   if ( packet.type() == packet_type::DISCOVERY_REQUEST ) {
     mac_address mac{};
     std::copy(packet.payload().cbegin(), packet.payload().cend(), mac.begin());
     os << mac;
-  } else {
-    for (const auto &f : packet.fields())
-      os << "  " << f;
   }
+  return os;
+}
 
+std::ostream &addp::operator<<(std::ostream &os, const response &packet) {
+  os << packet.type() << "\n";
+  for (const auto &f : packet.fields())
+    os << "  " << f;
   return os;
 }

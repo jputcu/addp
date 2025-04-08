@@ -14,9 +14,9 @@ namespace addp {
 
 class action {
 public:
-  using callback_t = std::function<void(boost::asio::ip::udp::endpoint sender, packet const &)>;
+  using callback_t = std::function<void(boost::asio::ip::udp::endpoint sender, request const &)>;
 
-  explicit action(packet &&request);
+  explicit action(request &&request);
 
   void set_listen_address(const std::string &listen_ip, uint16_t port = UDP_PORT) {
     _listen_address =
@@ -39,7 +39,7 @@ public:
   }
 
 protected:
-  virtual void on_response(const boost::asio::ip::udp::endpoint &sender, const packet &) = 0;
+  virtual void on_response(const boost::asio::ip::udp::endpoint &sender, const response&) = 0;
 
 private:
   void check_timeout();
@@ -54,7 +54,7 @@ private:
   boost::asio::deadline_timer _deadline;
   std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
 
-  packet _request;
+  request _request;
   size_t _timeout_ms{DEFAULT_TIMEOUT};
   bool _verbose{};
 };
@@ -62,13 +62,13 @@ private:
 class discover : public action {
 public:
   explicit discover(mac_address const &mac = MAC_ADDR_BROADCAST)
-      : action(packet::discovery_request(mac)) {}
+      : action(request::discovery_request(mac)) {}
 };
 
 class reboot : public action {
 public:
   explicit reboot(mac_address const &mac, const std::string &password = DEFAULT_PASSWORD)
-      : action(packet::reboot_request(mac, password)), _mac_address(mac), _password(password) {}
+      : action(request::reboot_request(mac, password)), _mac_address(mac), _password(password) {}
 
 private:
   mac_address _mac_address;
@@ -79,7 +79,7 @@ class static_net_config : public action {
 public:
   static_net_config(mac_address const &mac, const ip_address &ip, const ip_address &subnet,
                     const ip_address &gateway, const std::string &password = DEFAULT_PASSWORD)
-      : action(packet::static_net_config_request(mac, ip, subnet, gateway, password)),
+      : action(request::static_net_config_request(mac, ip, subnet, gateway, password)),
         _mac_address(mac), _ip(ip), _subnet(subnet), _gateway(gateway), _password(password) {}
 
 private:
@@ -94,7 +94,7 @@ class dhcp_net_config : public action {
 public:
   dhcp_net_config(const mac_address &mac_address, bool enable,
                   const std::string &password = DEFAULT_PASSWORD)
-      : action(packet::dhcp_net_config_request(mac_address, enable, password)),
+      : action(request::dhcp_net_config_request(mac_address, enable, password)),
         _mac_address(mac_address), _enable(enable), _password(password) {}
 
 private:

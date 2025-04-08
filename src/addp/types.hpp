@@ -20,8 +20,6 @@ struct mac_address : std::array<uint8_t, 6> {
 
 struct guid : std::array<uint8_t, 16> {};
 
-ip_address parse_ip_str(const std::string &ip_str);
-
 std::ostream &operator<<(std::ostream &os, const ip_address &ip_addr);
 std::istream &operator>>(std::istream &is, ip_address &ip_addr);
 std::ostream &operator<<(std::ostream &os, const mac_address &mac_addr);
