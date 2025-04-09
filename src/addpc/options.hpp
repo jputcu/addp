@@ -11,7 +11,7 @@ namespace addpc {
 class options {
 public:
   options(int argc, char *argv[]) {
-    _usage = {"Usage: %s [options...] <action> [args...]\n"
+    _usage = {"Usage: addpc [options...] <action> [args...]\n"
               "\n"
               " actions:\n"
               "  discover [device]\n"
@@ -55,7 +55,6 @@ private:
   boost::program_options::variables_map _vm;
   std::string _usage = "Usage: %s [options...]\n";
   size_t _password_index;
-  std::string _progname;
 };
 
 } // namespace addpc

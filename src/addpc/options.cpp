@@ -2,18 +2,15 @@
 
 #include <addp/types.hpp>
 #include <iostream>
-#include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
 using namespace addpc;
 
 void options::usage() const {
-  std::cout << str(boost::format(_usage) % _progname) << "\n" << all_options();
+  std::cout << _usage << "\n" << all_options();
 }
 
 void options::opt_parse(int argc, char *argv[]) {
-  _progname = boost::filesystem::path(argv[0]).filename().string();
-
   boost::program_options::command_line_parser parser(argc, argv);
   boost::program_options::store(
       parser.options(all_options()).positional(positional_options()).run(), _vm);
