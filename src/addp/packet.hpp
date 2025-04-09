@@ -5,10 +5,11 @@
 #include <vector>
 #include <map>
 #include <iosfwd>
-#include <span>
+#include <string_view>
 
 #include <boost/asio.hpp>
 #include <boost/core/span.hpp>
+#include <boost/asio/ip/address_v4.hpp>
 
 #include <addp/constants.hpp>
 #include <addp/types.hpp>
@@ -41,8 +42,10 @@ public:
     return request(packet_type::DISCOVERY_REQUEST).add(mac);
   }
 
-  static request static_net_config_request(const mac_address &mac, const ip_address &ip,
-                                           const ip_address &subnet, const ip_address &gateway,
+  static request static_net_config_request(const mac_address &mac,
+                                           const boost::asio::ip::address_v4 &ip,
+                                           const boost::asio::ip::address_v4 &subnet,
+                                           const boost::asio::ip::address_v4 &gateway,
                                            const std::string &auth = DEFAULT_PASSWORD) {
     return request(packet_type::STATIC_NET_CONFIG_REQUEST)
         .add(ip)
@@ -76,7 +79,7 @@ private:
 
   request &add(bool data);
   request &add(const mac_address &);
-  request &add(const ip_address &);
+  request &add(const boost::asio::ip::address_v4 &);
   request &add(const std::string &);
 
   struct packet {

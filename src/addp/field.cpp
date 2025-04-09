@@ -2,6 +2,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/format.hpp>
+#include <boost/asio/ip/address_v4.hpp>
 #include <iomanip>
 #include <sstream>
 #include <iostream>
@@ -49,6 +50,13 @@ template <> field::result_flag field::value() const {
   return static_cast<result_flag>(value<uint8_t>());
 }
 
+template <> boost::asio::ip::address_v4 field::value() const {
+  boost::asio::ip::address_v4::bytes_type ip_bytes;
+  const auto payload_bytes = payload();
+  std::copy(payload_bytes.begin(), payload_bytes.end(), ip_bytes.begin());
+  return boost::asio::ip::address_v4{ip_bytes};
+}
+
 template <typename T> T field::value() const {
   T t{};
   const auto payload_bytes = payload();
@@ -92,7 +100,7 @@ std::string field::value_str() const {
   case field_type::netmask:
   case field_type::gateway:
   case field_type::dns:
-    os << value<ip_address>();
+    os << value<boost::asio::ip::address_v4>();
     break;
 
   case field_type::mac_addr:

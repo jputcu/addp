@@ -2,10 +2,10 @@
 #define ADDP_ACTION_ACTION_H
 
 #include <array>
+#include <string_view>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/udp.hpp>
-#include <list>
 
 #include <addp/packet.hpp>
 #include <addp/constants.hpp>
@@ -18,12 +18,12 @@ public:
 
   explicit action(request &&request);
 
-  void set_listen_address(const std::string &listen_ip, uint16_t port = UDP_PORT) {
+  void set_listen_address(std::string_view listen_ip, uint16_t port = UDP_PORT) {
     _listen_address =
         boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(listen_ip), port);
   }
 
-  void set_dest_address(const std::string &dest_ip, uint16_t port = UDP_PORT) {
+  void set_dest_address(std::string_view dest_ip, uint16_t port = UDP_PORT) {
     _dest_address = boost::asio::ip::udp::endpoint(boost::asio::ip::make_address(dest_ip), port);
   }
 
@@ -37,7 +37,7 @@ public:
   }
 
 protected:
-  virtual void on_response(const boost::asio::ip::udp::endpoint &sender, const response&) = 0;
+  virtual void on_response(const boost::asio::ip::udp::endpoint &sender, const response &) = 0;
 
 private:
   void check_timeout();
@@ -67,9 +67,11 @@ struct reboot : action {
 };
 
 struct static_net_config : action {
-  static_net_config(mac_address const &mac, const ip_address &ip, const ip_address &subnet,
-                    const ip_address &gateway, const std::string &password = DEFAULT_PASSWORD)
-      : action(request::static_net_config_request(mac, ip, subnet, gateway, password)) {}
+  static_net_config(mac_address const &mac, std::string_view ip, std::string_view subnet,
+                    std::string_view gateway, const std::string &password = DEFAULT_PASSWORD)
+      : action(request::static_net_config_request(
+            mac, boost::asio::ip::make_address_v4(ip), boost::asio::ip::make_address_v4(subnet),
+            boost::asio::ip::make_address_v4(gateway), password)) {}
 };
 
 struct dhcp_net_config : action {

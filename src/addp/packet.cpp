@@ -21,9 +21,10 @@ request &request::add(const mac_address &data) {
   return *this;
 }
 
-request &request::add(const ip_address &data) {
+request &request::add(const boost::asio::ip::address_v4 &data) {
   auto it = _packet.out_it();
-  it = std::copy(data.cbegin(), data.cend(), it);
+  const auto ip_bytes = data.to_bytes();
+  it = std::copy(ip_bytes.cbegin(), ip_bytes.cend(), it);
   _packet.update_payload_size(it);
   return *this;
 }

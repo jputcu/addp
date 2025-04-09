@@ -16,34 +16,6 @@ mac_address::mac_address(std::string const &mac_str) {
   is >> *this;
 }
 
-ip_address::ip_address(std::string const &ip_str) {
-  std::istringstream is(ip_str);
-  is >> *this;
-}
-
-std::ostream &addp::operator<<(std::ostream &os, const ip_address &ip_addr) {
-  os << std::dec;
-  for (size_t i = 0; i < ip_addr.size(); ++i)
-    os << (i ? "." : "") << static_cast<int>(ip_addr[i]);
-  return os;
-}
-
-std::istream &addp::operator>>(std::istream &is, ip_address &ip_addr) {
-  std::string str;
-  is >> str;
-
-  std::vector<std::string> tokens;
-  boost::algorithm::split(tokens, str, boost::is_any_of("."));
-
-  if (tokens.size() != ip_addr.size())
-    throw boost::bad_lexical_cast();
-
-  for (size_t i = 0; i < ip_addr.size(); i++)
-    ip_addr[i] = boost::numeric_cast<uint8_t>(boost::lexical_cast<int>(tokens[i]));
-
-  return is;
-}
-
 std::ostream &addp::operator<<(std::ostream &os, const mac_address &mac_addr) {
   os << std::hex << std::setfill('0') << std::nouppercase;
   for (size_t i = 0; i < mac_addr.size(); ++i)
