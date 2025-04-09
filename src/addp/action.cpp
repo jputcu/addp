@@ -10,7 +10,6 @@ action::action(request &&request)
     : _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
       _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT),
       _socket(_io_context), _deadline(_io_context), _request(std::move(request)) {
-  set_verbose(_verbose);
   // disable timer by setting expiry time to infinity
   _deadline.expires_at(boost::posix_time::pos_infin);
   check_timeout();
@@ -20,8 +19,7 @@ bool action::run() {
   _socket.open(boost::asio::ip::udp::v4());
   _socket.bind(_listen_address);
 
-  if (_verbose)
-    std::cout << "sending to: " << _dest_address << " packet: " << _request << "\n\n";
+  std::cout << "sending to: " << _dest_address << " packet: " << _request << "\n\n";
 
   // send request to multicast address
   _socket.async_send_to(boost::asio::buffer(_request.raw()), _dest_address,
@@ -47,8 +45,7 @@ bool action::run() {
 
 void action::check_timeout() {
   if (_deadline.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-    if (_verbose)
-      std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
+    std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
 
     stop();
     _deadline.expires_at(boost::posix_time::pos_infin);

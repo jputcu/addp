@@ -5,7 +5,6 @@
 
 struct client {
   int run_action(addp::action &&action) {
-    action.set_verbose(_options.verbose());
     action.set_dest_address(_options.multicast(), _options.port());
     action.set_timeout(_options.timeout());
     return action.run() ? EXIT_SUCCESS : EXIT_FAILURE;

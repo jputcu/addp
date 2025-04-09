@@ -36,7 +36,6 @@ public:
 
   uint16_t port() const { return _vm["port"].as<uint16_t>(); }
   bool version() const { return _vm.contains("version"); }
-  bool verbose() const { return _vm.contains("verbose"); }
   std::string password() const;
   std::string ip() const { return args()[0]; }
   std::string subnet() const { return args()[1]; }

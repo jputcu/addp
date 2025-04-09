@@ -29,8 +29,6 @@ public:
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  void set_verbose(bool verbose) { _verbose = verbose; }
-
   bool run();
 
   void stop() {
@@ -56,7 +54,6 @@ private:
 
   request _request;
   size_t _timeout_ms{DEFAULT_TIMEOUT};
-  bool _verbose{};
 };
 
 struct discover : action {

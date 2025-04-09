@@ -103,8 +103,7 @@ boost::program_options::options_description options::all_options() const {
   // clang-format off
   opts.add_options()
     ("help,h", "produce help message")
-    ("version,V", "program version")
-    ("verbose,v", "verbose");
+    ("version,V", "program version");
   // clang-format on
   opts.add(addp_opts).add(addpc_opts).add(hidden_opts);
   return opts;
