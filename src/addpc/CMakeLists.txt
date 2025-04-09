@@ -1,6 +1,5 @@
 add_executable(addpc
         main.cpp
-        client.cpp
         options.cpp)
 
 find_package(Boost REQUIRED COMPONENTS program_options filesystem)
