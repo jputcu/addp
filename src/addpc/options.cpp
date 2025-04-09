@@ -1,16 +1,6 @@
 #include "options.hpp"
 
-#include <addp/types.hpp>
-#include <iostream>
-#include <boost/format.hpp>
-
-using namespace addpc;
-
-void options::usage() const {
-  std::cout << _usage << "\n" << all_options();
-}
-
-void options::opt_parse(int argc, char *argv[]) {
+options::options(int argc, char *argv[]) {
   boost::program_options::command_line_parser parser(argc, argv);
   boost::program_options::store(
       parser.options(all_options()).positional(positional_options()).run(), _vm);
@@ -58,7 +48,7 @@ void options::opt_parse(int argc, char *argv[]) {
     }
   }
 
-  if (size_t count = args().size(); count < min || count > max) {
+  if (auto count = args().size(); count < min || count > max) {
     usage();
     std::exit(1);
   }
@@ -68,21 +58,20 @@ void options::opt_parse(int argc, char *argv[]) {
 }
 
 boost::program_options::options_description options::all_options() const {
-  boost::program_options::options_description addp_opts("ADDP options");
-  addp_opts.add_options()(
-        "multicast,m",
-        boost::program_options::value<std::string>()->default_value(addp::MCAST_IP_ADDRESS),
-        "multicast address for discovery")(
-        "port,p", boost::program_options::value<uint16_t>()->default_value(addp::UDP_PORT), "udp port");
-
   // clang-format off
+  boost::program_options::options_description addp_opts("ADDP options");
+  addp_opts.add_options()
+    ("multicast,m",
+      boost::program_options::value<std::string>()->default_value(addp::MCAST_IP_ADDRESS),
+      "multicast address for discovery")
+    ("port,p", boost::program_options::value<uint16_t>()->default_value(addp::UDP_PORT), "udp port");
+
   boost::program_options::options_description addpc_opts("ADDP client options");
   addpc_opts.add_options()
     ("listen,L", boost::program_options::value<std::string>()->default_value("0.0.0.0"),
       "ip address to listen")
     ("timeout,t", boost::program_options::value<size_t>()->default_value(addp::DEFAULT_TIMEOUT),
       "response timeout (in ms)");
-  // clang-format on
 
   boost::program_options::options_description hidden_opts;
   hidden_opts.add_options()
@@ -94,15 +83,13 @@ boost::program_options::options_description options::all_options() const {
        ->default_value(std::vector<std::string>(), "")
        ->multitoken(),
        "action arguments");
-  // clang-format on
 
   boost::program_options::options_description opts("Generic options");
-  // clang-format off
   opts.add_options()
     ("help,h", "produce help message")
     ("version,V", "program version");
-  // clang-format on
   opts.add(addp_opts).add(addpc_opts).add(hidden_opts);
+  // clang-format on
   return opts;
 }
 

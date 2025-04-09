@@ -77,7 +77,7 @@ struct client {
     return run_action(RebootHandle{_options.mac(), _options.password()});
   }
 
-  addpc::options _options;
+  options _options;
 };
 
 int main(int argc, char *argv[]) {

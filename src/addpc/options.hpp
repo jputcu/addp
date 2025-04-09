@@ -5,22 +5,10 @@
 #include <boost/program_options.hpp>
 #include <string>
 #include <vector>
+#include <iostream>
 
-namespace addpc {
-
-class options {
-public:
-  options(int argc, char *argv[]) {
-    _usage = {"Usage: addpc [options...] <action> [args...]\n"
-              "\n"
-              " actions:\n"
-              "  discover [device]\n"
-              "  reboot <device> [passwd]\n"
-              "  config <device> <ip> <netmask> <gateway> [passwd]\n"
-              "  dhcp <device> <on|off> [passwd]\n"};
-
-    opt_parse(argc, argv);
-  }
+struct options {
+  options(int argc, char *argv[]);
 
   std::string listen() const { return _vm["listen"].as<std::string>(); }
 
@@ -41,10 +29,17 @@ public:
   std::string subnet() const { return args()[1]; }
   std::string gateway() const { return args()[2]; }
   bool dhcp() const;
-  void usage() const;
 
-private:
-  void opt_parse(int argc, char *argv[]);
+  void usage() const {
+    std::cout << "Usage: addpc [options...] <action> [args...]\n"
+                 "\n"
+                 " actions:\n"
+                 "  discover [device]\n"
+                 "  reboot <device> [passwd]\n"
+                 "  config <device> <ip> <netmask> <gateway> [passwd]\n"
+                 "  dhcp <device> <on|off> [passwd]\n\n"
+              << all_options();
+  }
 
   boost::program_options::options_description all_options() const;
   boost::program_options::positional_options_description positional_options() const {
@@ -53,10 +48,7 @@ private:
   }
 
   boost::program_options::variables_map _vm;
-  std::string _usage = "Usage: %s [options...]\n";
   size_t _password_index;
 };
-
-} // namespace addpc
 
 #endif // ADDPC_OPTIONS_H
