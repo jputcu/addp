@@ -23,7 +23,7 @@ bool action::run() {
 
   // send request to multicast address
   _socket.async_send_to(boost::asio::buffer(_request.raw()), _dest_address,
-                        [this](boost::system::error_code ec, std::size_t bytes_sent) {
+                        [this](boost::system::error_code const &ec, std::size_t bytes_sent) {
                           handle_send_to(ec, bytes_sent);
                         });
 

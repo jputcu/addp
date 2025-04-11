@@ -1,9 +1,12 @@
 #include "options.hpp"
 
 options::options(int argc, char *argv[]) {
+  boost::program_options::positional_options_description pos_args;
+  pos_args.add("action", 1).add("mac", 1).add("args", -1);
+
   boost::program_options::command_line_parser parser(argc, argv);
   boost::program_options::store(
-      parser.options(all_options()).positional(positional_options()).run(), _vm);
+      parser.options(all_options()).positional(pos_args).run(), _vm);
   boost::program_options::notify(_vm);
 
   if (_vm.count("help")) {

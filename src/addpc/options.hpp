@@ -42,10 +42,6 @@ struct options {
   }
 
   boost::program_options::options_description all_options() const;
-  boost::program_options::positional_options_description positional_options() const {
-    boost::program_options::positional_options_description pos_args;
-    return pos_args.add("action", 1).add("mac", 1).add("args", -1);
-  }
 
   boost::program_options::variables_map _vm;
   size_t _password_index;
