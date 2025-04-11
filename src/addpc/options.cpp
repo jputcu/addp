@@ -1,4 +1,5 @@
 #include "options.hpp"
+#include <addp/addp.hpp>
 
 options::options(int argc, char *argv[]) {
   boost::program_options::positional_options_description pos_args;

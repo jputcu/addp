@@ -14,9 +14,9 @@ namespace addp {
 
 class action {
 public:
-  using callback_t = std::function<void(boost::asio::ip::udp::endpoint sender, request const &)>;
+  using callback_t = std::function<void(boost::asio::ip::udp::endpoint sender, response const &)>;
 
-  explicit action(request &&request);
+  explicit action();
 
   void set_listen_address(std::string_view listen_ip, uint16_t port = UDP_PORT) {
     _listen_address =
@@ -29,15 +29,12 @@ public:
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  bool run();
+  bool run(request const &, callback_t const &);
 
   void stop() {
     _socket.cancel();
     _io_context.stop();
   }
-
-protected:
-  virtual void on_response(const boost::asio::ip::udp::endpoint &sender, const response &) = 0;
 
 private:
   void check_timeout();
@@ -52,32 +49,8 @@ private:
   boost::asio::deadline_timer _deadline;
   std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
 
-  request _request;
   size_t _timeout_ms{DEFAULT_TIMEOUT};
-};
-
-struct discover : action {
-  explicit discover(mac_address const &mac = MAC_ADDR_BROADCAST)
-      : action(request::discovery_request(mac)) {}
-};
-
-struct reboot : action {
-  explicit reboot(mac_address const &mac, const std::string &password = DEFAULT_PASSWORD)
-      : action(request::reboot_request(mac, password)) {}
-};
-
-struct static_net_config : action {
-  static_net_config(mac_address const &mac, std::string_view ip, std::string_view subnet,
-                    std::string_view gateway, const std::string &password = DEFAULT_PASSWORD)
-      : action(request::static_net_config_request(
-            mac, boost::asio::ip::make_address_v4(ip), boost::asio::ip::make_address_v4(subnet),
-            boost::asio::ip::make_address_v4(gateway), password)) {}
-};
-
-struct dhcp_net_config : action {
-  dhcp_net_config(const mac_address &mac_address, bool enable,
-                  const std::string &password = DEFAULT_PASSWORD)
-      : action(request::dhcp_net_config_request(mac_address, enable, password)) {}
+  callback_t m_cb;
 };
 
 } // namespace addp

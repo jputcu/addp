@@ -6,23 +6,25 @@
 
 using namespace addp;
 
-action::action(request &&request)
+action::action()
     : _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
       _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT),
-      _socket(_io_context), _deadline(_io_context), _request(std::move(request)) {
+      _socket(_io_context), _deadline(_io_context) {
   // disable timer by setting expiry time to infinity
   _deadline.expires_at(boost::posix_time::pos_infin);
   check_timeout();
-}
-
-bool action::run() {
   _socket.open(boost::asio::ip::udp::v4());
   _socket.bind(_listen_address);
+}
 
-  std::cout << "sending to: " << _dest_address << " packet: " << _request << "\n\n";
+bool action::run(request const &req, callback_t const &cb) {
+  _io_context.reset();
+  m_cb = cb;
+
+  std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
 
   // send request to multicast address
-  _socket.async_send_to(boost::asio::buffer(_request.raw()), _dest_address,
+  _socket.async_send_to(boost::asio::buffer(req.raw()), _dest_address,
                         [this](boost::system::error_code const &ec, std::size_t bytes_sent) {
                           handle_send_to(ec, bytes_sent);
                         });
@@ -66,7 +68,7 @@ void action::handle_send_to(const boost::system::error_code &error, const size_t
 
 void action::handle_receive_from(const boost::system::error_code &error, const size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
-    on_response(_sender_address, response{_data.data(), _data.data() + bytes_recvd});
+    m_cb(_sender_address, response{_data.data(), _data.data() + bytes_recvd});
   }
 
   // timeout reached?
