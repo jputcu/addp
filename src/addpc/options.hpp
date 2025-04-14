@@ -36,7 +36,9 @@ struct options {
                  "  discover [device]\n"
                  "  reboot <device> [passwd]\n"
                  "  config <device> <ip> <netmask> <gateway> [passwd]\n"
-                 "  dhcp <device> <on|off> [passwd]\n\n"
+                 "  dhcp <device> <on|off> [passwd]\n"
+                 "\n"
+                 " options:\n"
               << all_options();
   }
 

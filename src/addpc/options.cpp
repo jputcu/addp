@@ -10,8 +10,12 @@ options::options(int argc, char *argv[]) {
       parser.options(all_options()).positional(pos_args).run(), _vm);
   boost::program_options::notify(_vm);
 
-  if (_vm.count("help")) {
+  if (_vm.contains("help")) {
     usage();
+    std::exit(1);
+  }
+  else if (_vm.contains("version")) {
+    std::cout << addp::VERSION << "\n";
     std::exit(1);
   }
 
@@ -24,8 +28,7 @@ options::options(int argc, char *argv[]) {
   size_t min = 0;
   size_t max = 0;
 
-  const std::string &action_string = this->action();
-  if (action_string == "discover") {
+  if (const std::string &action_string = this->action(); action_string == "discover") {
     min = 0;
     max = 0;
   } else {
@@ -63,22 +66,18 @@ options::options(int argc, char *argv[]) {
 
 boost::program_options::options_description options::all_options() const {
   // clang-format off
-  boost::program_options::options_description addp_opts("ADDP options");
-  addp_opts.add_options()
+  boost::program_options::options_description opts;
+  opts.add_options()
+    ("help,h", "produce help message")
+    ("version,V", "program version")
     ("multicast,m",
       boost::program_options::value<std::string>()->default_value(addp::MCAST_IP_ADDRESS),
       "multicast address for discovery")
-    ("port,p", boost::program_options::value<uint16_t>()->default_value(addp::UDP_PORT), "udp port");
-
-  boost::program_options::options_description addpc_opts("ADDP client options");
-  addpc_opts.add_options()
+    ("port,p", boost::program_options::value<uint16_t>()->default_value(addp::UDP_PORT), "udp port")
     ("listen,L", boost::program_options::value<std::string>()->default_value("0.0.0.0"),
       "ip address to listen")
     ("timeout,t", boost::program_options::value<size_t>()->default_value(addp::DEFAULT_TIMEOUT),
-      "response timeout (in ms)");
-
-  boost::program_options::options_description hidden_opts;
-  hidden_opts.add_options()
+      "response timeout (in ms)")
     ("action", boost::program_options::value<std::string>(),
       "action (discover/static/reboot/dhcp)")
     ("mac", boost::program_options::value<std::string>()->default_value("ff:ff:ff:ff:ff:ff"),
@@ -87,12 +86,6 @@ boost::program_options::options_description options::all_options() const {
        ->default_value(std::vector<std::string>(), "")
        ->multitoken(),
        "action arguments");
-
-  boost::program_options::options_description opts("Generic options");
-  opts.add_options()
-    ("help,h", "produce help message")
-    ("version,V", "program version");
-  opts.add(addp_opts).add(addpc_opts).add(hidden_opts);
   // clang-format on
   return opts;
 }

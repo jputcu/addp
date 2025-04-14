@@ -6,11 +6,6 @@
 int main(int argc, char *argv[]) {
   options opts{argc, argv};
 
-  if (opts.version()) {
-    std::cout << addp::VERSION << "\n";
-    return EXIT_SUCCESS;
-  }
-
   addp::action a;
   a.set_dest_address(opts.multicast(), opts.port());
   a.set_timeout(opts.timeout());
