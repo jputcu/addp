@@ -38,11 +38,11 @@ static_assert(sizeof(packet_header) == 8);
 
 class request {
 public:
-  static request discovery_request(mac_address const &mac = MAC_ADDR_BROADCAST) {
+  static request discover(mac_address const &mac = MAC_ADDR_BROADCAST) {
     return request(packet_type::DISCOVERY_REQUEST).add(mac);
   }
 
-  static request static_net_config_request(const mac_address &mac,
+  static request static_net_config(const mac_address &mac,
                                            const boost::asio::ip::address_v4 &ip,
                                            const boost::asio::ip::address_v4 &subnet,
                                            const boost::asio::ip::address_v4 &gateway,
@@ -55,12 +55,13 @@ public:
         .add(auth);
   }
 
-  static request reboot_request(const mac_address &mac = MAC_ADDR_BROADCAST,
+
+  static request reboot(const mac_address &mac = MAC_ADDR_BROADCAST,
                                 const std::string &auth = DEFAULT_PASSWORD) {
     return request(packet_type::REBOOT_REQUEST).add(mac).add(auth);
   }
 
-  static request dhcp_net_config_request(const mac_address &mac, bool enable,
+  static request dhcp_net_config(const mac_address &mac, bool enable,
                                          const std::string &auth = DEFAULT_PASSWORD) {
     return request(packet_type::DHCP_NET_CONFIG_REQUEST).add(enable).add(mac).add(auth);
   }
