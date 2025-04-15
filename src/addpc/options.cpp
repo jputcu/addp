@@ -33,7 +33,7 @@ options::options(int argc, char *argv[]) {
     max = 0;
   } else {
     // must have a specific device address for further actions
-    if (addp::mac_address{mac()} == addp::MAC_ADDR_BROADCAST) {
+    if (mac() == addp::MAC_ADDR_ALL) {
       std::cerr << "Please select a device's mac address\n\n";
       usage();
       std::exit(1);
@@ -80,7 +80,7 @@ boost::program_options::options_description options::all_options() const {
       "response timeout (in ms)")
     ("action", boost::program_options::value<std::string>(),
       "action (discover/static/reboot/dhcp)")
-    ("mac", boost::program_options::value<std::string>()->default_value("ff:ff:ff:ff:ff:ff"),
+    ("mac", boost::program_options::value<std::string>()->default_value(addp::MAC_ADDR_ALL),
       "mac address of target device")
     ("args", boost::program_options::value<std::vector<std::string>>()
        ->default_value(std::vector<std::string>(), "")

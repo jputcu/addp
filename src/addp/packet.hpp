@@ -5,7 +5,6 @@
 #include <vector>
 #include <map>
 #include <iosfwd>
-#include <string_view>
 
 #include <boost/asio.hpp>
 #include <boost/core/span.hpp>
@@ -38,7 +37,7 @@ static_assert(sizeof(packet_header) == 8);
 
 class request {
 public:
-  static request discover(mac_address const &mac = MAC_ADDR_BROADCAST) {
+  static request discover(mac_address const &mac = MAC_ADDR_ALL) {
     return request(packet_type::DISCOVERY_REQUEST).add(mac);
   }
 
@@ -56,7 +55,7 @@ public:
   }
 
 
-  static request reboot(const mac_address &mac = MAC_ADDR_BROADCAST,
+  static request reboot(const mac_address &mac = MAC_ADDR_ALL,
                                 const std::string &auth = DEFAULT_PASSWORD) {
     return request(packet_type::REBOOT_REQUEST).add(mac).add(auth);
   }
