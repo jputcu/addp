@@ -10,7 +10,7 @@
 #include "types.hpp"
 using namespace addp;
 
-field::field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end) {
+field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8_t>::const_iterator &end) {
   // header
   std::copy_n(iter, sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
   std::advance(iter, sizeof(_header));

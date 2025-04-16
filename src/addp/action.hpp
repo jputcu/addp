@@ -29,7 +29,10 @@ public:
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  bool run(request const &, callback_t const &);
+  bool run(request const &req, callback_t cb) {
+    m_cb = cb;
+    return run_request(req);
+  }
 
   void stop() {
     _socket.cancel();
@@ -40,6 +43,7 @@ private:
   void check_timeout();
   void handle_send_to(const boost::system::error_code &error, size_t bytes_sent);
   void handle_receive_from(const boost::system::error_code &error, size_t bytes_recvd);
+  bool run_request(request const &);
 
   boost::asio::ip::udp::endpoint _listen_address;
   boost::asio::ip::udp::endpoint _dest_address;
@@ -51,7 +55,6 @@ private:
 
   size_t _timeout_ms{DEFAULT_TIMEOUT};
   callback_t m_cb;
-  size_t m_response_cnt = 0;
 };
 
 } // namespace addp

@@ -64,7 +64,7 @@ public:
   };
 
   // Consumes the data: moves iter to the next field
-  field(std::vector<uint8_t>::iterator &iter, const std::vector<uint8_t>::iterator &end);
+  field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8_t>::const_iterator &end);
 
   field_type type() const { return _header.type; }
 
@@ -85,7 +85,7 @@ private:
     uint8_t size{};
   };
   header _header;
-  boost::span<uint8_t> _payload;
+  boost::span<const uint8_t> _payload;
 };
 
 std::ostream &operator<<(std::ostream &, field_type);

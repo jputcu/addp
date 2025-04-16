@@ -17,13 +17,10 @@ action::action()
   _socket.bind(_listen_address);
 }
 
-bool action::run(request const &req, callback_t const &cb) {
-  _io_context.reset();
-  m_cb = cb;
-  m_response_cnt = 0;
-
+bool action::run_request(request const &req) {
   std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
 
+  _io_context.reset();
   // send request to multicast address
   _socket.async_send_to(boost::asio::buffer(req.raw()), _dest_address,
                         [this](boost::system::error_code const &ec, std::size_t bytes_sent) {
@@ -48,7 +45,7 @@ bool action::run(request const &req, callback_t const &cb) {
 
 void action::check_timeout() {
   if (_deadline.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-    std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms), " << m_response_cnt << " responses\n";
+    std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
 
     stop();
     _deadline.expires_at(boost::posix_time::pos_infin);
@@ -70,7 +67,6 @@ void action::handle_send_to(const boost::system::error_code &error, const size_t
 void action::handle_receive_from(const boost::system::error_code &error, const size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
     m_cb(_sender_address, response{_data.data(), _data.data() + bytes_recvd});
-    ++m_response_cnt;
   }
 
   // timeout reached?
