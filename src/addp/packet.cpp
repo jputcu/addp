@@ -53,16 +53,6 @@ response::response(const uint8_t *begin_it, const uint8_t *end_it) {
 
     // payload
     _payload.assign(begin_it, end_it);
-
-    // parse fields
-    {
-      auto iter = _payload.begin();
-      const auto end = _payload.end();
-      while (iter != end) {
-        field f{iter, end};
-        _fields.emplace(f.type(), f);
-      }
-    }
   }
 }
 
