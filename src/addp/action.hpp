@@ -51,6 +51,7 @@ private:
 
   size_t _timeout_ms{DEFAULT_TIMEOUT};
   callback_t m_cb;
+  size_t m_response_cnt = 0;
 };
 
 } // namespace addp

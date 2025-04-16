@@ -20,6 +20,7 @@ action::action()
 bool action::run(request const &req, callback_t const &cb) {
   _io_context.reset();
   m_cb = cb;
+  m_response_cnt = 0;
 
   std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
 
@@ -47,7 +48,7 @@ bool action::run(request const &req, callback_t const &cb) {
 
 void action::check_timeout() {
   if (_deadline.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-    std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
+    std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms), " << m_response_cnt << " responses\n";
 
     stop();
     _deadline.expires_at(boost::posix_time::pos_infin);
@@ -69,6 +70,7 @@ void action::handle_send_to(const boost::system::error_code &error, const size_t
 void action::handle_receive_from(const boost::system::error_code &error, const size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
     m_cb(_sender_address, response{_data.data(), _data.data() + bytes_recvd});
+    ++m_response_cnt;
   }
 
   // timeout reached?
