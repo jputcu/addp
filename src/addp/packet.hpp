@@ -55,8 +55,7 @@ public:
   }
 
 
-  static request reboot(const mac_address &mac = MAC_ADDR_ALL,
-                                const std::string &auth = DEFAULT_PASSWORD) {
+  static request reboot(const mac_address &mac, const std::string &auth = DEFAULT_PASSWORD) {
     return request(packet_type::REBOOT_REQUEST).add(mac).add(auth);
   }
 
