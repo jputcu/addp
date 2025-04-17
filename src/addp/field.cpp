@@ -57,6 +57,14 @@ template <> boost::asio::ip::address_v4 field::value() const {
   return boost::asio::ip::address_v4{ip_bytes};
 }
 
+template <> mac_address field::value() const {
+  mac_address mac{};
+  const auto payload_bytes = payload();
+  if (payload_bytes.size() == mac.size())
+    std::copy(payload_bytes.begin(), payload_bytes.end(), mac.begin());
+  return mac;
+}
+
 template <typename T> T field::value() const {
   T t{};
   const auto payload_bytes = payload();

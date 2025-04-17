@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
   a.set_dest_address(opts.multicast(), opts.port());
   a.set_listen_address(opts.listen(), opts.port());
 
-  std::vector<std::pair<std::string, addp::response>> responses;
+  std::map<addp::mac_address, addp::response> responses;
   if (opts.action() == "discover")
     responses = a.discover(opts.mac());
   else if (opts.action() == "config")
@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
   // print collection:
   {
     std::cout << "Responses #" << responses.size() << ":\n";
-    for (auto const &[endp, response] : responses)
-      std::cout << endp << " " << response << "\n";
+    for (auto const &[mac, response] : responses)
+      std::cout << mac << " " << response << "\n";
   }
 
   return responses.size() ? EXIT_SUCCESS : EXIT_FAILURE;

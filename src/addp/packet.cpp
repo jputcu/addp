@@ -2,9 +2,7 @@
 
 #include <algorithm>
 #include <boost/format.hpp>
-#include <cstring>
 #include <iostream>
-#include <iterator>
 using namespace addp;
 
 request &request::add(const bool data) {
@@ -55,6 +53,16 @@ response::response(const uint8_t *data, const size_t len) {
 
     // payload
     _payload.assign(data, data + payload_len);
+
+    // Parse
+    {
+      auto iter = _payload.cbegin();
+      const auto end = _payload.cend();
+      while (iter != end) {
+        field f{iter, end};
+        _fields.emplace(f.type(), f);
+      }
+    }
   }
 }
 

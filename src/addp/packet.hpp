@@ -105,20 +105,13 @@ public:
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
 
-  std::map<field_type, field> fields() const {
-    std::map<field_type, field> _fields;
-    auto iter = _payload.cbegin();
-    const auto end = _payload.cend();
-    while (iter != end) {
-      field f{iter, end};
-      _fields.emplace(f.type(), f);
-    }
-    return _fields;
-  }
+  std::map<field_type, field> const &fields() const { return _fields; }
 
 private:
   packet_header _header;
   std::vector<uint8_t> _payload;
+
+  std::map<field_type, field> _fields;
 };
 
 std::ostream &operator<<(std::ostream &, packet_type);

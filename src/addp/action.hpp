@@ -53,7 +53,7 @@ private:
   void check_timeout();
   void handle_send_to(const boost::system::error_code &error, size_t bytes_sent);
   void handle_receive_from(const boost::system::error_code &error, size_t bytes_recvd);
-  std::vector<std::pair<std::string, response>> run(request const &);
+  std::map<mac_address, response> run(request const &);
 
   boost::asio::ip::udp::endpoint _listen_address{boost::asio::ip::udp::v4(), UDP_PORT};
   boost::asio::ip::udp::endpoint _dest_address{boost::asio::ip::make_address_v4(MCAST_IP_ADDRESS),
@@ -65,7 +65,7 @@ private:
   std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
 
   size_t _timeout_ms{DEFAULT_TIMEOUT};
-  std::vector<std::pair<std::string, response>> m_responses;
+  std::map<mac_address, response> m_responses;
 };
 
 } // namespace addp
