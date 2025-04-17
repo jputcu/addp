@@ -6,15 +6,13 @@ options::options(int argc, char *argv[]) {
   pos_args.add("action", 1).add("mac", 1).add("args", -1);
 
   boost::program_options::command_line_parser parser(argc, argv);
-  boost::program_options::store(
-      parser.options(all_options()).positional(pos_args).run(), _vm);
+  boost::program_options::store(parser.options(all_options()).positional(pos_args).run(), _vm);
   boost::program_options::notify(_vm);
 
   if (_vm.contains("help")) {
     usage();
     std::exit(1);
-  }
-  else if (_vm.contains("version")) {
+  } else if (_vm.contains("version")) {
     std::cout << addp::VERSION << "\n";
     std::exit(1);
   }

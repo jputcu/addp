@@ -6,15 +6,10 @@
 
 using namespace addp;
 
-action::action()
-    : _listen_address(boost::asio::ip::udp::v4(), UDP_PORT),
-      _dest_address(boost::asio::ip::make_address(MCAST_IP_ADDRESS), UDP_PORT),
-      _socket(_io_context), _deadline(_io_context) {
+action::action() {
   // disable timer by setting expiry time to infinity
   _deadline.expires_at(boost::posix_time::pos_infin);
   check_timeout();
-  _socket.open(boost::asio::ip::udp::v4());
-  _socket.bind(_listen_address);
 }
 
 std::vector<std::pair<std::string, response>> action::run(request const &req) {
@@ -22,6 +17,8 @@ std::vector<std::pair<std::string, response>> action::run(request const &req) {
   std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
 
   _io_context.reset();
+  _socket.open(boost::asio::ip::udp::v4());
+  _socket.bind(_listen_address);
   // send request to multicast address
   _socket.async_send_to(boost::asio::buffer(req.raw()), _dest_address,
                         [this](boost::system::error_code const &ec, std::size_t bytes_sent) {
@@ -41,6 +38,7 @@ std::vector<std::pair<std::string, response>> action::run(request const &req) {
     m_responses.clear();
   }
 
+  _socket.close();
   return m_responses;
 }
 
@@ -81,7 +79,7 @@ void action::handle_receive_from(const boost::system::error_code &error, const s
               << " received: " << bytes_recvd << "\n";
 
   // continue receiving
-  _socket.async_receive_from(boost::asio::buffer(_data, _data.size()), _sender_address,
+  _socket.async_receive_from(boost::asio::buffer(_data), _sender_address,
                              [this](boost::system::error_code const &ec, std::size_t n_bytes_recvd) {
                                handle_receive_from(ec, n_bytes_recvd);
                              });
