@@ -14,21 +14,21 @@ int main(int argc, char *argv[]) {
 
   std::vector<std::pair<std::string, addp::response>> responses;
   if (opts.action() == "discover")
-    responses = a.run(addp::request::discover(opts.mac()));
+    responses = a.discover(opts.mac());
   else if (opts.action() == "config")
-    responses = a.run(addp::request::static_net_config(
+    responses = a.static_net_config(
                               opts.mac(), boost::asio::ip::make_address_v4(opts.ip()),
                               boost::asio::ip::make_address_v4(opts.subnet()),
-                              boost::asio::ip::make_address_v4(opts.gateway()), opts.password()));
+                              boost::asio::ip::make_address_v4(opts.gateway()), opts.password());
   else if (opts.action() == "dhcp")
-    responses = a.run(addp::request::dhcp_net_config(opts.mac(), opts.dhcp(), opts.password()));
+    responses = a.dhcp_net_config(opts.mac(), opts.dhcp(), opts.password());
   else if (opts.action() == "reboot") {
     // The reboot not always gets a response.
     // Using digi tool it mostly does. It first sends a digi discovery request for that digi
     // before sending the reboot
-    a.run(addp::request::discover(opts.mac()));
+    a.discover(opts.mac());
     // Check digi is available in the response
-    responses = a.run(addp::request::reboot(opts.mac(), opts.password()));
+    responses = a.reboot(opts.mac(), opts.password());
   } else
     return EXIT_FAILURE;
 

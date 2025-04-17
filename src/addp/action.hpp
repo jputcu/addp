@@ -30,7 +30,25 @@ public:
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  std::vector<std::pair<std::string, response>> run(request const &);
+  template<class ...Args>
+  auto discover(Args&& ...args) {
+    return run(request::discover(std::forward<Args>(args)...));
+  }
+
+  template<class ...Args>
+  auto static_net_config(Args&& ...args) {
+    return run(request::static_net_config(std::forward<Args>(args)...));
+  }
+
+  template<class ...Args>
+  auto dhcp_net_config(Args&& ...args) {
+    return run(request::dhcp_net_config(std::forward<Args>(args)...));
+  }
+
+  template<class ...Args>
+  auto reboot(Args&& ...args) {
+    return run(request::reboot(std::forward<Args>(args)...));
+  }
 
   void stop() {
     _socket.cancel();
@@ -41,7 +59,7 @@ private:
   void check_timeout();
   void handle_send_to(const boost::system::error_code &error, size_t bytes_sent);
   void handle_receive_from(const boost::system::error_code &error, size_t bytes_recvd);
-  bool run_request(request const &);
+  std::vector<std::pair<std::string, response>> run(request const &);
 
   boost::asio::ip::udp::endpoint _listen_address;
   boost::asio::ip::udp::endpoint _dest_address;
