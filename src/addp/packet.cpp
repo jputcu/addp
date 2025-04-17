@@ -40,19 +40,21 @@ request &request::add(const std::string &str) {
   return *this;
 }
 
-response::response(const uint8_t *begin_it, const uint8_t *end_it) {
-  if (static_cast<size_t>(std::distance(begin_it, end_it)) >= sizeof(_header)) {
+response::response(const uint8_t *data, const size_t len) {
+  if (len >= sizeof(_header)) {
+    size_t payload_len = 0;
     // header
     {
       packet_header h;
-      std::memcpy(&h, begin_it, sizeof(_header));
-      begin_it += sizeof(_header);
-      assert(ntohs(h.size) == std::distance(begin_it, end_it));
+      std::memcpy(&h, data, sizeof(_header));
+      data += sizeof(_header);
+      payload_len = ntohs(h.size);
+      assert(payload_len == len - sizeof(_header));
       _header = h;
     }
 
     // payload
-    _payload.assign(begin_it, end_it);
+    _payload.assign(data, data + payload_len);
   }
 }
 

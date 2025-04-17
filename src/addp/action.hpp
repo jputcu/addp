@@ -3,6 +3,7 @@
 
 #include <array>
 #include <string_view>
+#include <vector>
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_context.hpp>
 #include <boost/asio/ip/udp.hpp>
@@ -29,10 +30,7 @@ public:
 
   void set_timeout(const size_t timeout_ms) { _timeout_ms = timeout_ms; }
 
-  bool run(request const &req, callback_t cb) {
-    m_cb = cb;
-    return run_request(req);
-  }
+  std::vector<std::pair<std::string, response>> run(request const &);
 
   void stop() {
     _socket.cancel();
@@ -54,7 +52,7 @@ private:
   std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
 
   size_t _timeout_ms{DEFAULT_TIMEOUT};
-  callback_t m_cb;
+  std::vector<std::pair<std::string, response>> m_responses;
 };
 
 } // namespace addp

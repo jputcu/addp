@@ -17,7 +17,8 @@ action::action()
   _socket.bind(_listen_address);
 }
 
-bool action::run_request(request const &req) {
+std::vector<std::pair<std::string, response>> action::run(request const &req) {
+  m_responses.clear();
   std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
 
   _io_context.reset();
@@ -37,10 +38,10 @@ bool action::run_request(request const &req) {
     std::cerr << str(boost::format("Error: %s (%d)") % error.code().message() %
                      error.code().value())
               << "\n";
-    return false;
+    m_responses.clear();
   }
 
-  return true;
+  return m_responses;
 }
 
 void action::check_timeout() {
@@ -66,7 +67,7 @@ void action::handle_send_to(const boost::system::error_code &error, const size_t
 
 void action::handle_receive_from(const boost::system::error_code &error, const size_t bytes_recvd) {
   if (!error && bytes_recvd > 0) {
-    m_cb(_sender_address, response{_data.data(), _data.data() + bytes_recvd});
+    m_responses.emplace_back(_sender_address.address().to_string(), response{_data.data(), bytes_recvd});
   }
 
   // timeout reached?

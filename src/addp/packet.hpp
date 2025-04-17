@@ -101,7 +101,7 @@ private:
 
 class response {
 public:
-  explicit response(const uint8_t *begin_it, const uint8_t *end_it);
+  explicit response(const uint8_t *data, size_t len);
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
 

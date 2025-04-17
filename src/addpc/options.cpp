@@ -55,7 +55,7 @@ options::options(int argc, char *argv[]) {
     }
   }
 
-  if (auto count = args().size(); count < min || count > max) {
+  if (const auto count = args().size(); count < min || count > max) {
     usage();
     std::exit(1);
   }

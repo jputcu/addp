@@ -13,30 +13,22 @@ int main(int argc, char *argv[]) {
   a.set_listen_address(opts.listen(), opts.port());
 
   std::vector<std::pair<std::string, addp::response>> responses;
-  auto collector = [&responses](const boost::asio::ip::udp::endpoint &sender,
-                                        const addp::response &packet) {
-    responses.emplace_back(sender.address().to_string(), packet);
-  };
-
-  bool action_result = false;
   if (opts.action() == "discover")
-    action_result = a.run(addp::request::discover(opts.mac()), collector);
+    responses = a.run(addp::request::discover(opts.mac()));
   else if (opts.action() == "config")
-    action_result = a.run(addp::request::static_net_config(
+    responses = a.run(addp::request::static_net_config(
                               opts.mac(), boost::asio::ip::make_address_v4(opts.ip()),
                               boost::asio::ip::make_address_v4(opts.subnet()),
-                              boost::asio::ip::make_address_v4(opts.gateway()), opts.password()),
-                          collector);
+                              boost::asio::ip::make_address_v4(opts.gateway()), opts.password()));
   else if (opts.action() == "dhcp")
-    action_result = a.run(addp::request::dhcp_net_config(opts.mac(), opts.dhcp(), opts.password()),
-                          collector);
+    responses = a.run(addp::request::dhcp_net_config(opts.mac(), opts.dhcp(), opts.password()));
   else if (opts.action() == "reboot") {
     // The reboot not always gets a response.
     // Using digi tool it mostly does. It first sends a digi discovery request for that digi
     // before sending the reboot
-    a.run(addp::request::discover(opts.mac()), collector);
+    a.run(addp::request::discover(opts.mac()));
     // Check digi is available in the response
-    action_result = a.run(addp::request::reboot(opts.mac(), opts.password()), collector);
+    responses = a.run(addp::request::reboot(opts.mac(), opts.password()));
   } else
     return EXIT_FAILURE;
 
@@ -47,5 +39,5 @@ int main(int argc, char *argv[]) {
       std::cout << endp << " " << response << "\n";
   }
 
-  return action_result ? EXIT_SUCCESS : EXIT_FAILURE;
+  return responses.size() ? EXIT_SUCCESS : EXIT_FAILURE;
 }
