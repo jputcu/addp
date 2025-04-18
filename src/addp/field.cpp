@@ -29,40 +29,40 @@ field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8
   std::advance(iter, payload_len);
 }
 
-template <> bool field::value() const { return payload().front() == BF_TRUE; }
+template <> bool field::as() const { return payload().front() == BF_TRUE; }
 
-template <> uint8_t field::value() const { return payload().front(); }
+template <> uint8_t field::as() const { return payload().front(); }
 
-template <> uint16_t field::value() const {
+template <> uint16_t field::as() const {
   return ntohs(*reinterpret_cast<const uint16_t *>(payload().data()));
 }
 
-template <> uint32_t field::value() const {
+template <> uint32_t field::as() const {
   return ntohl(*reinterpret_cast<const uint32_t *>(payload().data()));
 }
 
-template <> std::string field::value() const { return {payload().cbegin(), payload().cend()}; }
+template <> std::string field::as() const { return {payload().cbegin(), payload().cend()}; }
 
-template <> field::config_error field::value() const {
-  return static_cast<config_error>(value<uint16_t>());
+template <> field::config_error field::as() const {
+  return static_cast<config_error>(as<uint16_t>());
 }
 
-template <> field::error_code field::value() const {
-  return static_cast<error_code>(value<uint8_t>());
+template <> field::error_code field::as() const {
+  return static_cast<error_code>(as<uint8_t>());
 }
 
-template <> field::result_flag field::value() const {
-  return static_cast<result_flag>(value<uint8_t>());
+template <> field::result_flag field::as() const {
+  return static_cast<result_flag>(as<uint8_t>());
 }
 
-template <> boost::asio::ip::address_v4 field::value() const {
+template <> boost::asio::ip::address_v4 field::as() const {
   boost::asio::ip::address_v4::bytes_type ip_bytes;
   const auto payload_bytes = payload();
   std::copy(payload_bytes.cbegin(), payload_bytes.cend(), ip_bytes.begin());
   return boost::asio::ip::address_v4{ip_bytes};
 }
 
-template <> mac_address field::value() const {
+template <> mac_address field::as() const {
   mac_address mac{};
   const auto payload_bytes = payload();
   if (payload_bytes.size() == mac.size())
@@ -70,8 +70,8 @@ template <> mac_address field::value() const {
   return mac;
 }
 
-template <typename T> T field::value() const {
-  T t{};
+template <> guid field::as() const {
+  guid t{};
   const auto payload_bytes = payload();
   if (payload_bytes.size() == t.size())
     std::copy(payload_bytes.cbegin(), payload_bytes.cend(), t.begin());
@@ -83,22 +83,22 @@ std::string field::value_str() const {
 
   switch (type()) {
   case field_type::dhcp:
-    os << (value<bool>() ? "true" : "false");
+    os << (as<bool>() ? "true" : "false");
     break;
 
   case field_type::hw_type:
   case field_type::hw_rev:
   case field_type::serial_count:
-    os << std::dec << static_cast<int>(value<uint8_t>());
+    os << std::dec << static_cast<int>(as<uint8_t>());
     break;
 
   case field_type::version:
-    os << std::dec << value<uint16_t>();
+    os << std::dec << as<uint16_t>();
     break;
 
   case field_type::port:
   case field_type::ssl_port:
-    os << std::dec << value<uint32_t>();
+    os << std::dec << as<uint32_t>();
     break;
 
   case field_type::name:
@@ -106,35 +106,35 @@ std::string field::value_str() const {
   case field_type::firmware:
   case field_type::result_msg:
   case field_type::device:
-    os << "'" << value<std::string>() << "'";
+    os << "'" << as<std::string>() << "'";
     break;
 
   case field_type::ip_addr:
   case field_type::netmask:
   case field_type::gateway:
   case field_type::dns:
-    os << value<boost::asio::ip::address_v4>();
+    os << as<boost::asio::ip::address_v4>();
     break;
 
   case field_type::mac_addr:
-    os << value<mac_address>();
+    os << as<mac_address>();
     break;
 
   case field_type::device_id:
   case field_type::vendor:
-    os << value<guid>();
+    os << as<guid>();
     break;
 
   case field_type::conf_err_code:
-    os << std::dec << value<config_error>();
+    os << std::dec << as<config_error>();
     break;
 
   case field_type::err_code:
-    os << std::dec << value<error_code>();
+    os << std::dec << as<error_code>();
     break;
 
   case field_type::result_flag:
-    os << std::dec << value<result_flag>();
+    os << std::dec << as<result_flag>();
     break;
 
   default:

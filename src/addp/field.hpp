@@ -68,7 +68,7 @@ public:
 
   field_type type() const { return _type; }
 
-  template <typename T> T value() const;
+  template <typename T> T as() const;
   std::string value_str() const;
 
   size_t size() const { return _payload.size(); }
