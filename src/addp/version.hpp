@@ -3,7 +3,7 @@
 
 namespace addp {
 
-const char VERSION[] = "1.1.0";
+constexpr char VERSION[] = "1.1.0";
 
 } // namespace addp
 

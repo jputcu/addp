@@ -76,14 +76,13 @@ public:
   boost::span<const uint8_t> payload() const { return _payload; }
 
 private:
-  static std::string error_code2str(error_code);
-  static std::string result_flag2str(result_flag);
-  static std::string config_error2str(config_error);
-
   field_type _type;
   boost::span<const uint8_t> _payload;
 };
 
+std::ostream &operator<<(std::ostream &, field::error_code);
+std::ostream &operator<<(std::ostream &, field::result_flag);
+std::ostream &operator<<(std::ostream &, field::config_error);
 std::ostream &operator<<(std::ostream &, field_type);
 std::ostream &operator<<(std::ostream &, const field &);
 

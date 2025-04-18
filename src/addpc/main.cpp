@@ -2,10 +2,9 @@
 
 #include <addp/addp.hpp>
 #include <iostream>
-#include <vector>
 
 int main(int argc, char *argv[]) {
-  options opts{argc, argv};
+  const options opts{argc, argv};
 
   addp::action a;
   a.set_timeout(opts.timeout());
@@ -39,5 +38,5 @@ int main(int argc, char *argv[]) {
       std::cout << mac << " " << response << "\n";
   }
 
-  return responses.size() ? EXIT_SUCCESS : EXIT_FAILURE;
+  return !responses.empty() ? EXIT_SUCCESS : EXIT_FAILURE;
 }

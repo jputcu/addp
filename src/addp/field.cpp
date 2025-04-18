@@ -15,6 +15,7 @@ field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8
     field_type type{};
     uint8_t size{};
   };
+  static_assert(sizeof(header) == 2);
 
   const auto remaining_len [[maybe_unused]] = static_cast<size_t>(std::distance(iter, end));
   assert(remaining_len >= sizeof(header));
@@ -57,7 +58,7 @@ template <> field::result_flag field::value() const {
 template <> boost::asio::ip::address_v4 field::value() const {
   boost::asio::ip::address_v4::bytes_type ip_bytes;
   const auto payload_bytes = payload();
-  std::copy(payload_bytes.begin(), payload_bytes.end(), ip_bytes.begin());
+  std::copy(payload_bytes.cbegin(), payload_bytes.cend(), ip_bytes.begin());
   return boost::asio::ip::address_v4{ip_bytes};
 }
 
@@ -65,7 +66,7 @@ template <> mac_address field::value() const {
   mac_address mac{};
   const auto payload_bytes = payload();
   if (payload_bytes.size() == mac.size())
-    std::copy(payload_bytes.begin(), payload_bytes.end(), mac.begin());
+    std::copy(payload_bytes.cbegin(), payload_bytes.cend(), mac.begin());
   return mac;
 }
 
@@ -73,7 +74,7 @@ template <typename T> T field::value() const {
   T t{};
   const auto payload_bytes = payload();
   if (payload_bytes.size() == t.size())
-    std::copy(payload_bytes.begin(), payload_bytes.end(), t.begin());
+    std::copy(payload_bytes.cbegin(), payload_bytes.cend(), t.begin());
   return t;
 }
 
@@ -105,7 +106,7 @@ std::string field::value_str() const {
   case field_type::firmware:
   case field_type::result_msg:
   case field_type::device:
-    os << value<std::string>();
+    os << "'" << value<std::string>() << "'";
     break;
 
   case field_type::ip_addr:
@@ -119,6 +120,7 @@ std::string field::value_str() const {
     os << value<mac_address>();
     break;
 
+  case field_type::device_id:
   case field_type::vendor:
     os << value<guid>();
     break;
@@ -135,51 +137,63 @@ std::string field::value_str() const {
     os << std::dec << value<result_flag>();
     break;
 
-  case field_type::device_id:
-  default: {
+  default:
     for (const uint8_t b : payload())
       os << " " << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(b);
     break;
   }
-  }
   return os.str();
 }
 
-std::string field::error_code2str(const error_code code) {
-  switch (code) {
-  case EC_SUCCESS:
-    return "Success";
-  case EC_AUTH:
-    return "Auth";
-  case EC_INVALID:
-    return "Invalid";
-  case EC_SAVE:
-    return "Save";
+std::ostream &addp::operator<<(std::ostream &os, field::error_code ec) {
+  switch (ec) {
+  case field::EC_SUCCESS:
+    os << "Success";
+    break;
+  case field::EC_AUTH:
+    os << "Auth";
+    break;
+  case field::EC_INVALID:
+    os << "Invalid";
+    break;
+  case field::EC_SAVE:
+    os << "Save";
+    break;
   default:
-    return str(boost::format("Unknown (0x%02x)") % code);
+    os << str(boost::format("Unknown (0x%02x)") % ec);
+    break;
   }
+  return os;
 }
 
-std::string field::result_flag2str(const result_flag flag) {
-  switch (flag) {
-  case RF_SUCCESS:
-    return "Success";
-  case RF_ERROR:
-    return "Error";
+std::ostream &addp::operator<<(std::ostream &os, field::result_flag fl) {
+  switch (fl) {
+  case field::RF_SUCCESS:
+    os << "Success";
+    break;
+  case field::RF_ERROR:
+    os << "Error";
+    break;
   default:
-    return str(boost::format("Unknown (0x%02x)") % flag);
+    os << str(boost::format("Unknown (0x%02x)") % fl);
+    break;
   }
+  return os;
 }
 
-std::string field::config_error2str(const config_error error) {
+std::ostream &addp::operator<<(std::ostream &os, field::config_error error) {
   switch (error) {
-  case CE_SUCCESS:
-    return "Success";
-  case CE_ERROR:
-    return "Error";
+  case field::CE_SUCCESS:
+    os << "Success";
+    break;
+  case field::CE_ERROR:
+    os << "Error";
+    break;
   default:
-    return str(boost::format("Unknown (0x%02x)") % error);
+    os << str(boost::format("Unknown (0x%02x)") % error);
+    break;
   }
+  return os;
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const field_type type) {

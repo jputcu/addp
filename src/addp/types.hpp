@@ -2,7 +2,6 @@
 #define ADDP_TYPES_H
 
 #include <array>
-#include <cstdint>
 #include <string>
 #include <iosfwd>
 
