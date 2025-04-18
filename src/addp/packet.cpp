@@ -96,7 +96,7 @@ std::ostream &addp::operator<<(std::ostream &os, const packet_type type) {
     os << "DHCP Net Config Response";
     break;
   default:
-    os << str(boost::format("unknown (0x%02x)") % static_cast<int>(type));
+    os << boost::format("unknown (0x%02x)") % static_cast<int>(type);
     break;
   }
   return os;

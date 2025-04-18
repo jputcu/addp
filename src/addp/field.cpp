@@ -124,8 +124,8 @@ std::ostream &field::value_str(std::ostream &os) const {
 }
 
 void field::stream_unknown_as_hex(std::ostream& os) const {
-  for (const uint8_t b : payload())
-    os << " " << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(b);
+  for (const auto b : payload())
+    os << boost::format(" %02x") % unsigned{b};
 }
 
 std::ostream &addp::operator<<(std::ostream &os, field::error_code ec) {
@@ -143,7 +143,7 @@ std::ostream &addp::operator<<(std::ostream &os, field::error_code ec) {
     os << "Save";
     break;
   default:
-    os << str(boost::format("Unknown (0x%02x)") % ec);
+    os << boost::format("Unknown (0x%02x)") % ec;
     break;
   }
   return os;
@@ -158,7 +158,7 @@ std::ostream &addp::operator<<(std::ostream &os, field::result_flag fl) {
     os << "Error";
     break;
   default:
-    os << str(boost::format("Unknown (0x%02x)") % fl);
+    os << boost::format("Unknown (0x%02x)") % fl;
     break;
   }
   return os;
@@ -173,7 +173,7 @@ std::ostream &addp::operator<<(std::ostream &os, field::config_error error) {
     os << "Other subnet";
     break;
   default:
-    os << str(boost::format("Unknown (0x%02x)") % error);
+    os << boost::format("Unknown (0x%02x)") % error;
     break;
   }
   return os;
@@ -251,7 +251,7 @@ std::ostream &addp::operator<<(std::ostream &os, const field_type type) {
     os << "Device-ID";
     break;
   default:
-    os << str(boost::format("Unknown (0x%02x)") % static_cast<unsigned>(type));
+    os << boost::format("Unknown (0x%02x)") % static_cast<unsigned>(type);
     break;
   }
   return os;

@@ -1,6 +1,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <iomanip>
 #include <string>
@@ -17,9 +18,10 @@ mac_address::mac_address(std::string const &mac_str) {
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const mac_address &mac_addr) {
-  os << std::hex << std::setfill('0') << std::nouppercase;
-  for (size_t i = 0; i < mac_addr.size(); ++i)
-    os << (i ? ":" : "") << std::setw(2) << boost::numeric_cast<int>(mac_addr[i]);
+  boost::format fmt("%02x:%02x:%02x:%02x:%02x:%02x");
+  for (auto b : mac_addr)
+    fmt % unsigned{b};
+  os << fmt;
   return os;
 }
 
@@ -53,21 +55,9 @@ std::istream &addp::operator>>(std::istream &is, mac_address &mac_addr) {
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const guid &guid) {
-  os << std::hex << std::setfill('0');
-
-  for (size_t i = 0; i < guid.size(); ++i) {
-    switch (i) {
-    case 4:
-    case 4 + 2:
-    case 4 + 2 + 2:
-    case 4 + 2 + 2 + 2:
-      os << "-";
-      break;
-    default:
-      break;
-    }
-    os << std::setw(2) << static_cast<int>(guid[i]);
-  }
-
+  boost::format fmt("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x");
+  for (auto b : guid)
+    fmt % unsigned{b};
+  os << fmt;
   return os;
 }

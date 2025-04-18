@@ -32,9 +32,7 @@ std::map<mac_address, response> action::run(request const &req) {
   try {
     _io_context.run();
   } catch (const boost::system::system_error &error) {
-    std::cerr << str(boost::format("Error: %s (%d)") % error.code().message() %
-                     error.code().value())
-              << "\n";
+    std::cerr << boost::format("Error: %s (%d)\n") % error.code().message() % error.code().value();
     m_responses.clear();
   }
 

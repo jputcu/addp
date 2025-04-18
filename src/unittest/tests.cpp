@@ -75,3 +75,11 @@ BOOST_AUTO_TEST_CASE(mac_address_parse_from_str) {
   BOOST_CHECK_EQUAL(mac[4], 0x44);
   BOOST_CHECK_EQUAL(mac[5], 0x55);
 }
+
+BOOST_AUTO_TEST_CASE(guid_to_string) {
+  std::ostringstream os;
+  addp::guid guid{0x01, 0x02, 0x03, 0x04, 0x01, 0x02, 0x03, 0x04,
+                  0x01, 0x02, 0x03, 0x04, 0x01, 0x02, 0x03, 0x04};
+  os << guid;
+  BOOST_CHECK_EQUAL(os.str(), "01020304-0102-0304-0102-030401020304");
+}
