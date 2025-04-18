@@ -4,7 +4,6 @@
 #include <boost/format.hpp>
 #include <boost/asio/ip/address_v4.hpp>
 #include <iomanip>
-#include <sstream>
 #include <iostream>
 
 #include "types.hpp"
@@ -29,9 +28,7 @@ field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8
   std::advance(iter, payload_len);
 }
 
-template <> bool field::as() const { return payload().front() == BF_TRUE; }
-
-template <> uint8_t field::as() const { return payload().front(); }
+template <> bool field::as() const { return as<uint8_t>() == BF_TRUE; }
 
 template <> uint16_t field::as() const {
   return ntohs(*reinterpret_cast<const uint16_t *>(payload().data()));
@@ -44,15 +41,15 @@ template <> uint32_t field::as() const {
 template <> std::string field::as() const { return {payload().cbegin(), payload().cend()}; }
 
 template <> field::config_error field::as() const {
-  return static_cast<config_error>(as<uint16_t>());
+  return config_error{as<uint16_t>()};
 }
 
 template <> field::error_code field::as() const {
-  return static_cast<error_code>(as<uint8_t>());
+  return error_code{as<uint8_t>()};
 }
 
 template <> field::result_flag field::as() const {
-  return static_cast<result_flag>(as<uint8_t>());
+  return result_flag{as<uint8_t>()};
 }
 
 template <> boost::asio::ip::address_v4 field::as() const {
@@ -62,25 +59,7 @@ template <> boost::asio::ip::address_v4 field::as() const {
   return boost::asio::ip::address_v4{ip_bytes};
 }
 
-template <> mac_address field::as() const {
-  mac_address mac{};
-  const auto payload_bytes = payload();
-  if (payload_bytes.size() == mac.size())
-    std::copy(payload_bytes.cbegin(), payload_bytes.cend(), mac.begin());
-  return mac;
-}
-
-template <> guid field::as() const {
-  guid t{};
-  const auto payload_bytes = payload();
-  if (payload_bytes.size() == t.size())
-    std::copy(payload_bytes.cbegin(), payload_bytes.cend(), t.begin());
-  return t;
-}
-
-std::string field::value_str() const {
-  std::ostringstream os;
-
+std::ostream &field::value_str(std::ostream &os) const {
   switch (type()) {
   case field_type::dhcp:
     os << (as<bool>() ? "true" : "false");
@@ -138,11 +117,15 @@ std::string field::value_str() const {
     break;
 
   default:
-    for (const uint8_t b : payload())
-      os << " " << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(b);
+    stream_unknown_as_hex(os);
     break;
   }
-  return os.str();
+  return os;
+}
+
+void field::stream_unknown_as_hex(std::ostream& os) const {
+  for (const uint8_t b : payload())
+    os << " " << std::hex << std::setfill('0') << std::setw(2) << static_cast<unsigned>(b);
 }
 
 std::ostream &addp::operator<<(std::ostream &os, field::error_code ec) {
@@ -183,11 +166,11 @@ std::ostream &addp::operator<<(std::ostream &os, field::result_flag fl) {
 
 std::ostream &addp::operator<<(std::ostream &os, field::config_error error) {
   switch (error) {
-  case field::CE_SUCCESS:
+  case field::config_error::no_error:
     os << "Success";
     break;
-  case field::CE_ERROR:
-    os << "Error";
+  case field::config_error::other_subnet:
+    os << "Other subnet";
     break;
   default:
     os << str(boost::format("Unknown (0x%02x)") % error);
@@ -275,6 +258,7 @@ std::ostream &addp::operator<<(std::ostream &os, const field_type type) {
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const field &field) {
-  os << field.type() << " = " << field.value_str() << "\n";
+  os << field.type() << " = ";
+  field.value_str(os) << "\n";
   return os;
 }

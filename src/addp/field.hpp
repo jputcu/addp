@@ -6,6 +6,8 @@
 #include <iosfwd>
 #include <string>
 #include <boost/core/span.hpp>
+#include <cstring>
+#include <cassert>
 
 namespace addp {
 
@@ -39,7 +41,7 @@ enum class field_type : uint8_t {
 class field {
 public:
   // FT_ERR_CODE
-  enum error_code {
+  enum error_code : uint8_t {
     EC_SUCCESS = 0x00,
     EC_AUTH,
     EC_INVALID = 0x03,
@@ -47,18 +49,18 @@ public:
   };
 
   // FT_RESULT_FLAG
-  enum result_flag {
+  enum result_flag : uint8_t {
     RF_SUCCESS = 0x00,
     RF_ERROR = 0xff,
   };
 
   // FT_CONF_ERR_CODE
-  enum config_error {
-    CE_SUCCESS = 0x00,
-    CE_ERROR, // Digi in different subnet than sender
+  enum class config_error : uint16_t {
+    no_error = 0x0000,
+    other_subnet = 0x0001, // Exclamation mark next to digi in digi discovery
   };
 
-  enum bool_flag {
+  enum bool_flag : uint8_t {
     BF_FALSE = 0x00,
     BF_TRUE = 0x01,
   };
@@ -68,10 +70,17 @@ public:
 
   field_type type() const { return _type; }
 
-  template <typename T> T as() const;
-  std::string value_str() const;
+  template <typename T> T as() const {
+    T t;
+    const auto payload_bytes = payload();
+    assert(payload_bytes.size() == sizeof(T));
+    std::memcpy(&t, payload_bytes.cbegin(), sizeof(T));
+    return t;
+  }
 
-  size_t size() const { return _payload.size(); }
+  std::ostream &value_str(std::ostream&) const;
+
+  void stream_unknown_as_hex(std::ostream&) const;
 
   boost::span<const uint8_t> payload() const { return _payload; }
 
