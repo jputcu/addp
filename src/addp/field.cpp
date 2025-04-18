@@ -11,17 +11,21 @@
 using namespace addp;
 
 field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8_t>::const_iterator &end) {
-  // header
-  std::copy_n(iter, sizeof(_header), reinterpret_cast<uint8_t *>(&_header));
-  std::advance(iter, sizeof(_header));
+  struct header {
+    field_type type{};
+    uint8_t size{};
+  };
 
-  // payload
-  if (std::distance(iter, end) >= _header.size) {
-    _payload = {&iter[0], size_t{_header.size}};
-    std::advance(iter, _header.size);
-  } else {
-    throw std::runtime_error("not enough data for field");
-  }
+  const auto remaining_len [[maybe_unused]] = static_cast<size_t>(std::distance(iter, end));
+  assert(remaining_len >= sizeof(header));
+
+  _type = field_type{*iter++};
+  const auto payload_len = size_t{*iter++};
+  const auto total_field_len [[maybe_unused]] = payload_len + sizeof(header);
+  assert(total_field_len <= remaining_len);
+
+  _payload = {&iter[0], payload_len};
+  std::advance(iter, payload_len);
 }
 
 template <> bool field::value() const { return payload().front() == BF_TRUE; }

@@ -66,7 +66,7 @@ public:
   // Consumes the data: moves iter to the next field
   field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8_t>::const_iterator &end);
 
-  field_type type() const { return _header.type; }
+  field_type type() const { return _type; }
 
   template <typename T> T value() const;
   std::string value_str() const;
@@ -80,11 +80,7 @@ private:
   static std::string result_flag2str(result_flag);
   static std::string config_error2str(config_error);
 
-  struct header {
-    field_type type{};
-    uint8_t size{};
-  };
-  header _header;
+  field_type _type;
   boost::span<const uint8_t> _payload;
 };
 
