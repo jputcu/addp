@@ -4,11 +4,8 @@
 #include <boost/format.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/asio/ip/address_v4.hpp>
-#include <iomanip>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <sstream>
 
 #include "types.hpp"
 using namespace addp;
@@ -16,24 +13,16 @@ using namespace addp;
 mac_address::mac_address(std::string_view mac_str) {
   std::vector<std::string> tokens;
   boost::algorithm::split(tokens, mac_str, boost::is_any_of(":"));
-
   if (tokens.size() != size())
     throw boost::bad_lexical_cast();
 
-  for (size_t i = 0; i < size(); i++) {
-    // parse hex values
-    std::stringstream ss;
-    ss << std::hex << tokens[i];
-
-    int value;
-    ss >> value;
-    // convert them to one byte, checking overflow
-    this->operator[](i) = boost::numeric_cast<uint8_t>(value);
-
-    // make sure there's no trailing garbage
-    if (!ss.eof())
+  std::transform(tokens.cbegin(), tokens.cend(), begin(), [](auto const &h_str) {
+    size_t pos = 0;
+    const auto value = std::stoi(h_str, &pos, 16);
+    if (pos != h_str.size()) // make sure there's no trailing garbage
       throw boost::bad_lexical_cast();
-  }
+    return boost::numeric_cast<uint8_t>(value);
+  });
 }
 
 std::ostream &addp::operator<<(std::ostream &os, const mac_address &mac_addr) {
