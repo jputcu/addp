@@ -8,7 +8,6 @@
 
 #include <boost/asio.hpp>
 #include <boost/core/span.hpp>
-#include <boost/asio/ip/address_v4.hpp>
 
 #include <addp/constants.hpp>
 #include <addp/types.hpp>
@@ -37,31 +36,31 @@ static_assert(sizeof(packet_header) == 8);
 
 class request {
 public:
-  static request discover(mac_address const &mac = MAC_ADDR_ALL) {
-    return request(packet_type::DISCOVERY_REQUEST).add(mac);
+  static request discover(std::string_view mac = MAC_ADDR_ALL) {
+    return request(packet_type::DISCOVERY_REQUEST).add_mac(mac);
   }
 
-  static request static_net_config(const mac_address &mac,
-                                           const boost::asio::ip::address_v4 &ip,
-                                           const boost::asio::ip::address_v4 &subnet,
-                                           const boost::asio::ip::address_v4 &gateway,
-                                           const std::string &auth = DEFAULT_PASSWORD) {
+  static request static_net_config(std::string_view mac, std::string_view ip,
+                                   std::string_view subnet, std::string_view gateway,
+                                   std::string_view auth = DEFAULT_PASSWORD) {
     return request(packet_type::STATIC_NET_CONFIG_REQUEST)
-        .add(ip)
-        .add(subnet)
-        .add(gateway)
-        .add(mac)
-        .add(auth);
+        .add_ip(ip)
+        .add_ip(subnet)
+        .add_ip(gateway)
+        .add_mac(mac)
+        .add_string(auth);
   }
 
-
-  static request reboot(const mac_address &mac, const std::string &auth = DEFAULT_PASSWORD) {
-    return request(packet_type::REBOOT_REQUEST).add(mac).add(auth);
+  static request reboot(std::string_view mac, std::string_view auth = DEFAULT_PASSWORD) {
+    return request(packet_type::REBOOT_REQUEST).add_mac(mac).add_string(auth);
   }
 
-  static request dhcp_net_config(const mac_address &mac, bool enable,
-                                         const std::string &auth = DEFAULT_PASSWORD) {
-    return request(packet_type::DHCP_NET_CONFIG_REQUEST).add(enable).add(mac).add(auth);
+  static request dhcp_net_config(std::string_view mac, bool enable,
+                                 std::string_view auth = DEFAULT_PASSWORD) {
+    return request(packet_type::DHCP_NET_CONFIG_REQUEST)
+        .add_bool(enable)
+        .add_mac(mac)
+        .add_string(auth);
   }
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_packet.header.type)); }
@@ -76,10 +75,10 @@ public:
 private:
   explicit request(packet_type type) { _packet.header.type = htons(static_cast<u_short>(type)); }
 
-  request &add(bool data);
-  request &add(const mac_address &);
-  request &add(const boost::asio::ip::address_v4 &);
-  request &add(const std::string &);
+  request &add_bool(bool data);
+  request &add_mac(std::string_view);
+  request &add_ip(std::string_view);
+  request &add_string(std::string_view);
 
   struct packet {
     static constexpr auto MAX_PAYLOAD_SIZE = 200;

@@ -5,29 +5,31 @@
 #include <iostream>
 using namespace addp;
 
-request &request::add(const bool data) {
+request &request::add_bool(const bool data) {
   auto it = _packet.out_it();
   *it++ = data ? field::BF_TRUE : field::BF_FALSE;
   _packet.update_payload_size(it);
   return *this;
 }
 
-request &request::add(const mac_address &data) {
+request &request::add_mac(const std::string_view mac_str) {
+  mac_address mac{mac_str};
   auto it = _packet.out_it();
-  it = std::copy(data.cbegin(), data.cend(), it);
+  it = std::copy(mac.cbegin(), mac.cend(), it);
   _packet.update_payload_size(it);
   return *this;
 }
 
-request &request::add(const boost::asio::ip::address_v4 &data) {
+request &request::add_ip(const std::string_view ip_str) {
+  auto ip = boost::asio::ip::make_address_v4(ip_str);
   auto it = _packet.out_it();
-  const auto ip_bytes = data.to_bytes();
+  const auto ip_bytes = ip.to_bytes();
   it = std::copy(ip_bytes.cbegin(), ip_bytes.cend(), it);
   _packet.update_payload_size(it);
   return *this;
 }
 
-request &request::add(const std::string &str) {
+request &request::add_string(const std::string_view str) {
   // 1 byte length
   auto it = _packet.out_it();
   *it++ = static_cast<uint8_t>(str.size());

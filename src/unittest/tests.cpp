@@ -16,9 +16,7 @@ BOOST_AUTO_TEST_CASE(mac_address_format) {
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_parse) {
-  addp::mac_address mac;
-  std::istringstream is("01:20:03:4d:fe:ef");
-  is >> mac;
+  addp::mac_address mac("01:20:03:4d:fe:ef");
   BOOST_CHECK_EQUAL(mac[0], 0x01);
   BOOST_CHECK_EQUAL(mac[1], 0x20);
   BOOST_CHECK_EQUAL(mac[2], 0x03);
@@ -28,42 +26,32 @@ BOOST_AUTO_TEST_CASE(mac_address_parse) {
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_parse_single_values) {
-  std::istringstream is("1:2:3:7:8:9");
-  addp::mac_address mac;
-  is >> mac;
+  addp::mac_address mac("1:2:3:7:8:9");
   std::ostringstream os;
   os << mac;
   BOOST_CHECK_EQUAL(os.str(), "01:02:03:07:08:09");
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_dont_parse_octal) {
-  std::istringstream is("01:02:03:07:08:09");
-  addp::mac_address mac;
-  is >> mac;
+  addp::mac_address mac("01:02:03:07:08:09");
   std::ostringstream os;
   os << mac;
   BOOST_CHECK_EQUAL(os.str(), "01:02:03:07:08:09");
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_parse_hex_to_lower) {
-  std::istringstream is("01:23:45:67:89:AB");
-  addp::mac_address mac;
-  is >> mac;
+  addp::mac_address mac("01:23:45:67:89:AB");
   std::ostringstream os;
   os << mac;
   BOOST_CHECK_EQUAL(os.str(), "01:23:45:67:89:ab");
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_throw_on_value_overflow) {
-  std::istringstream is("01:23:45:67:89:123");
-  addp::mac_address mac;
-  BOOST_CHECK_THROW(is >> mac, boost::numeric::positive_overflow);
+  BOOST_CHECK_THROW(addp::mac_address("01:23:45:67:89:123"), boost::numeric::positive_overflow);
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_throw_on_value_underflow) {
-  std::istringstream is("01:23:45:67:89:-1");
-  addp::mac_address mac;
-  BOOST_CHECK_THROW(is >> mac, boost::numeric::negative_overflow);
+  BOOST_CHECK_THROW(addp::mac_address("01:23:45:67:89:-1"), boost::numeric::negative_overflow);
 }
 
 BOOST_AUTO_TEST_CASE(mac_address_parse_from_str) {

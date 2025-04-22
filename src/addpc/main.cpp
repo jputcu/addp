@@ -16,9 +16,7 @@ int main(int argc, char *argv[]) {
     responses = a.discover(opts.mac());
   else if (opts.action() == "config")
     responses =
-        a.static_net_config(opts.mac(), boost::asio::ip::make_address_v4(opts.ip()),
-                            boost::asio::ip::make_address_v4(opts.subnet()),
-                            boost::asio::ip::make_address_v4(opts.gateway()), opts.password());
+        a.static_net_config(opts.mac(), opts.ip(), opts.subnet(), opts.gateway(), opts.password());
   else if (opts.action() == "dhcp")
     responses = a.dhcp_net_config(opts.mac(), opts.dhcp(), opts.password());
   else if (opts.action() == "reboot") {

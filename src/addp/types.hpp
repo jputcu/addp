@@ -3,13 +3,14 @@
 
 #include <array>
 #include <string>
+#include <string_view>
 #include <iosfwd>
 
 namespace addp {
 
 struct mac_address : std::array<uint8_t, 6> {
   mac_address() = default;
-  mac_address(std::string const &mac_str);
+  mac_address(std::string_view mac_str);
 
   // "ff:ff:ff:ff:ff:ff" -> "ffffff:ffffff"
   // Like printed on the DIGI itself
@@ -26,7 +27,6 @@ struct mac_address : std::array<uint8_t, 6> {
 struct guid : std::array<uint8_t, 16> {};
 
 std::ostream &operator<<(std::ostream&, const mac_address &);
-std::istream &operator>>(std::istream&, mac_address &);
 std::ostream &operator<<(std::ostream&, const guid &);
 
 } // namespace addp
