@@ -85,7 +85,7 @@ std::ostream &field::value_str(std::ostream &os) const {
   case field_type::firmware:
   case field_type::result_msg:
   case field_type::device:
-    os << "'" << as<std::string>() << "'";
+    os << std::quoted(as<std::string>());
     break;
 
   case field_type::ip_addr:
