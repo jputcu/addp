@@ -13,7 +13,7 @@ request &request::add_bool(const bool data) {
 }
 
 request &request::add_mac(const std::string_view mac_str) {
-  mac_address mac{mac_str};
+  const mac_address mac{mac_str};
   auto it = _packet.out_it();
   it = std::copy(mac.cbegin(), mac.cend(), it);
   _packet.update_payload_size(it);

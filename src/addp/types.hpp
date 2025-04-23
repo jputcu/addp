@@ -10,7 +10,7 @@ namespace addp {
 
 struct mac_address : std::array<uint8_t, 6> {
   mac_address() = default;
-  mac_address(std::string_view mac_str);
+  explicit mac_address(std::string_view mac_str);
 
   // "ff:ff:ff:ff:ff:ff" -> "ffffff:ffffff"
   // Like printed on the DIGI itself

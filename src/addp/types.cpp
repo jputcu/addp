@@ -4,7 +4,6 @@
 #include <boost/format.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/asio/ip/address_v4.hpp>
-#include <string>
 #include <vector>
 
 #include "types.hpp"
