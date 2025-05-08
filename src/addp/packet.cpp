@@ -69,6 +69,10 @@ response::response(const uint8_t *data, const size_t len) {
   }
 }
 
+bool response::Verify() const {
+  return _fields.at(field_type::firmware).as_string().starts_with("Version");
+}
+
 std::ostream &addp::operator<<(std::ostream &os, const packet_type type) {
   switch (type) {
   case packet_type::NONE:

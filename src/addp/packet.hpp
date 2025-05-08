@@ -106,6 +106,9 @@ public:
 
   std::map<field_type, field> const &fields() const { return _fields; }
 
+  // Do some checks to see if the data is ok
+  bool Verify() const;
+
 private:
   packet_header _header;
   std::vector<uint8_t> _payload;

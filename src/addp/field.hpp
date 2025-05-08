@@ -9,7 +9,6 @@
 #include <string>
 #include <boost/core/span.hpp>
 #include <cstring>
-#include <cassert>
 #include <boost/asio/ip/address_v4.hpp>
 
 namespace addp {

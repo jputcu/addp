@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
 
   // print collection:
   {
-    std::cout << "Responses #" << responses.size() << ":\n";
+    std::cout << "Responses #" << responses.size() << "(" << (addp::action::Verify(responses) ? "ok" : "nok") << "):\n";
     for (auto const &[mac, response] : responses)
       std::cout << mac << " " << response << "\n";
   }
