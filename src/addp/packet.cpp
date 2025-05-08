@@ -49,7 +49,8 @@ response::response(const uint8_t *data, const size_t len) {
       std::memcpy(&h, data, sizeof(_header));
       data += sizeof(_header);
       payload_len = ntohs(h.size);
-      assert(payload_len == len - sizeof(_header));
+      if (payload_len != len - sizeof(_header))
+        throw std::runtime_error("packet len doesn't match embedded length");
       _header = h;
     }
 
@@ -117,6 +118,6 @@ std::ostream &addp::operator<<(std::ostream &os, const request &packet) {
 std::ostream &addp::operator<<(std::ostream &os, const response &packet) {
   os << packet.type() << "\n";
   for (const auto &f : packet.fields())
-    os << "  " << f.second;
+    os << "  " << f.second << "\n";
   return os;
 }

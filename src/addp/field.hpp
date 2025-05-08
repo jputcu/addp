@@ -1,6 +1,8 @@
 #ifndef ADDP_PACKET_FIELD_H
 #define ADDP_PACKET_FIELD_H
 
+#include "types.hpp"
+
 #include <cstdint>
 #include <vector>
 #include <iosfwd>
@@ -8,6 +10,7 @@
 #include <boost/core/span.hpp>
 #include <cstring>
 #include <cassert>
+#include <boost/asio/ip/address_v4.hpp>
 
 namespace addp {
 
@@ -70,13 +73,17 @@ public:
 
   field_type type() const { return _type; }
 
-  template <typename T> T as() const {
-    T t;
-    const auto payload_bytes = payload();
-    assert(payload_bytes.size() == sizeof(T));
-    std::memcpy(&t, payload_bytes.cbegin(), sizeof(T));
-    return t;
-  }
+  bool as_bool() const;
+  uint8_t as_uint8() const;
+  uint16_t as_uint16() const;
+  uint32_t as_uint32() const;
+  std::string as_string() const;
+  config_error as_config_error() const;
+  error_code as_error_code() const;
+  result_flag as_result_flag() const;
+  boost::asio::ip::address_v4 as_ip_address() const;
+  guid as_guid() const;
+  mac_address as_mac_address() const;
 
   std::ostream &value_str(std::ostream&) const;
 
