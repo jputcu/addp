@@ -37,7 +37,7 @@ std::map<mac_address, response> action::run(request const &req) {
   }
 
   _socket.close();
-  return m_responses;
+  return std::move(m_responses);
 }
 
 void action::check_timeout() {
