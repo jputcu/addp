@@ -1,6 +1,7 @@
 #ifndef ADDP_CONSTANTS_H
 #define ADDP_CONSTANTS_H
 
+#include <cstdint>
 #include <string>
 
 namespace addp {

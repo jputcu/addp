@@ -10,18 +10,17 @@ namespace addp {
 
 struct mac_address : std::array<uint8_t, 6> {
   mac_address() = default;
+
+  // Accept:
+  // * xx:xx:xx:xx:xx:xx e.g. used in Linux
+  // * XX-XX-XX-XX-XX-XX e.g. used in Windows
+  // * XXXXXX:XXXXXX e.g. found on the Digi label
   explicit mac_address(std::string_view mac_str);
 
-  // "ff:ff:ff:ff:ff:ff" -> "ffffff:ffffff"
-  // Like printed on the DIGI itself
-  static std::string Compact(std::string const &mac_str) {
-    auto mac = mac_str;
-    mac.erase(2, 1);
-    mac.erase(4, 1);
-    mac.erase(9, 1);
-    mac.erase(11, 1);
-    return mac;
-  }
+  std::string ToString() const;
+
+  // "XXXXXX:XXXXXX"
+  std::string ToDigiMac() const;
 };
 
 struct guid : std::array<uint8_t, 16> {};
