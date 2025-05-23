@@ -9,6 +9,7 @@
 #include <string>
 #include <boost/core/span.hpp>
 #include <cstring>
+#include <variant>
 #include <boost/asio/ip/address_v4.hpp>
 
 namespace addp {
@@ -86,7 +87,9 @@ public:
 
   std::ostream &value_str(std::ostream&) const;
 
-  void stream_unknown_as_hex(std::ostream&) const;
+  std::variant<bool, uint8_t, uint16_t, uint32_t, std::string_view, boost::asio::ip::address_v4,
+               mac_address, guid, config_error, error_code, result_flag, boost::span<const uint8_t>>
+  value() const;
 
   boost::span<const uint8_t> payload() const { return _payload; }
 

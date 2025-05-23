@@ -31,7 +31,11 @@ field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8
 
 bool field::as_bool() const { return as_uint8() == BF_TRUE; }
 
-uint8_t field::as_uint8() const { return payload().front(); }
+uint8_t field::as_uint8() const {
+  if ( payload().size() != 1 )
+    throw std::runtime_error("field::as_uint8() called with invalid payload");
+  return payload().front();
+}
 
 uint16_t field::as_uint16() const { return ntohs(*reinterpret_cast<const uint16_t *>(payload().data())); }
 
@@ -77,73 +81,78 @@ mac_address field::as_mac_address() const {
   return t;
 }
 
-std::ostream &field::value_str(std::ostream &os) const {
+std::variant<bool, uint8_t, uint16_t, uint32_t, std::string_view, boost::asio::ip::address_v4,
+             mac_address, guid, field::config_error, field::error_code, field::result_flag,
+             boost::span<const uint8_t>>
+field::value() const {
   switch (type()) {
   case field_type::dhcp:
-    os << (as_bool() ? "true" : "false");
-    break;
-
+    return as_bool();
   case field_type::hw_type:
   case field_type::hw_rev:
   case field_type::serial_count:
-    os << std::dec << static_cast<int>(as_uint8());
-    break;
-
+    return as_uint8();
   case field_type::version:
-    os << std::dec << as_uint16();
-    break;
-
+    return as_uint16();
   case field_type::port:
   case field_type::ssl_port:
-    os << std::dec << as_uint32();
-    break;
-
+    return as_uint32();
   case field_type::name:
   case field_type::domain:
   case field_type::firmware:
   case field_type::result_msg:
   case field_type::device:
-    os << std::quoted(as_string());
-    break;
-
+    return as_string();
   case field_type::ip_addr:
   case field_type::netmask:
   case field_type::gateway:
   case field_type::dns:
-    os << as_ip_address();
-    break;
-
+    return as_ip_address();
   case field_type::mac_addr:
-    os << as_mac_address();
-    break;
-
+    return as_mac_address();
   case field_type::device_id:
   case field_type::vendor:
-    os << as_guid();
-    break;
-
+    return as_guid();
   case field_type::conf_err_code:
-    os << std::dec << as_config_error();
-    break;
-
+    return as_config_error();
   case field_type::err_code:
-    os << std::dec << as_error_code();
-    break;
-
+    return as_error_code();
   case field_type::result_flag:
-    os << std::dec << as_result_flag();
-    break;
-
+    return as_result_flag();
   default:
-    stream_unknown_as_hex(os);
-    break;
+    return _payload;
   }
-  return os;
 }
 
-void field::stream_unknown_as_hex(std::ostream& os) const {
-  for (const auto b : payload())
-    os << boost::format(" %02x") % unsigned{b};
+std::ostream &field::value_str(std::ostream &os) const {
+  auto val = value();
+  if (auto b = std::get_if<bool>(&val))
+    os << (*b ? "true" : "false");
+  else if (auto u8 = std::get_if<uint8_t>(&val))
+    os << std::dec << static_cast<int>(*u8);
+  else if (auto u16 = std::get_if<uint16_t>(&val))
+    os << std::dec << *u16;
+  else if (auto u32 = std::get_if<uint32_t>(&val))
+    os << std::dec << *u32;
+  else if (auto str = std::get_if<std::string_view>(&val))
+    os << std::quoted(*str);
+  else if (auto ip = std::get_if<boost::asio::ip::address_v4>(&val))
+    os << *ip;
+  else if (auto mac = std::get_if<mac_address>(&val))
+    os << *mac;
+  else if (auto g = std::get_if<guid>(&val))
+    os << *g;
+  else if (auto ce = std::get_if<config_error>(&val))
+    os << std::dec << *ce;
+  else if (auto ec = std::get_if<error_code>(&val))
+    os << std::dec << *ec;
+  else if (auto rf = std::get_if<result_flag>(&val))
+    os << std::dec << *rf;
+  else if (auto sp = std::get_if<boost::span<const uint8_t>>(&val)) {
+    for (const auto by : *sp)
+      os << boost::format(" %02x") % unsigned{by};
+  }
+  return os;
 }
 
 std::ostream &addp::operator<<(std::ostream &os, field::error_code ec) {
