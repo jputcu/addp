@@ -113,33 +113,25 @@ field::value() const {
 }
 
 std::ostream &field::value_str(std::ostream &os) const {
-  auto val = value();
-  if (auto b = std::get_if<bool>(&val))
-    os << (*b ? "true" : "false");
-  else if (auto u8 = std::get_if<uint8_t>(&val))
-    os << std::dec << static_cast<int>(*u8);
-  else if (auto u16 = std::get_if<uint16_t>(&val))
-    os << std::dec << *u16;
-  else if (auto u32 = std::get_if<uint32_t>(&val))
-    os << std::dec << *u32;
-  else if (auto str = std::get_if<std::string_view>(&val))
-    os << std::quoted(*str);
-  else if (auto ip = std::get_if<boost::asio::ip::address_v4>(&val))
-    os << *ip;
-  else if (auto mac = std::get_if<mac_address>(&val))
-    os << *mac;
-  else if (auto g = std::get_if<guid>(&val))
-    os << *g;
-  else if (auto ce = std::get_if<config_error>(&val))
-    os << std::dec << *ce;
-  else if (auto ec = std::get_if<error_code>(&val))
-    os << std::dec << *ec;
-  else if (auto rf = std::get_if<result_flag>(&val))
-    os << std::dec << *rf;
-  else if (auto sp = std::get_if<boost::span<const uint8_t>>(&val)) {
-    for (const auto by : *sp)
-      os << boost::format(" %02x") % unsigned{by};
-  }
+  struct Printer {
+    std::ostream &os;
+    void operator()(const bool b) const { os << (b ? "true" : "false"); }
+    void operator()(const uint8_t n) const { os << std::dec << static_cast<int>(n); }
+    void operator()(const uint16_t n) const { os << std::dec << n; }
+    void operator()(const uint32_t n) const { os << std::dec << n; }
+    void operator()(const std::string_view s) const { os << std::quoted(s); }
+    void operator()(const boost::asio::ip::address_v4 ip) const { os << ip; }
+    void operator()(const mac_address mac) const { os << mac; }
+    void operator()(const guid g) const { os << g; }
+    void operator()(const config_error e) const { os << std::dec << e; }
+    void operator()(const error_code e) const { os << std::dec << e; }
+    void operator()(const result_flag r) const { os << std::dec << r; }
+    void operator()(const boost::span<const uint8_t> s) const {
+      for (const auto by : s)
+        os << boost::format(" %02x") % unsigned{by};
+    }
+  };
+  std::visit(Printer{os}, value());
   return os;
 }
 
