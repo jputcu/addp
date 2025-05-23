@@ -73,18 +73,6 @@ public:
 
   field_type type() const { return _type; }
 
-  bool as_bool() const;
-  uint8_t as_uint8() const;
-  uint16_t as_uint16() const;
-  uint32_t as_uint32() const;
-  std::string_view as_string() const;
-  config_error as_config_error() const;
-  error_code as_error_code() const;
-  result_flag as_result_flag() const;
-  boost::asio::ip::address_v4 as_ip_address() const;
-  guid as_guid() const;
-  mac_address as_mac_address() const;
-
   std::ostream &value_str(std::ostream&) const;
 
   std::variant<bool, uint8_t, uint16_t, uint32_t, std::string_view, boost::asio::ip::address_v4,
@@ -94,6 +82,18 @@ public:
   boost::span<const uint8_t> payload() const { return _payload; }
 
 private:
+  bool as_bool() const { return as_uint8() == BF_TRUE; };
+  uint8_t as_uint8() const;
+  uint16_t as_uint16() const;
+  uint32_t as_uint32() const;
+  std::string_view as_string() const;
+  config_error as_config_error() const { return config_error{as_uint16()}; }
+  error_code as_error_code() const { return error_code{as_uint8()}; }
+  result_flag as_result_flag() const { return result_flag{as_uint8()}; }
+  boost::asio::ip::address_v4 as_ip_address() const;
+  guid as_guid() const;
+  mac_address as_mac_address() const;
+
   field_type _type;
   boost::span<const uint8_t> _payload;
 };

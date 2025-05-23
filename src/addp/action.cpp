@@ -65,7 +65,7 @@ void action::handle_receive_from(const boost::system::error_code &error, const s
   if (!error && bytes_recvd > 0) {
     response resp{_data.data(), bytes_recvd};
     // For discovery, assume field_type::ip_addr matches sender IP
-    auto mac = resp.fields().at(field_type::mac_addr).as_mac_address();
+    auto mac = std::get<mac_address>(resp.fields().at(field_type::mac_addr).value());
     m_responses.emplace(mac, std::move(resp));
   }
 

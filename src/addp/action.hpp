@@ -49,14 +49,6 @@ public:
     _io_context.stop();
   }
 
-  static bool Verify(std::map<mac_address, response> const &responses) {
-    bool ok = true;
-    for ( auto const &response : responses ) {
-      ok &= response.second.Verify();
-    }
-    return ok;
-  }
-
 private:
   void check_timeout();
   void handle_send_to(const boost::system::error_code &error, size_t bytes_sent);

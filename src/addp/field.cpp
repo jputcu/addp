@@ -29,8 +29,6 @@ field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8
   std::advance(iter, payload_len);
 }
 
-bool field::as_bool() const { return as_uint8() == BF_TRUE; }
-
 uint8_t field::as_uint8() const {
   if ( payload().size() != 1 )
     throw std::runtime_error("field::as_uint8() called with invalid payload");
@@ -46,16 +44,6 @@ uint32_t field::as_uint32() const {
 std::string_view field::as_string() const {
   return {reinterpret_cast<const char *>(payload().cbegin()),
           reinterpret_cast<const char *>(payload().cend())};
-}
-
-field::config_error field::as_config_error() const { return config_error{as_uint16()}; }
-
-field::error_code field::as_error_code() const {
-  return error_code{as_uint8()};
-}
-
-field::result_flag field::as_result_flag() const {
-  return result_flag{as_uint8()};
 }
 
 boost::asio::ip::address_v4 field::as_ip_address() const {

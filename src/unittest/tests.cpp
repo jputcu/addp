@@ -75,8 +75,8 @@ BOOST_AUTO_TEST_CASE(parse_packet) {
       0x3,  0x13, 0x4,  0x0,  0x0,  0x4,  0x3,  0x12, 0x1,  0x1};
   addp::response resp{bytes, std::size(bytes)};
   BOOST_CHECK_EQUAL(resp.fields().size(), 13);
-  BOOST_CHECK_EQUAL(resp.fields().at(addp::field_type::ip_addr).as_ip_address().to_string(), "192.168.6.185");
-  BOOST_CHECK_EQUAL(resp.fields().at(addp::field_type::firmware).as_string(), "Version 82000856_F7 04/24/2017");
+  BOOST_CHECK_EQUAL(std::get<boost::asio::ip::address_v4>(resp[addp::field_type::ip_addr]).to_string(), "192.168.6.185");
+  BOOST_CHECK_EQUAL(std::get<std::string_view>(resp[addp::field_type::firmware]), "Version 82000856_F7 04/24/2017");
 }
 
 BOOST_AUTO_TEST_CASE(parse_packet_too_small) {

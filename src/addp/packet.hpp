@@ -106,8 +106,7 @@ public:
 
   std::map<field_type, field> const &fields() const { return _fields; }
 
-  // Do some checks to see if the data is ok
-  bool Verify() const;
+  auto operator[](const field_type field) const { return _fields.at(field).value(); }
 
 private:
   packet_header _header;
