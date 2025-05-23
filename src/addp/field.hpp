@@ -76,7 +76,7 @@ public:
   uint8_t as_uint8() const;
   uint16_t as_uint16() const;
   uint32_t as_uint32() const;
-  std::string as_string() const;
+  std::string_view as_string() const;
   config_error as_config_error() const;
   error_code as_error_code() const;
   result_flag as_result_flag() const;

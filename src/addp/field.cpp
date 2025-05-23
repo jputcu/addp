@@ -39,7 +39,10 @@ uint32_t field::as_uint32() const {
   return ntohl(*reinterpret_cast<const uint32_t *>(payload().data()));
 }
 
-std::string field::as_string() const { return {payload().cbegin(), payload().cend()}; }
+std::string_view field::as_string() const {
+  return {reinterpret_cast<const char *>(payload().cbegin()),
+          reinterpret_cast<const char *>(payload().cend())};
+}
 
 field::config_error field::as_config_error() const { return config_error{as_uint16()}; }
 
