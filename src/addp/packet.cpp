@@ -63,8 +63,12 @@ response::response(const uint8_t *data, const size_t len) {
       const auto end = _payload.cend();
       while (iter != end) {
         field f{iter, end};
-        _fields.emplace(f.type(), f);
+        if ( f.type() == field_type::mac_addr )
+          m_mac_address = std::get<mac_address>(f.value());
+        else
+          _fields.emplace(f.type(), f);
       }
+      assert(mac() != mac_address{});
     }
   }
 }
@@ -117,6 +121,7 @@ std::ostream &addp::operator<<(std::ostream &os, const request &packet) {
 
 std::ostream &addp::operator<<(std::ostream &os, const response &packet) {
   os << packet.type() << "\n";
+  os << "  " << field_type::mac_addr << " = " << packet.mac() << "\n";
   for (const auto &f : packet.fields())
     os << "  " << f.second << "\n";
   return os;

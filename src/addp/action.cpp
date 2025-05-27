@@ -12,7 +12,7 @@ action::action() {
   check_timeout();
 }
 
-std::map<mac_address, response> action::run(request const &req) {
+std::vector<response> action::run(request const &req) {
   m_responses.clear();
   std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
 
@@ -65,8 +65,7 @@ void action::handle_receive_from(const boost::system::error_code &error, const s
   if (!error && bytes_recvd > 0) {
     response resp{_data.data(), bytes_recvd};
     // For discovery, assume field_type::ip_addr matches sender IP
-    auto mac = std::get<mac_address>(resp.fields().at(field_type::mac_addr).value());
-    m_responses.emplace(mac, std::move(resp));
+    m_responses.push_back(std::move(resp));
   }
 
   // timeout reached?

@@ -118,7 +118,7 @@ std::ostream &field::value_str(std::ostream &os) const {
     void operator()(const bool b) const { os << (b ? "true" : "false"); }
     void operator()(const unsigned n) const { os << std::dec << n; }
     void operator()(const std::string_view s) const { os << std::quoted(s); }
-    void operator()(const boost::asio::ip::address_v4 ip) const { os << ip; }
+    void operator()(boost::asio::ip::address_v4 const &ip) const { os << ip; }
     void operator()(const mac_address mac) const { os << mac; }
     void operator()(const guid g) const { os << g; }
     void operator()(const config_error e) const { os << std::dec << e; }

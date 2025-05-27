@@ -108,7 +108,11 @@ public:
 
   auto operator[](const field_type field) const { return _fields.at(field).value(); }
 
+  auto const &mac() const { return m_mac_address; }
+
 private:
+  mac_address m_mac_address; // Always expect this to be present
+
   packet_header _header;
   std::vector<uint8_t> _payload;
 
