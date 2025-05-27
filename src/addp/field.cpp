@@ -69,7 +69,7 @@ mac_address field::as_mac_address() const {
   return t;
 }
 
-std::variant<bool, uint8_t, uint16_t, uint32_t, std::string_view, boost::asio::ip::address_v4,
+std::variant<bool, unsigned, std::string_view, boost::asio::ip::address_v4,
              mac_address, guid, field::config_error, field::error_code, field::result_flag,
              boost::span<const uint8_t>>
 field::value() const {
@@ -79,12 +79,12 @@ field::value() const {
   case field_type::hw_type:
   case field_type::hw_rev:
   case field_type::serial_count:
-    return as_uint8();
+    return unsigned{as_uint8()};
   case field_type::version:
-    return as_uint16();
+    return unsigned{as_uint16()};
   case field_type::port:
   case field_type::ssl_port:
-    return as_uint32();
+    return unsigned{as_uint32()};
   case field_type::name:
   case field_type::domain:
   case field_type::firmware:
@@ -116,9 +116,7 @@ std::ostream &field::value_str(std::ostream &os) const {
   struct Printer {
     std::ostream &os;
     void operator()(const bool b) const { os << (b ? "true" : "false"); }
-    void operator()(const uint8_t n) const { os << std::dec << static_cast<int>(n); }
-    void operator()(const uint16_t n) const { os << std::dec << n; }
-    void operator()(const uint32_t n) const { os << std::dec << n; }
+    void operator()(const unsigned n) const { os << std::dec << n; }
     void operator()(const std::string_view s) const { os << std::quoted(s); }
     void operator()(const boost::asio::ip::address_v4 ip) const { os << ip; }
     void operator()(const mac_address mac) const { os << mac; }
