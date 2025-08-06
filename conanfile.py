@@ -8,7 +8,7 @@ from conan.tools.files import copy
 
 class AddpConan(ConanFile):
     name = "addp"
-    version = "1.1.0"
+    version = "1.1.1"
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps"
     exports_sources = "CMakeLists.txt", "src/addp/*", "src/addpc/*", "src/unittest/*"
