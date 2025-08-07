@@ -3,6 +3,6 @@
 
 int main() {
   using namespace addp;
-  std::cout << packet_type::REBOOT_REQUEST << "\n";
+  std::cout << packet_type::DISCOVERY_RESPONSE<< "\n";
   return EXIT_SUCCESS;
 }
