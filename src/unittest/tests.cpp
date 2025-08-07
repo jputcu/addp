@@ -94,3 +94,7 @@ BOOST_AUTO_TEST_CASE(parse_packet_too_small) {
       0x3,  0x13, 0x4,  0x0,  0x0,  0x4,  0x3,  0x12,     0x1,  0x1};
   BOOST_CHECK_THROW(addp::response(bytes, std::size(bytes)), std::runtime_error);
 }
+
+BOOST_AUTO_TEST_CASE(parse_version) {
+  BOOST_CHECK_EQUAL(addp::field::ParseFirmwareVersion("Version 82000856_F7 04/24/2017"), "82000856_F7");
+}

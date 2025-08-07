@@ -20,7 +20,7 @@ enum class field_type : uint8_t {
   domain,          // domain
   hw_type,         // hardware type
   hw_rev,          // hardware Revision
-  firmware,        // string firmware
+  firmware,        // string firmware, e.g. "Version 82000856_F7 04/24/2017"
   result_msg,      // string result message
   result_flag,     // 1 byte result flag
   gateway,         // 4 byte gateway IP
@@ -77,6 +77,12 @@ public:
   value() const;
 
   boost::span<const uint8_t> payload() const { return _payload; }
+
+  // field_type::firmware payload "Version 82000856_F7 04/24/2017" -> "82000856_F7"
+  static constexpr std::string_view ParseFirmwareVersion(std::string_view fw_version) {
+    fw_version.remove_prefix(std::strlen("Version "));
+    return fw_version.substr(0, fw_version.find(' '));
+  }
 
 private:
   bool as_bool() const { return as_uint8() == BF_TRUE; };
