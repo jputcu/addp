@@ -8,7 +8,7 @@
 #include "types.hpp"
 using namespace addp;
 
-field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8_t>::const_iterator &end) {
+field::field(std::vector<std::byte>::const_iterator &iter, const std::vector<std::byte>::const_iterator &end) {
   struct header {
     field_type type{};
     uint8_t size{};
@@ -19,8 +19,8 @@ field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8
   if ( remaining_len < sizeof(header) )
     throw std::runtime_error("field too small");
 
-  _type = field_type{*iter++};
-  const auto payload_len = size_t{*iter++};
+  _type = field_type{std::to_integer<uint8_t>(*iter++)};
+  const auto payload_len = std::to_integer<size_t>(*iter++);
   const auto total_field_len [[maybe_unused]] = payload_len + sizeof(header);
   if ( total_field_len > remaining_len )
     throw std::runtime_error("field too large");
@@ -32,7 +32,7 @@ field::field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8
 uint8_t field::as_uint8() const {
   if ( payload().size() != 1 )
     throw std::runtime_error("field::as_uint8() called with invalid payload");
-  return payload().front();
+  return std::to_integer<uint8_t>(payload().front());
 }
 
 uint16_t field::as_uint16() const { return ntohs(*reinterpret_cast<const uint16_t *>(payload().data())); }
@@ -49,7 +49,8 @@ std::string_view field::as_string() const {
 boost::asio::ip::address_v4 field::as_ip_address() const {
   boost::asio::ip::address_v4::bytes_type ip_bytes;
   const auto payload_bytes = payload();
-  std::copy(payload_bytes.cbegin(), payload_bytes.cend(), ip_bytes.begin());
+  std::transform(payload_bytes.cbegin(), payload_bytes.cend(), ip_bytes.begin(),
+                 [](auto b) { return std::to_integer<uint8_t>(b); });
   return boost::asio::ip::address_v4{ip_bytes};
 }
 
@@ -71,7 +72,7 @@ mac_address field::as_mac_address() const {
 
 std::variant<bool, unsigned, std::string_view, boost::asio::ip::address_v4,
              mac_address, guid, field::config_error, field::error_code, field::result_flag,
-             boost::span<const uint8_t>>
+             boost::span<const std::byte>>
 field::value() const {
   switch (type()) {
   case field_type::dhcp:
@@ -124,9 +125,9 @@ std::ostream &field::value_str(std::ostream &os) const {
     void operator()(const config_error e) const { os << std::dec << e; }
     void operator()(const error_code e) const { os << std::dec << e; }
     void operator()(const result_flag r) const { os << std::dec << r; }
-    void operator()(const boost::span<const uint8_t> s) const {
+    void operator()(const boost::span<const std::byte> s) const {
       for (const auto by : s)
-        os << boost::format(" %02x") % unsigned{by};
+        os << boost::format(" %02x") % std::to_integer<unsigned>(by);
     }
   };
   std::visit(Printer{os}, value());

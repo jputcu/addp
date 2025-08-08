@@ -62,7 +62,7 @@ private:
   boost::asio::io_context _io_context;
   boost::asio::ip::udp::socket _socket{_io_context};
   boost::asio::deadline_timer _deadline{_io_context};
-  std::array<uint8_t, MAX_UDP_MESSAGE_LEN> _data;
+  std::array<std::byte, MAX_UDP_MESSAGE_LEN> _data;
 
   size_t _timeout_ms{DEFAULT_TIMEOUT};
   std::vector<response> m_responses;

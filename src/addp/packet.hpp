@@ -65,12 +65,12 @@ public:
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_packet.header.type)); }
 
-  boost::span<const uint8_t> raw() const {
-    return {reinterpret_cast<const uint8_t *>(&_packet),
+  boost::span<const std::byte> raw() const {
+    return {reinterpret_cast<const std::byte *>(&_packet),
             sizeof(packet_header) + _packet.payload_size()};
   }
 
-  boost::span<const uint8_t> payload() const { return {_packet.payload, _packet.payload_size()}; }
+  boost::span<const std::byte> payload() const { return {_packet.payload, _packet.payload_size()}; }
 
 private:
   explicit request(packet_type type) { _packet.header.type = htons(static_cast<u_short>(type)); }
@@ -83,15 +83,15 @@ private:
   struct packet {
     static constexpr auto MAX_PAYLOAD_SIZE = 200;
     packet_header header;
-    uint8_t payload[MAX_PAYLOAD_SIZE];
+    std::byte payload[MAX_PAYLOAD_SIZE];
 
     size_t payload_size() const { return ntohs(header.size); }
-    void update_payload_size(uint8_t *new_out_it) {
+    void update_payload_size(std::byte *new_out_it) {
       const auto payload_len = std::distance(payload, new_out_it);
       assert(payload_len < MAX_PAYLOAD_SIZE);
       header.size = htons(static_cast<u_short>(payload_len));
     }
-    uint8_t *out_it() { return payload + payload_size(); }
+    std::byte *out_it() { return payload + payload_size(); }
   };
   static_assert(sizeof(packet) == sizeof(packet_header) + packet::MAX_PAYLOAD_SIZE);
 
@@ -100,7 +100,7 @@ private:
 
 class response {
 public:
-  explicit response(const uint8_t *data, size_t len);
+  explicit response(const std::byte *data, size_t len);
 
   packet_type type() const { return static_cast<packet_type>(ntohs(_header.type)); }
 
@@ -114,7 +114,7 @@ private:
   mac_address m_mac_address; // Always expect this to be present
 
   packet_header _header;
-  std::vector<uint8_t> _payload;
+  std::vector<std::byte> _payload;
 
   std::map<field_type, field> _fields;
 };

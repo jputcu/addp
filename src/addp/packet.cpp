@@ -7,7 +7,7 @@ using namespace addp;
 
 request &request::add_bool(const bool data) {
   auto it = _packet.out_it();
-  *it++ = data ? field::BF_TRUE : field::BF_FALSE;
+  *it++ = static_cast<std::byte>(data ? field::BF_TRUE : field::BF_FALSE);
   _packet.update_payload_size(it);
   return *this;
 }
@@ -15,7 +15,7 @@ request &request::add_bool(const bool data) {
 request &request::add_mac(const std::string_view mac_str) {
   const mac_address mac{mac_str};
   auto it = _packet.out_it();
-  it = std::copy(mac.cbegin(), mac.cend(), it);
+  it = std::transform(mac.cbegin(), mac.cend(), it, [](auto b) { return std::byte{b}; });
   _packet.update_payload_size(it);
   return *this;
 }
@@ -24,7 +24,7 @@ request &request::add_ip(const std::string_view ip_str) {
   auto ip = boost::asio::ip::make_address_v4(ip_str);
   auto it = _packet.out_it();
   const auto ip_bytes = ip.to_bytes();
-  it = std::copy(ip_bytes.cbegin(), ip_bytes.cend(), it);
+  it = std::transform(ip_bytes.cbegin(), ip_bytes.cend(), it, [](auto b) { return std::byte{b}; });
   _packet.update_payload_size(it);
   return *this;
 }
@@ -32,15 +32,15 @@ request &request::add_ip(const std::string_view ip_str) {
 request &request::add_string(const std::string_view str) {
   // 1 byte length
   auto it = _packet.out_it();
-  *it++ = static_cast<uint8_t>(str.size());
+  *it++ = static_cast<std::byte>(str.size());
 
-  const auto data = reinterpret_cast<const uint8_t *>(str.data());
+  const auto data = reinterpret_cast<const std::byte *>(str.data());
   it = std::copy_n(data, str.size(), it);
   _packet.update_payload_size(it);
   return *this;
 }
 
-response::response(const uint8_t *data, const size_t len) {
+response::response(const std::byte *data, const size_t len) {
   if (len >= sizeof(_header)) {
     size_t payload_len = 0;
     // header
@@ -113,7 +113,8 @@ std::ostream &addp::operator<<(std::ostream &os, const request &packet) {
   os << packet.type() << "\n";
   if (packet.type() == packet_type::DISCOVERY_REQUEST) {
     mac_address mac{};
-    std::copy(packet.payload().cbegin(), packet.payload().cend(), mac.begin());
+    std::transform(packet.payload().cbegin(), packet.payload().cend(), mac.begin(),
+                   [](auto b) { return std::to_integer<uint8_t>(b); });
     os << mac;
   }
   return os;

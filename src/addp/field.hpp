@@ -67,17 +67,17 @@ public:
   };
 
   // Consumes the data: moves iter to the next field
-  field(std::vector<uint8_t>::const_iterator &iter, const std::vector<uint8_t>::const_iterator &end);
+  field(std::vector<std::byte>::const_iterator &iter, const std::vector<std::byte>::const_iterator &end);
 
   field_type type() const { return _type; }
 
   std::ostream &value_str(std::ostream&) const;
 
   std::variant<bool, unsigned, std::string_view, boost::asio::ip::address_v4,
-               mac_address, guid, config_error, error_code, result_flag, boost::span<const uint8_t>>
+               mac_address, guid, config_error, error_code, result_flag, boost::span<const std::byte>>
   value() const;
 
-  boost::span<const uint8_t> payload() const { return _payload; }
+  boost::span<const std::byte> payload() const { return _payload; }
 
   // field_type::firmware payload "Version 82000856_F7 04/24/2017" -> "82000856_F7"
   static constexpr std::string_view ParseFirmwareVersion(std::string_view fw_version) {
@@ -126,7 +126,7 @@ private:
   mac_address as_mac_address() const;
 
   field_type _type;
-  boost::span<const uint8_t> _payload;
+  boost::span<const std::byte> _payload;
 };
 
 std::ostream &operator<<(std::ostream &, field::error_code);
