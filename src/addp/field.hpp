@@ -7,6 +7,7 @@
 #include <iosfwd>
 #include <boost/core/span.hpp>
 #include <variant>
+#include <optional>
 #include <boost/asio/ip/address_v4.hpp>
 
 namespace addp {
@@ -82,6 +83,33 @@ public:
   static constexpr std::string_view ParseFirmwareVersion(std::string_view fw_version) {
     fw_version.remove_prefix(std::strlen("Version "));
     return fw_version.substr(0, fw_version.find(' '));
+  }
+
+  // Suggests the latest DIGI fw version.
+  // * nullopt: Up-to-date
+  // * string: update to this version
+  // * exception: unknown version, don't know what to suggest
+  static constexpr std::optional<std::string_view> SuggestedFirmwareUpgrade(
+      std::string_view fw_version) {
+    // 2Mb, older HW version
+    {
+      constexpr std::string_view latest_2mb_version = "82000856_F7";
+      if (fw_version == latest_2mb_version)
+        return std::nullopt;
+      else if (fw_version == "82000856_F1" || fw_version == "82000856_F3" || fw_version ==
+               "82000856_F5" || fw_version == "82000856_F6")
+        return latest_2mb_version;
+    }
+    // 4Mb, newer HW version
+    {
+      constexpr std::string_view latest_4mb_version = "82004424_D";
+      if (fw_version == latest_4mb_version)
+        return std::nullopt;
+      else if (fw_version == "82004424_B" || fw_version == "82004424_C" || fw_version ==
+               "82004424_D")
+        return latest_4mb_version;
+    }
+    throw std::runtime_error("Unknown DIGI fw version");
   }
 
 private:

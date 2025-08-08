@@ -95,6 +95,8 @@ BOOST_AUTO_TEST_CASE(parse_packet_too_small) {
   BOOST_CHECK_THROW(addp::response(bytes, std::size(bytes)), std::runtime_error);
 }
 
-BOOST_AUTO_TEST_CASE(parse_version) {
+BOOST_AUTO_TEST_CASE(version_checks) {
   BOOST_CHECK_EQUAL(addp::field::ParseFirmwareVersion("Version 82000856_F7 04/24/2017"), "82000856_F7");
+  BOOST_CHECK(!addp::field::SuggestedFirmwareUpgrade("82000856_F7").has_value());
+  BOOST_CHECK_EQUAL(addp::field::SuggestedFirmwareUpgrade("82000856_F6").value(), "82000856_F7");
 }
