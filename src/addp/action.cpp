@@ -16,7 +16,7 @@ std::vector<response> action::run(request const &req) {
   m_responses.clear();
   std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
 
-  _io_context.reset();
+  _io_context.restart();
   _socket.open(boost::asio::ip::udp::v4());
   _socket.bind(_listen_address);
   // send request to multicast address

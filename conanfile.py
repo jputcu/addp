@@ -8,11 +8,11 @@ from conan.tools.files import copy
 
 class AddpConan(ConanFile):
     name = "addp"
-    version = "1.1.1"
+    version = "1.1.2"
     settings = "os", "compiler", "build_type", "arch"
     generators = "CMakeDeps"
     exports_sources = "CMakeLists.txt", "src/addp/*", "src/addpc/*", "src/unittest/*"
-    requires = "boost/[>=1.80.0 <=1.84.0]"
+    requires = "boost/[>=1.80.0 <=1.88.0]"
 
     options = {"client": [True, False]}
     default_options = {"client": False}
