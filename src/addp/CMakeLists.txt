@@ -18,6 +18,7 @@ target_sources(addp_lib
         types.hpp
         version.hpp
 )
+target_compile_features(addp_lib PUBLIC cxx_std_20)
 set_target_properties(addp_lib PROPERTIES OUTPUT_NAME addp)
 
 find_package(Boost REQUIRED COMPONENTS system)

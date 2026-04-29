@@ -14,8 +14,6 @@ action::action() {
 
 std::vector<response> action::run(request const &req) {
   m_responses.clear();
-  std::cout << "sending to: " << _dest_address << " packet: " << req << "\n\n";
-
   _io_context.restart();
   _socket.open(boost::asio::ip::udp::v4());
   _socket.bind(_listen_address);
@@ -42,7 +40,7 @@ std::vector<response> action::run(request const &req) {
 
 void action::check_timeout() {
   if (_deadline.expires_at() <= boost::asio::deadline_timer::traits_type::now()) {
-    std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
+    //std::cout << "timeout reached (" << std::dec << _timeout_ms << "ms)\n";
 
     stop();
     _deadline.expires_at(boost::posix_time::pos_infin);
