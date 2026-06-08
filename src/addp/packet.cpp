@@ -15,16 +15,16 @@ request &request::add_bool(const bool data) {
 request &request::add_mac(const std::string_view mac_str) {
   const mac_address mac{mac_str};
   auto it = _packet.out_it();
-  it = std::transform(mac.cbegin(), mac.cend(), it, [](auto b) { return std::byte{b}; });
+  it = std::ranges::transform(mac, it, [](auto b) { return std::byte{b}; }).out;
   _packet.update_payload_size(it);
   return *this;
 }
 
 request &request::add_ip(const std::string_view ip_str) {
-  auto ip = boost::asio::ip::make_address_v4(ip_str);
+  const auto ip = boost::asio::ip::make_address_v4(ip_str);
   auto it = _packet.out_it();
   const auto ip_bytes = ip.to_bytes();
-  it = std::transform(ip_bytes.cbegin(), ip_bytes.cend(), it, [](auto b) { return std::byte{b}; });
+  it = std::ranges::transform(ip_bytes, it, [](auto b) { return std::byte{b}; }).out;
   _packet.update_payload_size(it);
   return *this;
 }
@@ -113,7 +113,7 @@ std::ostream &addp::operator<<(std::ostream &os, const request &packet) {
   os << packet.type() << "\n";
   if (packet.type() == packet_type::DISCOVERY_REQUEST) {
     mac_address mac{};
-    std::transform(packet.payload().cbegin(), packet.payload().cend(), mac.begin(),
+    std::ranges::transform(packet.payload(), mac.begin(),
                    [](auto b) { return std::to_integer<uint8_t>(b); });
     os << mac;
   }

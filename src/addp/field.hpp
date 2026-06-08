@@ -38,6 +38,16 @@ enum class field_type : uint8_t {
   device_id = 0x1a // Device ID: '00000000-00000000-00409DFF-FF300000'
 };
 
+constexpr field_type ToFieldType(const std::byte b) {
+  if ((static_cast<std::byte>(field_type::mac_addr) <= b &&
+       b <= static_cast<std::byte>(field_type::vendor)) ||
+      b == static_cast<std::byte>(field_type::vendor)) {
+    return field_type{std::to_integer<uint8_t>(b)};
+  } else {
+    throw std::runtime_error("Unknown field type");
+  }
+}
+
 // view onto a response payload. Doesn't own the data
 class field {
 public:

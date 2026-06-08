@@ -19,9 +19,9 @@ field::field(std::vector<std::byte>::const_iterator &iter, const std::vector<std
   if ( remaining_len < sizeof(header) )
     throw std::runtime_error("field too small");
 
-  _type = field_type{std::to_integer<uint8_t>(*iter++)};
+  _type = ToFieldType(*iter++);
   const auto payload_len = std::to_integer<size_t>(*iter++);
-  const auto total_field_len [[maybe_unused]] = payload_len + sizeof(header);
+  const auto total_field_len = payload_len + sizeof(header);
   if ( total_field_len > remaining_len )
     throw std::runtime_error("field too large");
 
@@ -35,7 +35,12 @@ uint8_t field::as_uint8() const {
   return std::to_integer<uint8_t>(payload().front());
 }
 
-uint16_t field::as_uint16() const { return ntohs(*reinterpret_cast<const uint16_t *>(payload().data())); }
+uint16_t field::as_uint16() const {
+  alignas(uint16_t) std::array<std::byte, sizeof(uint16_t)> bytes;
+  std::memcpy(bytes.data(), payload().data(), bytes.size());
+  //return ntohs(*reinterpret_cast<const uint16_t *>(bytes.data()));
+  return ntohs(std::bit_cast<uint16_t>(bytes));
+}
 
 uint32_t field::as_uint32() const {
   return ntohl(*reinterpret_cast<const uint32_t *>(payload().data()));
@@ -49,8 +54,8 @@ std::string_view field::as_string() const {
 boost::asio::ip::address_v4 field::as_ip_address() const {
   boost::asio::ip::address_v4::bytes_type ip_bytes;
   const auto payload_bytes = payload();
-  std::transform(payload_bytes.cbegin(), payload_bytes.cend(), ip_bytes.begin(),
-                 [](auto b) { return std::to_integer<uint8_t>(b); });
+  std::ranges::transform(payload_bytes, ip_bytes.begin(),
+                         [](auto b) { return std::to_integer<uint8_t>(b); });
   return boost::asio::ip::address_v4{ip_bytes};
 }
 
