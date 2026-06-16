@@ -85,6 +85,7 @@ field::value() const {
   case field_type::hw_type:
   case field_type::hw_rev:
   case field_type::serial_count:
+  case field_type::unknown19:
     return unsigned{as_uint8()};
   case field_type::version:
     return unsigned{as_uint16()};
@@ -113,9 +114,10 @@ field::value() const {
     return as_error_code();
   case field_type::result_flag:
     return as_result_flag();
-  default:
+  case field_type::none:
     return _payload;
   }
+  __builtin_unreachable();
 }
 
 std::ostream &field::value_str(std::ostream &os) const {

@@ -35,13 +35,15 @@ enum class field_type : uint8_t {
   ssl_port,        // 4 byte encrypted port
   version,         // version ID
   vendor = 0x15,   // vendor GUID
+  unknown19 = 0x19,// Unknown field with a length of 1
   device_id = 0x1a // Device ID: '00000000-00000000-00409DFF-FF300000'
 };
 
 constexpr field_type ToFieldType(const std::byte b) {
   if ((static_cast<std::byte>(field_type::mac_addr) <= b &&
        b <= static_cast<std::byte>(field_type::vendor)) ||
-      b == static_cast<std::byte>(field_type::vendor)) {
+      b == static_cast<std::byte>(field_type::unknown19) ||
+      b == static_cast<std::byte>(field_type::device_id)) {
     return field_type{std::to_integer<uint8_t>(b)};
   } else {
     throw std::runtime_error("Unknown field type");
